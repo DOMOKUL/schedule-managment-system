@@ -1,4 +1,4 @@
-package models;
+package com.company.schedule.managment.system.models;
 
 import java.util.List;
 import java.util.Objects;
