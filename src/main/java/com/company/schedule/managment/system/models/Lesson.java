@@ -1,16 +1,37 @@
 package com.company.schedule.managment.system.models;
 
-import java.util.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
 import java.sql.Time;
 import java.time.Duration;
+import java.util.List;
 
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@Entity
+@Table(name = "lessons")
 public class Lesson {
 
+    @Id
+    @SequenceGenerator(name = "lesson_sequence",
+            sequenceName = "lesson_sequence",
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "lesson_sequence")
     private Long id;
     private Integer number;
     private Time startTime;
     private Duration duration;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Lecture> lectures;
 
     public Lesson(Integer number, Time startTime, Duration duration, Subject subject, List<Lecture> lectures) {
@@ -19,66 +40,5 @@ public class Lesson {
         this.duration = duration;
         this.subject = subject;
         this.lectures = lectures;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public Time getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Time startTime) {
-        this.startTime = startTime;
-    }
-
-    public Duration getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Duration duration) {
-        this.duration = duration;
-    }
-
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
-    public List<Lecture> getLectures() {
-        return lectures;
-    }
-
-    public void setLectures(List<Lecture> lectures) {
-        this.lectures = lectures;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Lesson lesson = (Lesson) o;
-        return Objects.equals(id, lesson.id) && Objects.equals(number, lesson.number) && Objects.equals(startTime, lesson.startTime) && Objects.equals(duration, lesson.duration) && Objects.equals(subject, lesson.subject) && Objects.equals(lectures, lesson.lectures);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, number, startTime, duration, subject, lectures);
     }
 }

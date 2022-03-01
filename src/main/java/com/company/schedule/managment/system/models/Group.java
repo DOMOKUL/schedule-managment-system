@@ -1,13 +1,35 @@
 package com.company.schedule.managment.system.models;
 
-import java.util.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@Entity
+@Table(name = "groups")
 public class Group {
 
+    @Id
+    @SequenceGenerator(name = "group_sequence",
+            sequenceName = "group_sequence",
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "group_sequence")
     private Long id;
     private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Student> students;
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Lecture> lectures;
 
     public Group(String name, Faculty faculty, List<Student> students, List<Lecture> lectures) {
@@ -15,58 +37,5 @@ public class Group {
         this.faculty = faculty;
         this.students = students;
         this.lectures = lectures;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Faculty getFaculty() {
-        return faculty;
-    }
-
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
-
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
-
-    public List<Lecture> getLectures() {
-        return lectures;
-    }
-
-    public void setLectures(List<Lecture> lectures) {
-        this.lectures = lectures;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Group group = (Group) o;
-        return Objects.equals(id, group.id) && Objects.equals(name, group.name) && Objects.equals(faculty, group.faculty) && Objects.equals(students, group.students) && Objects.equals(lectures, group.lectures);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, faculty, students, lectures);
     }
 }

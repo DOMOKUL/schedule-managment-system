@@ -1,62 +1,37 @@
 package com.company.schedule.managment.system.models;
 
-import java.util.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@Entity
+@Table(name = "faculties")
 public class Faculty {
 
+    @Id
+    @SequenceGenerator(name = "faculty_sequence",
+            sequenceName = "faculty_sequence",
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "faculty_sequence")
     private Long id;
     private String name;
+    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Group> groups;
+    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Teacher> teachers;
 
     public Faculty(String name, List<Group> groups, List<Teacher> teachers) {
         this.name = name;
         this.groups = groups;
         this.teachers = teachers;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Group> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
-
-    public List<Teacher> getTeachers() {
-        return teachers;
-    }
-
-    public void setTeachers(List<Teacher> teachers) {
-        this.teachers = teachers;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Faculty faculty = (Faculty) o;
-        return Objects.equals(id, faculty.id) && Objects.equals(name, faculty.name) && Objects.equals(groups, faculty.groups) && Objects.equals(teachers, faculty.teachers);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, groups, teachers);
     }
 }

@@ -1,67 +1,32 @@
 package com.company.schedule.managment.system.models;
 
-import java.util.List;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.*;
+
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@Entity
+@Table(name = "students")
 public class Student extends Person {
 
+    @Id
+    @SequenceGenerator(name = "student_sequence",
+            sequenceName = "student_sequence",
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "student_sequence")
+    private Long id;
     private Integer courseNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", nullable = false)
     private Group group;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
-    private List<Teacher> teachers;
-    private List<Subject> subjects;
-
-    public Integer getCourseNumber() {
-        return courseNumber;
-    }
-
-    public void setCourseNumber(Integer courseNumber) {
-        this.courseNumber = courseNumber;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
-    public Faculty getFaculty() {
-        return faculty;
-    }
-
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
-
-    public List<Teacher> getTeachers() {
-        return teachers;
-    }
-
-    public void setTeachers(List<Teacher> teachers) {
-        this.teachers = teachers;
-    }
-
-    public List<Subject> getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(List<Subject> subjects) {
-        this.subjects = subjects;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Student student = (Student) o;
-        return Objects.equals(courseNumber, student.courseNumber) && Objects.equals(group, student.group) && Objects.equals(faculty, student.faculty) && Objects.equals(teachers, student.teachers) && Objects.equals(subjects, student.subjects);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), courseNumber, group, faculty, teachers, subjects);
-    }
 }

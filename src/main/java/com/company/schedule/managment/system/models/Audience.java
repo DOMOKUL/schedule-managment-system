@@ -1,9 +1,26 @@
 package com.company.schedule.managment.system.models;
 
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.persistence.*;
+
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@Entity
+@Table(name = "audiences")
 public class Audience {
 
+    @Id
+    @SequenceGenerator(name = "audience_sequence",
+            sequenceName = "audience_sequence",
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "audience_sequence")
     private Long id;
     private Integer number;
     private Integer capacity;
@@ -11,42 +28,5 @@ public class Audience {
     public Audience(Integer number, Integer capacity) {
         this.number = number;
         this.capacity = capacity;
-    }
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public Integer getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Audience audience = (Audience) o;
-        return Objects.equals(id, audience.id) && Objects.equals(number, audience.number) && Objects.equals(capacity, audience.capacity);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, number, capacity);
     }
 }
