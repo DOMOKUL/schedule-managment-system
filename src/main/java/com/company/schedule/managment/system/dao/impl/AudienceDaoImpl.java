@@ -27,7 +27,7 @@ public class AudienceDaoImpl implements AudienceDao {
     }
 
     @Override
-    public Audience findById(Integer id) {
+    public Audience findById(Long id) {
         return jdbcTemplate.query("SELECT * FROM audiences WHERE id=?", new Object[]{id},
                 new BeanPropertyRowMapper<>(Audience.class)).stream().findAny().orElse(null);
     }
@@ -48,7 +48,7 @@ public class AudienceDaoImpl implements AudienceDao {
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(Long id) {
         var updateRowCount = jdbcTemplate.update("DELETE FROM audiences WHERE id=?", id);
         if (updateRowCount != 0) {
             return true;

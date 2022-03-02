@@ -4,7 +4,6 @@
       password: postgres
       url: jdbc:postgresql://localhost:5532/postgres
       driver-class-name: org.postgresql.Driver
-
     flyway:
       baseline-on-migrate: true
 
