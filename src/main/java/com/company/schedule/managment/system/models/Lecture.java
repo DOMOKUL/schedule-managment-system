@@ -1,19 +1,15 @@
 package com.company.schedule.managment.system.models;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
 @Entity
 @Table(name = "lectures")
+@Data
+@NoArgsConstructor
 public class Lecture {
 
     @Id

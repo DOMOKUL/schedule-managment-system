@@ -1,13 +1,9 @@
 package com.company.schedule.managment.system.models;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 @NoArgsConstructor
 public abstract class Person {
 
