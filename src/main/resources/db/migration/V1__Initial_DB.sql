@@ -9,69 +9,69 @@ create sequence teacher_sequence start 1 increment 1;
 
 create table audiences
 (
-    id       int8 not null,
-    capacity int4,
-    number   int4,
+    id       bigint not null,
+    capacity integer,
+    number   integer,
     primary key (id)
 );
 
 create table faculties
 (
-    id   int8 not null,
+    id   bigint not null,
     name varchar(255),
     primary key (id)
 );
 
 create table groups
 (
-    id         int8 not null,
+    id         bigint not null,
     name       varchar(255),
-    faculty_id int8 not null,
+    faculty_id bigint not null,
     primary key (id)
 );
 
 create table lectures
 (
-    id          int8 not null,
+    id          bigint not null,
     date        timestamp,
-    number      int4,
-    audience_id int8 not null,
-    group_id    int8 not null,
-    lesson_id   int8 not null,
-    teacher_id  int8 not null,
+    number      integer,
+    audience_id bigint not null,
+    group_id    bigint not null,
+    lesson_id   bigint not null,
+    teacher_id  bigint not null,
     primary key (id)
 );
 
 create table lessons
 (
-    id         int8 not null,
-    duration   int8,
-    number     int4,
+    id         bigint not null,
+    duration   bigint,
+    number     integer,
     start_time time,
-    subject_id int8 not null,
+    subject_id bigint not null,
     primary key (id)
 );
 
 create table students
 (
-    id            int8 not null,
-    course_number int4,
-    faculty_id    int8 not null,
-    group_id      int8 not null,
+    id            bigint not null,
+    course_number integer,
+    faculty_id    bigint not null,
+    group_id      bigint not null,
     primary key (id)
 );
 
 create table subjects
 (
-    id   int8 not null,
+    id   bigint not null,
     name varchar(255),
     primary key (id)
 );
 
 create table teachers
 (
-    id         int8 not null,
-    faculty_id int8 not null,
+    id         bigint not null,
+    faculty_id bigint not null,
     primary key (id)
 );
 
