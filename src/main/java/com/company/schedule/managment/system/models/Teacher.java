@@ -1,5 +1,6 @@
 package com.company.schedule.managment.system.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,9 @@ import java.util.List;
 @Table(name = "teachers")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+
 public class Teacher extends Person {
 
     @Id
@@ -26,4 +29,9 @@ public class Teacher extends Person {
     private Faculty faculty;
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Lecture> lectures;
+
+    public Teacher(Faculty faculty, List<Lecture> lectures) {
+        this.faculty = faculty;
+        this.lectures = lectures;
+    }
 }

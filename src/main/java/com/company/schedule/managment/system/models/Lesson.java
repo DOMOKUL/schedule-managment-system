@@ -1,17 +1,19 @@
 package com.company.schedule.managment.system.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "lessons")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Lesson {
 
     @Id
@@ -22,7 +24,7 @@ public class Lesson {
             generator = "lesson_sequence")
     private Long id;
     private Integer number;
-    private Time startTime;
+    private LocalDateTime startTime;
     private Duration duration;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", nullable = false)
@@ -30,7 +32,7 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Lecture> lectures;
 
-    public Lesson(Integer number, Time startTime, Duration duration, Subject subject, List<Lecture> lectures) {
+    public Lesson(Integer number, LocalDateTime startTime, Duration duration, Subject subject, List<Lecture> lectures) {
         this.number = number;
         this.startTime = startTime;
         this.duration = duration;

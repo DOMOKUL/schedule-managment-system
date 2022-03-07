@@ -1,5 +1,6 @@
 package com.company.schedule.managment.system.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Table(name = "faculties")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Faculty {
 
     @Id
