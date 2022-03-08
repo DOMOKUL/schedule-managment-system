@@ -3,7 +3,6 @@ package com.company.schedule.managment.system.dao.impl;
 import com.company.schedule.managment.system.dao.FacultyDao;
 import com.company.schedule.managment.system.dao.exception.DaoException;
 import com.company.schedule.managment.system.model.Faculty;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.InvalidResultSetAccessException;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-@AllArgsConstructor
 public class FacultyDaoImpl implements FacultyDao {
 
     private final JdbcTemplate jdbcTemplate;
