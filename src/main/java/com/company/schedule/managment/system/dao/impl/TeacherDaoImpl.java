@@ -28,14 +28,14 @@ public class TeacherDaoImpl implements TeacherDao {
 
     @Override
     public Teacher create(Teacher teacher) {
-        SimpleJdbcInsert insertLesson = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("teachers")
+        SimpleJdbcInsert insertTeacher = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("teachers")
                 .usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("first_name", teacher.getFirstName());
         parameters.put("last_name", teacher.getLastName());
         parameters.put("middle_name", teacher.getMiddleName());
         parameters.put("faculty_id", teacher.getFaculty().getId());
-        Number newId = insertLesson.executeAndReturnKey(parameters);
+        Number newId = insertTeacher.executeAndReturnKey(parameters);
         teacher.setId(newId.longValue());
         return new Teacher(newId.longValue(), teacher.getFaculty(), teacher.getLectures());
     }

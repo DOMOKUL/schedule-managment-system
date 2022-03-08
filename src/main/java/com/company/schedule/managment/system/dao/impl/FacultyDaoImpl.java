@@ -28,11 +28,11 @@ public class FacultyDaoImpl implements FacultyDao {
 
     @Override
     public Faculty create(Faculty faculty) {
-        SimpleJdbcInsert insertAudience = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("faculties")
+        SimpleJdbcInsert insertFaculty = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("faculties")
                 .usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", faculty.getName());
-        Number newId = insertAudience.executeAndReturnKey(parameters);
+        Number newId = insertFaculty.executeAndReturnKey(parameters);
         faculty.setId(newId.longValue());
         return new Faculty(newId.longValue(), faculty.getName(), null, null);
     }

@@ -28,11 +28,11 @@ public class SubjectDaoImpl implements SubjectDao {
 
     @Override
     public Subject create(Subject subject) {
-        SimpleJdbcInsert insertLesson = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("subjects")
+        SimpleJdbcInsert insertSubject = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("subjects")
                 .usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", subject.getName());
-        Number newId = insertLesson.executeAndReturnKey(parameters);
+        Number newId = insertSubject.executeAndReturnKey(parameters);
         subject.setId(newId.longValue());
         return new Subject(newId.longValue(), subject.getName());
     }

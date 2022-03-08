@@ -28,7 +28,7 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public Student create(Student student) {
-        SimpleJdbcInsert insertLesson = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("students")
+        SimpleJdbcInsert insertStudent = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("students")
                 .usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("first_name", student.getFirstName());
@@ -37,7 +37,7 @@ public class StudentDaoImpl implements StudentDao {
         parameters.put("course_number", student.getCourseNumber());
         parameters.put("faculty_id", student.getFaculty().getId());
         parameters.put("group_id", student.getGroup().getId());
-        Number newId = insertLesson.executeAndReturnKey(parameters);
+        Number newId = insertStudent.executeAndReturnKey(parameters);
         student.setId(newId.longValue());
         return new Student(newId.longValue(), student.getCourseNumber(), student.getGroup(), student.getFaculty());
     }

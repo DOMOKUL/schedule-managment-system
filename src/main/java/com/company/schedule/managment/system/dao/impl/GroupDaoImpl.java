@@ -28,12 +28,12 @@ public class GroupDaoImpl implements GroupDao {
 
     @Override
     public Group create(Group group) {
-        SimpleJdbcInsert insertAudience = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("groups")
+        SimpleJdbcInsert insertGroup = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("groups")
                 .usingGeneratedKeyColumns("id");
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", group.getName());
         parameters.put("faculty_id", group.getFaculty().getId());
-        Number newId = insertAudience.executeAndReturnKey(parameters);
+        Number newId = insertGroup.executeAndReturnKey(parameters);
         group.setId(newId.longValue());
         return new Group(newId.longValue(), group.getName(), group.getFaculty(), group.getStudents(), group.getLectures());
     }
