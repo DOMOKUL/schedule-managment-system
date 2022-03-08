@@ -1,34 +1,15 @@
 package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.model.Audience;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class AudienceDaoImplTest {
+class AudienceDaoImplTest extends BaseIntegrationTest {
 
-    @Container
-    private final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
-            .withInitScript("sql/fill-table.sql");
-    private AudienceDaoImpl audienceDao;
-
-    @BeforeEach
-    void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(container.getJdbcUrl());
-        dataSource.setUsername(container.getUsername());
-        dataSource.setPassword(container.getPassword());
-        audienceDao = new AudienceDaoImpl(dataSource);
-        container.start();
-    }
+    private final AudienceDaoImpl audienceDao = new AudienceDaoImpl(DATA_SOURCE);
 
     @Test
     void create_shouldReturnCorrectIdAudience_whenInputCorrectData() {
