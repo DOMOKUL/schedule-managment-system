@@ -5,6 +5,8 @@ import com.company.schedule.managment.system.dao.exception.DaoException;
 import com.company.schedule.managment.system.model.Student;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -28,29 +30,46 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public Student create(Student student) {
-        SimpleJdbcInsert insertStudent = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("students")
-                .usingGeneratedKeyColumns("id");
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("first_name", student.getFirstName());
-        parameters.put("last_name", student.getLastName());
-        parameters.put("middle_name", student.getMiddleName());
-        parameters.put("course_number", student.getCourseNumber());
-        parameters.put("faculty_id", student.getFaculty().getId());
-        parameters.put("group_id", student.getGroup().getId());
-        Number newId = insertStudent.executeAndReturnKey(parameters);
-        student.setId(newId.longValue());
-        return new Student(newId.longValue(), student.getCourseNumber(), student.getGroup(), student.getFaculty());
+        try {
+
+            SimpleJdbcInsert insertStudent = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("students")
+                    .usingGeneratedKeyColumns("id");
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("first_name", student.getFirstName());
+            parameters.put("last_name", student.getLastName());
+            parameters.put("middle_name", student.getMiddleName());
+            parameters.put("course_number", student.getCourseNumber());
+            parameters.put("faculty_id", student.getFaculty().getId());
+            parameters.put("group_id", student.getGroup().getId());
+            Number newId = insertStudent.executeAndReturnKey(parameters);
+            student.setId(newId.longValue());
+            return new Student(newId.longValue(), student.getCourseNumber(), student.getGroup(), student.getFaculty());
+        } catch (Exception cause) {
+            throw new DaoException("Student with id: " + student.getId() + " already exist", cause);
+        }
     }
 
     @Override
     public Student findById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM students WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Student.class));
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM students WHERE id=?", new Object[]{id},
+                    new BeanPropertyRowMapper<>(Student.class));
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Student with id: " + id + " doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override
     public List<Student> findAll() {
-        return jdbcTemplate.query("SELECT * FROM students", new BeanPropertyRowMapper<>(Student.class));
+        try {
+            return jdbcTemplate.query("SELECT * FROM students", new BeanPropertyRowMapper<>(Student.class));
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Student doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override

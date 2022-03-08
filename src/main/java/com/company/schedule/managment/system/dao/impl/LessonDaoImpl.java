@@ -6,6 +6,8 @@ import com.company.schedule.managment.system.dao.mapper.LessonMapper;
 import com.company.schedule.managment.system.model.Lesson;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -28,27 +30,43 @@ public class LessonDaoImpl implements LessonDao {
 
     @Override
     public Lesson create(Lesson lesson) {
-        SimpleJdbcInsert insertLesson = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("lessons")
-                .usingGeneratedKeyColumns("id");
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("duration", lesson.getDuration().toMillis());
-        parameters.put("number", lesson.getNumber());
-        parameters.put("start_time", lesson.getStartTime());
-        parameters.put("subject_id", lesson.getSubject().getId());
-        Number newId = insertLesson.executeAndReturnKey(parameters);
-        lesson.setId(newId.longValue());
-        return new Lesson(newId.longValue(), lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(),
-                lesson.getSubject(), lesson.getLectures());
+        try {
+            SimpleJdbcInsert insertLesson = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("lessons")
+                    .usingGeneratedKeyColumns("id");
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("duration", lesson.getDuration().toMillis());
+            parameters.put("number", lesson.getNumber());
+            parameters.put("start_time", lesson.getStartTime());
+            parameters.put("subject_id", lesson.getSubject().getId());
+            Number newId = insertLesson.executeAndReturnKey(parameters);
+            lesson.setId(newId.longValue());
+            return new Lesson(newId.longValue(), lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(),
+                    lesson.getSubject(), lesson.getLectures());
+        } catch (Exception cause) {
+            throw new DaoException("Lesson with id: " + lesson.getId() + " already exist", cause);
+        }
     }
 
     @Override
     public Lesson findById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM lessons WHERE id=?", new Object[]{id}, new LessonMapper());
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM lessons WHERE id=?", new Object[]{id}, new LessonMapper());
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Lesson with id: " + id + " doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override
     public List<Lesson> findAll() {
-        return jdbcTemplate.query("SELECT * FROM lessons", new LessonMapper());
+        try {
+            return jdbcTemplate.query("SELECT * FROM lessons", new LessonMapper());
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Lessons doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override

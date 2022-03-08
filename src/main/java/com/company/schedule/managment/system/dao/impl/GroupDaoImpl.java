@@ -5,6 +5,8 @@ import com.company.schedule.managment.system.dao.exception.DaoException;
 import com.company.schedule.managment.system.model.Group;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -28,31 +30,47 @@ public class GroupDaoImpl implements GroupDao {
 
     @Override
     public Group create(Group group) {
-        SimpleJdbcInsert insertGroup = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("groups")
-                .usingGeneratedKeyColumns("id");
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", group.getName());
-        parameters.put("faculty_id", group.getFaculty().getId());
-        Number newId = insertGroup.executeAndReturnKey(parameters);
-        group.setId(newId.longValue());
-        return new Group(newId.longValue(), group.getName(), group.getFaculty(), group.getStudents(), group.getLectures());
+        try {
+            SimpleJdbcInsert insertGroup = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("groups")
+                    .usingGeneratedKeyColumns("id");
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("name", group.getName());
+            parameters.put("faculty_id", group.getFaculty().getId());
+            Number newId = insertGroup.executeAndReturnKey(parameters);
+            group.setId(newId.longValue());
+            return new Group(newId.longValue(), group.getName(), group.getFaculty(), group.getStudents(), group.getLectures());
+        } catch (Exception cause) {
+            throw new DaoException("Group with id: " + group.getId() + " already exist", cause);
+        }
     }
 
     @Override
     public Group findById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM groups WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Group.class));
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM groups WHERE id=?", new Object[]{id},
+                    new BeanPropertyRowMapper<>(Group.class));
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Group with id: " + id + " doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override
     public List<Group> findAll() {
-        return jdbcTemplate.query("SELECT * FROM groups", new BeanPropertyRowMapper<>(Group.class));
+        try {
+            return jdbcTemplate.query("SELECT * FROM groups", new BeanPropertyRowMapper<>(Group.class));
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Groups doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override
     public boolean update(Group group) {
         var updateRowCount = jdbcTemplate.update("UPDATE groups SET name=?, faculty_id=? WHERE id=?",
-                group.getName(), group.getFaculty(), group.getId());
+                group.getName(), group.getFaculty().getId(), group.getId());
         if (updateRowCount != 0) {
             return true;
         }
