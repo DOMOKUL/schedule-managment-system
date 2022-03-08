@@ -132,12 +132,4 @@ values (1, 'Alex', 'Alexandrov', 'Alexandrovich', 1);
 insert into lectures (id, date, number, audience_id, group_id, lesson_id, teacher_id)
 values (1, '1988-09-29', 1, 1, 1, 1, 1);
 
-select setval('audience_id_sequence', (SELECT MAX(id) FROM audiences));
-select setval('faculty_id_sequence', (SELECT MAX(id) FROM faculties));
-select setval('group_id_sequence', (SELECT MAX(id) FROM groups));
-select setval('lecture_id_sequence', (SELECT MAX(id) FROM lectures));
-select setval('lesson_id_sequence', (SELECT MAX(id) FROM lessons));
-select setval('student_id_sequence', (SELECT MAX(id) FROM students));
-select setval('subject_id_sequence', (SELECT MAX(id) FROM subjects));
-select setval('teacher_id_sequence', (SELECT MAX(id) FROM teachers));
 
