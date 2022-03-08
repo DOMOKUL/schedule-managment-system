@@ -2,7 +2,7 @@ package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.FacultyDao;
 import com.company.schedule.managment.system.dao.exception.DaoException;
-import com.company.schedule.managment.system.models.Faculty;
+import com.company.schedule.managment.system.model.Faculty;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -45,7 +45,7 @@ public class FacultyDaoImpl implements FacultyDao {
 
     @Override
     public List<Faculty> findAll() {
-        return jdbcTemplate.query("SELECT * From faculties", new BeanPropertyRowMapper<>(Faculty.class));
+        return jdbcTemplate.query("SELECT * FROM faculties", new BeanPropertyRowMapper<>(Faculty.class));
     }
 
     @Override

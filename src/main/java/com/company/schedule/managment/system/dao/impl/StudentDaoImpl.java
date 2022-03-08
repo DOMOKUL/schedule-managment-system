@@ -2,7 +2,7 @@ package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.StudentDao;
 import com.company.schedule.managment.system.dao.exception.DaoException;
-import com.company.schedule.managment.system.models.Student;
+import com.company.schedule.managment.system.model.Student;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -50,7 +50,7 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public List<Student> findAll() {
-        return jdbcTemplate.query("SELECT * From students", new BeanPropertyRowMapper<>(Student.class));
+        return jdbcTemplate.query("SELECT * FROM students", new BeanPropertyRowMapper<>(Student.class));
     }
 
     @Override

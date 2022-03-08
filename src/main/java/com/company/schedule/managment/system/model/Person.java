@@ -1,4 +1,4 @@
-package com.company.schedule.managment.system.models;
+package com.company.schedule.managment.system.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
 package com.company.schedule.managment.system.dao;
 
-import com.company.schedule.managment.system.models.Teacher;
+import com.company.schedule.managment.system.model.Teacher;
 
 public interface TeacherDao extends CrudDao<Teacher> {
 }

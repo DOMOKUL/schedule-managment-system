@@ -2,7 +2,7 @@ package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.GroupDao;
 import com.company.schedule.managment.system.dao.exception.DaoException;
-import com.company.schedule.managment.system.models.Group;
+import com.company.schedule.managment.system.model.Group;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -46,7 +46,7 @@ public class GroupDaoImpl implements GroupDao {
 
     @Override
     public List<Group> findAll() {
-        return jdbcTemplate.query("SELECT * From groups", new BeanPropertyRowMapper<>(Group.class));
+        return jdbcTemplate.query("SELECT * FROM groups", new BeanPropertyRowMapper<>(Group.class));
     }
 
     @Override

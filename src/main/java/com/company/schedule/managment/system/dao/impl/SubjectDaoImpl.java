@@ -2,7 +2,7 @@ package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.SubjectDao;
 import com.company.schedule.managment.system.dao.exception.DaoException;
-import com.company.schedule.managment.system.models.Subject;
+import com.company.schedule.managment.system.model.Subject;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -45,7 +45,7 @@ public class SubjectDaoImpl implements SubjectDao {
 
     @Override
     public List<Subject> findAll() {
-        return jdbcTemplate.query("SELECT * From subjects", new BeanPropertyRowMapper<>(Subject.class));
+        return jdbcTemplate.query("SELECT * FROM subjects", new BeanPropertyRowMapper<>(Subject.class));
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.company.schedule.managment.system.dao.impl;
 
-import com.company.schedule.managment.system.models.Faculty;
-import com.company.schedule.managment.system.models.Group;
-import com.company.schedule.managment.system.models.Student;
+import com.company.schedule.managment.system.model.Faculty;
+import com.company.schedule.managment.system.model.Group;
+import com.company.schedule.managment.system.model.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -21,7 +21,7 @@ class StudentDaoImplTest {
             new Group(1L, "BABO-02-12", null, null, null),
             new Faculty(1L, "IFGPA", null, null));
 
-    private static final Student TEST_STUDENT_WITH_ID = new Student(1L,1,
+    private static final Student TEST_STUDENT_WITH_ID = new Student(1L, 1,
             new Group(1L, "BABO-02-12", null, null, null),
             new Faculty(1L, "IFGPA", null, null));
 

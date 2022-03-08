@@ -1,7 +1,7 @@
-package com.company.schedule.managment.system.dao.mappers;
+package com.company.schedule.managment.system.dao.mapper;
 
-import com.company.schedule.managment.system.models.Lesson;
-import com.company.schedule.managment.system.models.Subject;
+import com.company.schedule.managment.system.model.Lesson;
+import com.company.schedule.managment.system.model.Subject;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

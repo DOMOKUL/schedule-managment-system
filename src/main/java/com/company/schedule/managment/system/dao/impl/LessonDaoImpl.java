@@ -2,8 +2,8 @@ package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.LessonDao;
 import com.company.schedule.managment.system.dao.exception.DaoException;
-import com.company.schedule.managment.system.dao.mappers.LessonMapper;
-import com.company.schedule.managment.system.models.Lesson;
+import com.company.schedule.managment.system.dao.mapper.LessonMapper;
+import com.company.schedule.managment.system.model.Lesson;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

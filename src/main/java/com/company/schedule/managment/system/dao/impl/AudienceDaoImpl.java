@@ -2,7 +2,7 @@ package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.AudienceDao;
 import com.company.schedule.managment.system.dao.exception.DaoException;
-import com.company.schedule.managment.system.models.Audience;
+import com.company.schedule.managment.system.model.Audience;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -46,7 +46,7 @@ public class AudienceDaoImpl implements AudienceDao {
 
     @Override
     public List<Audience> findAll() {
-        return jdbcTemplate.query("SELECT * From audiences", new BeanPropertyRowMapper<>(Audience.class));
+        return jdbcTemplate.query("SELECT * FROM audiences", new BeanPropertyRowMapper<>(Audience.class));
     }
 
     @Override

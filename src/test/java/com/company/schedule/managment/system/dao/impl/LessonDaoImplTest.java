@@ -1,7 +1,7 @@
 package com.company.schedule.managment.system.dao.impl;
 
-import com.company.schedule.managment.system.models.Lesson;
-import com.company.schedule.managment.system.models.Subject;
+import com.company.schedule.managment.system.model.Lesson;
+import com.company.schedule.managment.system.model.Subject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
