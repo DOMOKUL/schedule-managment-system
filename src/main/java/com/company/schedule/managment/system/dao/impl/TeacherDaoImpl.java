@@ -53,8 +53,7 @@ public class TeacherDaoImpl implements TeacherDao {
 
     @Override
     public boolean update(Teacher teacher) {
-        var updateRowCount = jdbcTemplate.update("UPDATE teachers SET first_name=?, last_name=?," +
-                        " middle_name=?, faculty_id=? WHERE id=?",
+        var updateRowCount = jdbcTemplate.update("UPDATE teachers SET first_name=?, last_name=?, middle_name=?, faculty_id=? WHERE id=?",
                 teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(),
                 teacher.getFaculty().getId(), teacher.getId());
         if (updateRowCount != 0) {
