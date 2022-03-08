@@ -8,12 +8,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "teachers")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
 public class Teacher extends Person {
 
     @Id

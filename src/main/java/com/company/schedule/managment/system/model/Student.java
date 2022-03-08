@@ -6,12 +6,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "students")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
 public class Student extends Person {
 
     @Id
