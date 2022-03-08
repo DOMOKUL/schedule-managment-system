@@ -8,7 +8,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
 class AudienceDaoImplTest extends BaseIntegrationTest {
 
     private final AudienceDaoImpl audienceDao = new AudienceDaoImpl(DATA_SOURCE);
