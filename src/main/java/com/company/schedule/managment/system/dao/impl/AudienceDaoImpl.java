@@ -1,35 +1,47 @@
 package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.AudienceDao;
+import com.company.schedule.managment.system.dao.exception.DaoException;
 import com.company.schedule.managment.system.models.Audience;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class AudienceDaoImpl implements AudienceDao {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public AudienceDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public AudienceDaoImpl(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public Audience create(Audience audience) {
-        jdbcTemplate.update("INSERT INTO audiences VALUES (?,?,?)",
-                audience.getId(), audience.getCapacity(), audience.getNumber());
-        return audience;
+        SimpleJdbcInsert insertAudience = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("audiences")
+                .usingGeneratedKeyColumns("id");
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("capacity", audience.getCapacity());
+        parameters.put("number", audience.getNumber());
+        Number newId = insertAudience.executeAndReturnKey(parameters);
+        audience.setId(newId.longValue());
+        return new Audience(newId.longValue(), audience.getNumber(), audience.getCapacity());
     }
 
     @Override
     public Audience findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM audiences WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Audience.class)).stream().findAny().orElse(null);
+        return jdbcTemplate.queryForObject("SELECT * FROM audiences WHERE id=?", new Object[]{id},
+                new BeanPropertyRowMapper<>(Audience.class));
     }
 
     @Override
@@ -44,15 +56,15 @@ public class AudienceDaoImpl implements AudienceDao {
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Update isn't available");
+        throw new DaoException("Update isn't available");
     }
 
     @Override
     public boolean delete(Long id) {
-        var updateRowCount = jdbcTemplate.update("DELETE FROM audiences WHERE id=?", id);
+        var updateRowCount = jdbcTemplate.update("DELETE FROM audiences WHERE id=? ", id);
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Delete isn't available");
+        throw new DaoException("Delete isn't available");
     }
 }

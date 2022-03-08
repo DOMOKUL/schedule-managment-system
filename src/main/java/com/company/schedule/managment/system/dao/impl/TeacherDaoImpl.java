@@ -1,34 +1,49 @@
 package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.TeacherDao;
+import com.company.schedule.managment.system.dao.exception.DaoException;
 import com.company.schedule.managment.system.models.Teacher;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class TeacherDaoImpl implements TeacherDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public TeacherDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    @Autowired
+    public TeacherDaoImpl(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public Teacher create(Teacher teacher) {
-        jdbcTemplate.update("INSERT INTO teachers VALUES (?,?,?,?,?)",
-                teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(),
-                teacher.getFaculty());
-        return teacher;
+        SimpleJdbcInsert insertLesson = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("teachers")
+                .usingGeneratedKeyColumns("id");
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("first_name", teacher.getFirstName());
+        parameters.put("last_name", teacher.getLastName());
+        parameters.put("middle_name", teacher.getMiddleName());
+        parameters.put("faculty_id", teacher.getFaculty().getId());
+        Number newId = insertLesson.executeAndReturnKey(parameters);
+        teacher.setId(newId.longValue());
+        return new Teacher(newId.longValue(), teacher.getFaculty(), teacher.getLectures());
     }
 
     @Override
     public Teacher findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM teachers WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Teacher.class)).stream().findAny().orElse(null);
+        return jdbcTemplate.queryForObject("SELECT * FROM teachers WHERE id=?", new Object[]{id},
+                new BeanPropertyRowMapper<>(Teacher.class));
     }
 
     @Override
@@ -41,11 +56,11 @@ public class TeacherDaoImpl implements TeacherDao {
         var updateRowCount = jdbcTemplate.update("UPDATE teachers SET first_name=?, last_name=?," +
                         " middle_name=?, faculty_id=? WHERE id=?",
                 teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(),
-                teacher.getFaculty());
+                teacher.getFaculty().getId(), teacher.getId());
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Update isn't available");
+        throw new DaoException("Update isn't available");
     }
 
     @Override
@@ -54,6 +69,6 @@ public class TeacherDaoImpl implements TeacherDao {
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Delete isn't available");
+        throw new DaoException("Delete isn't available");
     }
 }

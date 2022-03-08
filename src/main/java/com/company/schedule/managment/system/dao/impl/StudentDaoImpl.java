@@ -1,34 +1,51 @@
 package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.StudentDao;
+import com.company.schedule.managment.system.dao.exception.DaoException;
 import com.company.schedule.managment.system.models.Student;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class StudentDaoImpl implements StudentDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public StudentDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    @Autowired
+    public StudentDaoImpl(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public Student create(Student student) {
-        jdbcTemplate.update("INSERT INTO students VALUES (?,?,?,?,?,?,?)",
-                student.getId(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                student.getCourseNumber(), student.getFaculty(), student.getGroup());
-        return student;
+        SimpleJdbcInsert insertLesson = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("students")
+                .usingGeneratedKeyColumns("id");
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("first_name", student.getFirstName());
+        parameters.put("last_name", student.getLastName());
+        parameters.put("middle_name", student.getMiddleName());
+        parameters.put("course_number", student.getCourseNumber());
+        parameters.put("faculty_id", student.getFaculty().getId());
+        parameters.put("group_id", student.getGroup().getId());
+        Number newId = insertLesson.executeAndReturnKey(parameters);
+        student.setId(newId.longValue());
+        return new Student(newId.longValue(), student.getCourseNumber(), student.getGroup(), student.getFaculty());
     }
 
     @Override
     public Student findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM students WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Student.class)).stream().findAny().orElse(null);
+        return jdbcTemplate.queryForObject("SELECT * FROM students WHERE id=?", new Object[]{id},
+                new BeanPropertyRowMapper<>(Student.class));
     }
 
     @Override
@@ -41,11 +58,11 @@ public class StudentDaoImpl implements StudentDao {
         var updateRowCount = jdbcTemplate.update("UPDATE students SET course_number=?, first_name=?, last_name=?," +
                         " middle_name=?, faculty_id=?, group_id=? WHERE id=?",
                 student.getCourseNumber(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                student.getFaculty(), student.getGroup(), student.getId());
+                student.getFaculty().getId(), student.getGroup().getId(), student.getId());
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Update isn't available");
+        throw new DaoException("Update isn't available");
     }
 
     @Override
@@ -54,6 +71,6 @@ public class StudentDaoImpl implements StudentDao {
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Delete isn't available");
+        throw new DaoException("Delete isn't available");
     }
 }

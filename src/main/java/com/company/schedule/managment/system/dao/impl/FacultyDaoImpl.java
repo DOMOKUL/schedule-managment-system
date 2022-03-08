@@ -1,35 +1,46 @@
 package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.FacultyDao;
+import com.company.schedule.managment.system.dao.exception.DaoException;
 import com.company.schedule.managment.system.models.Faculty;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class FacultyDaoImpl implements FacultyDao {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public FacultyDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public FacultyDaoImpl(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public Faculty create(Faculty faculty) {
-        jdbcTemplate.update("INSERT INTO faculties VALUES (?,?)",
-                faculty.getId(), faculty.getName());
-        return faculty;
+        SimpleJdbcInsert insertAudience = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("faculties")
+                .usingGeneratedKeyColumns("id");
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", faculty.getName());
+        Number newId = insertAudience.executeAndReturnKey(parameters);
+        faculty.setId(newId.longValue());
+        return new Faculty(newId.longValue(), faculty.getName(), null, null);
     }
 
     @Override
     public Faculty findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM faculties WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Faculty.class)).stream().findAny().orElse(null);
+        return jdbcTemplate.queryForObject("SELECT * FROM faculties WHERE id=?", new Object[]{id},
+                new BeanPropertyRowMapper<>(Faculty.class));
     }
 
     @Override
@@ -44,7 +55,7 @@ public class FacultyDaoImpl implements FacultyDao {
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Update isn't available");
+        throw new DaoException("Update isn't available");
     }
 
     @Override
@@ -53,6 +64,6 @@ public class FacultyDaoImpl implements FacultyDao {
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Delete isn't available");
+        throw new DaoException("Delete isn't available");
     }
 }

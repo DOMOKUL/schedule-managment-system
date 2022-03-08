@@ -1,32 +1,46 @@
 package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.SubjectDao;
+import com.company.schedule.managment.system.dao.exception.DaoException;
 import com.company.schedule.managment.system.models.Subject;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class SubjectDaoImpl implements SubjectDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public SubjectDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    @Autowired
+    public SubjectDaoImpl(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public Subject create(Subject subject) {
-        jdbcTemplate.update("INSERT INTO subjects VALUES (?,?)", subject.getId(), subject.getName());
-        return subject;
+        SimpleJdbcInsert insertLesson = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("subjects")
+                .usingGeneratedKeyColumns("id");
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", subject.getName());
+        Number newId = insertLesson.executeAndReturnKey(parameters);
+        subject.setId(newId.longValue());
+        return new Subject(newId.longValue(), subject.getName());
     }
 
     @Override
     public Subject findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM subjects WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Subject.class)).stream().findAny().orElse(null);
+        return jdbcTemplate.queryForObject("SELECT * FROM subjects WHERE id=?", new Object[]{id},
+                new BeanPropertyRowMapper<>(Subject.class));
     }
 
     @Override
@@ -41,7 +55,7 @@ public class SubjectDaoImpl implements SubjectDao {
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Update isn't available");
+        throw new DaoException("Update isn't available");
     }
 
     @Override
@@ -50,6 +64,6 @@ public class SubjectDaoImpl implements SubjectDao {
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Delete isn't available");
+        throw new DaoException("Delete isn't available");
     }
 }

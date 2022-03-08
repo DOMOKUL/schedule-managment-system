@@ -1,33 +1,47 @@
 package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.GroupDao;
+import com.company.schedule.managment.system.dao.exception.DaoException;
 import com.company.schedule.managment.system.models.Group;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Component
+@Repository
+@AllArgsConstructor
 public class GroupDaoImpl implements GroupDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public GroupDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    @Autowired
+    public GroupDaoImpl(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public Group create(Group group) {
-        jdbcTemplate.update("INSERT INTO groups VALUES (?,?,?)",
-                group.getId(), group.getName(), group.getFaculty());
-        return group;
+        SimpleJdbcInsert insertAudience = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("groups")
+                .usingGeneratedKeyColumns("id");
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("name", group.getName());
+        parameters.put("faculty_id", group.getFaculty().getId());
+        Number newId = insertAudience.executeAndReturnKey(parameters);
+        group.setId(newId.longValue());
+        return new Group(newId.longValue(), group.getName(), group.getFaculty(), group.getStudents(), group.getLectures());
     }
 
     @Override
     public Group findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM groups WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Group.class)).stream().findAny().orElse(null);
+        return jdbcTemplate.queryForObject("SELECT * FROM groups WHERE id=?", new Object[]{id},
+                new BeanPropertyRowMapper<>(Group.class));
     }
 
     @Override
@@ -42,7 +56,7 @@ public class GroupDaoImpl implements GroupDao {
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Update isn't available");
+        throw new DaoException("Update isn't available");
     }
 
     @Override
@@ -51,6 +65,6 @@ public class GroupDaoImpl implements GroupDao {
         if (updateRowCount != 0) {
             return true;
         }
-        throw new RuntimeException("Delete isn't available");
+        throw new DaoException("Delete isn't available");
     }
 }
