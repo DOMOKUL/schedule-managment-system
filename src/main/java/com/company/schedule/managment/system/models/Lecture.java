@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 @Table(name = "lectures")
@@ -44,4 +44,5 @@ public class Lecture {
         this.lesson = lesson;
         this.teacher = teacher;
     }
+
 }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -24,7 +24,7 @@ public class Lesson {
             generator = "lesson_sequence")
     private Long id;
     private Integer number;
-    private LocalDateTime startTime;
+    private LocalTime startTime;
     private Duration duration;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", nullable = false)
@@ -32,7 +32,7 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Lecture> lectures;
 
-    public Lesson(Integer number, LocalDateTime startTime, Duration duration, Subject subject, List<Lecture> lectures) {
+    public Lesson(Duration duration, Integer number, LocalTime startTime, Subject subject, List<Lecture> lectures) {
         this.number = number;
         this.startTime = startTime;
         this.duration = duration;
