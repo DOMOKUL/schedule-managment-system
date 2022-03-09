@@ -5,6 +5,7 @@ import com.company.schedule.managment.system.dao.exception.DaoException;
 import com.company.schedule.managment.system.model.Audience;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,7 +38,7 @@ public class AudienceDaoImpl implements AudienceDao {
             Number newId = insertAudience.executeAndReturnKey(parameters);
             audience.setId(newId.longValue());
             return new Audience(newId.longValue(), audience.getNumber(), audience.getCapacity());
-        } catch (Exception cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Audience with id: " + audience.getId() + " already exist", cause);
         }
     }
