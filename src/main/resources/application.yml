@@ -1,21 +1,13 @@
 server:
   port : 8081
 
-spring:
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-        show-sql: true
-
-hibernate:
-  hbm2ddl:
-    auto: create-drop
-  dialect: org.hibernate.dialect.H2Dialect
-
+db:
+  entity:
+    package: com.company.schedule.management.system.model
 
 datasource:
   username: postgres
   password: postgres
   url: jdbc:postgresql://0.0.0.0:5532/postgres
   driver-class-name: org.postgresql.Driver
+

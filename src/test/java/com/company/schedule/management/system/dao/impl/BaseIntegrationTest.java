@@ -1,18 +1,12 @@
 package com.company.schedule.management.system.dao.impl;
 
-import com.company.schedule.management.system.config.HibernateConfiguration;
-import org.hibernate.SessionFactory;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.Properties;
 
 @Testcontainers
 @Transactional

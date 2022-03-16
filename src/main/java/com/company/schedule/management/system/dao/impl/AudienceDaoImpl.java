@@ -3,18 +3,25 @@ package com.company.schedule.management.system.dao.impl;
 import com.company.schedule.management.system.dao.AudienceDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Audience;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.internal.SessionFactoryImpl;
+import org.hibernate.internal.SessionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.InvalidResultSetAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +31,9 @@ import java.util.Map;
 public class AudienceDaoImpl implements AudienceDao {
 
     private final JdbcTemplate jdbcTemplate;
-    @Autowired
-    private SessionFactory sessionFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     public AudienceDaoImpl(DataSource dataSource) {
@@ -51,7 +59,15 @@ public class AudienceDaoImpl implements AudienceDao {
     @Override
     public Audience findById(Long id) {
         try {
-            return getCurrentSession().find(Audience.class,id);
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Audience> cq = criteriaBuilder.createQuery(Audience.class);
+
+            Root<Audience> root = cq.from(Audience.class);
+            Predicate audienceIdPredicate = criteriaBuilder.equal(root.get("id"), id);
+            cq.where(audienceIdPredicate);
+
+            TypedQuery<Audience> query = entityManager.createQuery(cq);
+            return query.getSingleResult();
         } catch (InvalidResultSetAccessException cause) {
             throw new DaoException("Audience with id: " + id + " doesn't exist", cause);
         } catch (DataAccessException cause) {
@@ -61,44 +77,20 @@ public class AudienceDaoImpl implements AudienceDao {
 
     @Override
     public List<Audience> findAll() {
-        Session session = getCurrentSession();
+
         List<Audience> audiences = null;
-        try {
-            session.beginTransaction();
 
-            Criteria criteria = session.createCriteria(Audience.class);
-
-            audiences = criteria.list();
-
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
         return audiences;
     }
 
     @Override
     public boolean update(Audience audience) {
-        var updateRowCount = jdbcTemplate.update("UPDATE audiences SET capacity=?,number=? WHERE id=?",
-                audience.getCapacity(), audience.getNumber(), audience.getId());
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Update isn't available");
+        return true;
     }
 
     @Override
     public boolean delete(Long id) {
-        var updateRowCount = jdbcTemplate.update("DELETE FROM audiences WHERE id=? ", id);
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Delete isn't available");
+        return true;
     }
 
-    protected Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
-    }
 }
