@@ -2,7 +2,8 @@ package com.company.schedule.management.system.dao.impl;
 
 
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -12,18 +13,19 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Transactional
 public class BaseIntegrationTest {
 
-    public static final DriverManagerDataSource DATA_SOURCE = new DriverManagerDataSource();
-
     @Container
-    private final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
+    private static final PostgreSQLContainer<?> CONTAINER = new PostgreSQLContainer<>("postgres:13.3")
             .withInitScript("sql/fill-table.sql");
+
+    @DynamicPropertySource
+    static void postgresqlProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", CONTAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", CONTAINER::getUsername);
+        registry.add("spring.datasource.password", CONTAINER::getPassword);
+    }
 
     @BeforeEach
     void setUp() {
-        DATA_SOURCE.setUrl(container.getJdbcUrl());
-        DATA_SOURCE.setUsername(container.getUsername());
-        DATA_SOURCE.setPassword(container.getPassword());
-
-        container.start();
+        CONTAINER.start();
     }
 }

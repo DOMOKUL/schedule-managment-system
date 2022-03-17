@@ -2,6 +2,9 @@ package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.model.Audience;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -10,17 +13,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Transactional
+@SpringBootTest
+@ActiveProfiles("test")
 class AudienceDaoImplTest extends BaseIntegrationTest {
 
-    private final AudienceDaoImpl audienceDao = new AudienceDaoImpl(DATA_SOURCE);
+    @Autowired
+    private AudienceDaoImpl audienceDao;
 
     @Test
     void create_shouldReturnCorrectIdAudience_whenInputCorrectData() {
-        Audience testAudience = new Audience(10, 10);
-        audienceDao.delete(audienceDao.findById(1L).getId());
-        audienceDao.create(testAudience);
-        Audience expected = new Audience(1L, 10, 10);
-        assertEquals(expected, audienceDao.findById(1L));
+        Audience actual = audienceDao.create(new Audience(1, 1));
+        Audience expected = new Audience(1L, 1, 1);
+        assertEquals(expected, actual);
     }
 
     @Test

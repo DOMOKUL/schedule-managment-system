@@ -83,36 +83,36 @@ create table teachers
 
 alter table if exists groups
     add constraint group_faculty_fk
-        foreign key (faculty_id) references faculties;
+    foreign key (faculty_id) references faculties;
 
 alter table if exists lectures
     add constraint lecture_audience_fk
-        foreign key (audience_id) references audiences;
+    foreign key (audience_id) references audiences;
 
 alter table if exists lectures
     add constraint lecture_group_fk
-        foreign key (group_id) references groups;
+    foreign key (group_id) references groups;
 
 alter table if exists lectures
     add constraint lecture_lesson_fk
-        foreign key (lesson_id) references lessons;
+    foreign key (lesson_id) references lessons;
 
 alter table if exists lectures
     add constraint lecture_teacher_fk
-        foreign key (teacher_id) references teachers;
+    foreign key (teacher_id) references teachers;
 
 alter table if exists lessons
     add constraint lesson_subject_fk
-        foreign key (subject_id) references subjects;
+    foreign key (subject_id) references subjects;
 
 alter table if exists students
     add constraint student_faculty_fk
-        foreign key (faculty_id) references faculties;
+    foreign key (faculty_id) references faculties;
 
 alter table if exists students
     add constraint student_group_fk
-        foreign key (group_id) references groups;
+    foreign key (group_id) references groups;
 
 alter table if exists teachers
     add constraint teacher_faculty_fk
-        foreign key (faculty_id) references faculties;
+    foreign key (faculty_id) references faculties;

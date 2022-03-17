@@ -18,7 +18,7 @@ class LessonDaoImplTest extends BaseIntegrationTest {
     private static final Lesson TEST_LESSON_WITH_ID = new Lesson(1L,
             1, LocalTime.of(13, 0, 0), Duration.ofMinutes(90L),
             new Subject(1L, "math"), null);
-    private final LessonDaoImpl lessonDao = new LessonDaoImpl(DATA_SOURCE);
+    private LessonDaoImpl lessonDao;
 
     @Test
     void create_shouldReturnCorrectLesson_whenInputCorrectData() {

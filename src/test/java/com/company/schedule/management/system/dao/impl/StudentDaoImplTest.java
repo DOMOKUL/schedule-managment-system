@@ -17,7 +17,7 @@ class StudentDaoImplTest extends BaseIntegrationTest {
     private static final Student TEST_STUDENT_WITH_ID = new Student(1L, 1,
             new Group(1L, "BABO-02-12", null, null, null),
             new Faculty(1L, "IFGPA", null, null));
-    private final StudentDaoImpl studentDao = new StudentDaoImpl(DATA_SOURCE);
+    private StudentDaoImpl studentDao;
 
     @Test
     void create_shouldReturnCorrectStudent_whenInputCorrectData() {

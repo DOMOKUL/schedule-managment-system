@@ -22,7 +22,7 @@ class GroupDaoImplTest extends BaseIntegrationTest {
             null,
             List.of(new Lecture(2L, 2, Date.valueOf("2019-01-26"),
                     null, null, null, null)));
-    private final GroupDaoImpl groupDao = new GroupDaoImpl(DATA_SOURCE);
+    private GroupDaoImpl groupDao;
 
     @Test
     void create_shouldReturnCorrectGroup_whenInputCorrectData() {

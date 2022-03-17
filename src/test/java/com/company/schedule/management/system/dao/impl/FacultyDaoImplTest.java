@@ -17,7 +17,7 @@ class FacultyDaoImplTest extends BaseIntegrationTest {
             List.of(new Lecture(3L, 2, Date.valueOf("2019-01-26"), null, null, null, null))));
     private static final List<Teacher> TEST_TEACHER_LIST = List.of(new Teacher(
             new Faculty(3L, "IKBSC", null, null), null));
-    private final FacultyDaoImpl facultyDao = new FacultyDaoImpl(DATA_SOURCE);
+    private FacultyDaoImpl facultyDao;
 
     @Test
     void create_shouldReturnCorrectFaculty_whenInputCorrectData() {

@@ -28,7 +28,7 @@ class LectureDaoImplTest extends BaseIntegrationTest {
             new Lesson(Duration.ofMinutes(90L), 1, LocalTime.of(13, 0, 0),
                     new Subject(1L, "math"), null),
             new Teacher(new Faculty(1L, "IKBSP", null, null), null));
-    private final LectureDaoImpl lectureDao = new LectureDaoImpl(DATA_SOURCE);
+    private LectureDaoImpl lectureDao;
 
     @Test
     void create_shouldReturnCorrectLecture_whenInputCorrectData() {

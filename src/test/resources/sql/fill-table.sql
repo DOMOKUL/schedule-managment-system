@@ -1,3 +1,12 @@
+create sequence audience_sequence start 1 increment 1;
+create sequence faculty_sequence start 1 increment 1;
+create sequence group_sequence start 1 increment 1;
+create sequence lecture_sequence start 1 increment 1;
+create sequence lesson_sequence start 1 increment 1;
+create sequence student_sequence start 1 increment 1;
+create sequence subject_sequence start 1 increment 1;
+create sequence teacher_sequence start 1 increment 1;
+
 drop table if exists audiences cascade;
 
 drop table if exists faculties cascade;
@@ -59,58 +68,71 @@ create table teachers
 );
 
 alter table audiences
-    add column id       bigserial not null primary key,
+    add column id bigserial not null primary key,
     add column number   integer,
     add column capacity integer;
 
 alter table subjects
-    add column id   bigserial not null primary key,
+    add column id bigserial not null primary key,
     add column name varchar(128);
 
 alter table faculties
-    add column id   bigserial not null primary key,
+    add column id bigserial not null primary key,
     ADD COLUMN name varchar(128);
 
 alter table lessons
-    add column id         bigserial not null primary key,
+    add column id bigserial not null primary key,
     add column number     integer,
     add column start_time time,
     add column duration   bigint,
-    add column subject_id bigint references subjects (id) on delete cascade;
+    add column subject_id bigint references subjects (id) on
+delete
+cascade;
 
 alter table groups
-    add column id         bigserial not null primary key,
+    add column id bigserial not null primary key,
     add column name       varchar(128),
-    add column faculty_id bigint references faculties (id) ON DELETE CASCADE;
+    add column faculty_id bigint references faculties (id) ON
+DELETE
+CASCADE;
 
 alter table students
-    add column id            bigserial not null primary key,
+    add column id bigserial not null primary key,
     add column first_name    varchar(128),
     add column last_name     varchar(128),
     add column middle_name   varchar(128),
     add column course_number integer,
-    add column group_id      bigint references groups (id) on delete cascade,
-    add column faculty_id    bigint references faculties (id) on delete cascade;
+    add column group_id      bigint references groups (id) on
+delete
+cascade,
+    add column faculty_id    bigint references faculties (id) on delete
+cascade;
 
 alter table teachers
-    add column id          bigserial not null primary key,
+    add column id bigserial not null primary key,
     add column first_name  varchar(128),
     add column last_name   varchar(128),
     add column middle_name varchar(128),
-    add column faculty_id  bigint references faculties (id) ON DELETE CASCADE;
+    add column faculty_id  bigint references faculties (id) ON
+DELETE
+CASCADE;
 
 alter table lectures
-    add column id          bigserial not null primary key,
+    add column id bigserial not null primary key,
     add column number      integer,
     add column date        timestamp,
-    add column audience_id bigint references audiences (id) on delete cascade,
-    add column group_id    bigint references groups (id) on delete cascade,
-    add column lesson_id   bigint references lessons (id) on delete cascade,
-    add column teacher_id  bigint references teachers (id) on delete cascade;
+    add column audience_id bigint references audiences (id) on
+delete
+cascade,
+    add column group_id    bigint references groups (id) on delete
+cascade,
+    add column lesson_id   bigint references lessons (id) on delete
+cascade,
+    add column teacher_id  bigint references teachers (id) on delete
+cascade;
 
-insert into audiences
-values (1, 1, 1);
-
+insert into audiences(id, number, capacity)
+values (10, 10, 10);
 insert into faculties (id, name)
 values (1, 'IKBSP');
 
@@ -130,6 +152,6 @@ insert into teachers (id, first_name, last_name, middle_name, faculty_id)
 values (1, 'Alex', 'Alexandrov', 'Alexandrovich', 1);
 
 insert into lectures (id, date, number, audience_id, group_id, lesson_id, teacher_id)
-values (1, '1988-09-29', 1, 1, 1, 1, 1);
+values (1, '1988-09-29', 1, 10, 1, 1, 1);
 
 
