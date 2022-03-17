@@ -11,7 +11,7 @@ class SubjectDaoImplTest extends BaseIntegrationTest {
 
     private static final Subject TEST_SUBJECT = new Subject("math");
     private static final Subject TEST_SUBJECT_WITH_ID = new Subject(1L, "math");
-    private final SubjectDaoImpl subjectDao = new SubjectDaoImpl(DATA_SOURCE);
+    private SubjectDaoImpl subjectDao;
 
     @Test
     void create_shouldReturnCorrectSubject_whenInputCorrectData() {

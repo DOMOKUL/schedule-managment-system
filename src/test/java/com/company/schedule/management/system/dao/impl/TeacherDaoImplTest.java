@@ -16,7 +16,7 @@ class TeacherDaoImplTest extends BaseIntegrationTest {
     private static final Teacher TEST_TEACHER = new Teacher(new Faculty(1L, "INASD", null, null), null);
     private static final Teacher TEST_TEACHER_WITH_ID = new Teacher(1L,
             new Faculty(1L, "INASD", null, null), null);
-    private final TeacherDaoImpl teacherDao = new TeacherDaoImpl(DATA_SOURCE);
+    private TeacherDaoImpl teacherDao;
 
     @Test
     void create_shouldReturnCorrectTeacher_whenInputCorrectData() {
