@@ -4,31 +4,37 @@ import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.model.Student;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Transactional
+@SpringBootTest
+@ActiveProfiles("test")
 class StudentDaoImplTest extends BaseIntegrationTest {
 
-    private static final Student TEST_STUDENT = new Student(1,
-            new Group(1L, "BABO-02-12", null, null, null),
-            new Faculty(1L, "IFGPA", null, null));
-    private static final Student TEST_STUDENT_WITH_ID = new Student(1L, 1,
-            new Group(1L, "BABO-02-12", null, null, null),
-            new Faculty(1L, "IFGPA", null, null));
+    private static final Faculty TEST_FACULTY = new Faculty(10L, null, null, null);
+    private static final Group TEST_GROUP = new Group(10L, null, TEST_FACULTY, null, null);
+    private static final Student TEST_STUDENT = new Student(10L, 1, TEST_GROUP);
+
+    @Autowired
     private StudentDaoImpl studentDao;
 
     @Test
     void create_shouldReturnCorrectStudent_whenInputCorrectData() {
-        studentDao.delete(1L);
-        assertEquals(1L, studentDao.create(TEST_STUDENT).getId());
+        Student expected = new Student(1L, 1, TEST_GROUP);
+        Student actual = studentDao.create(new Student(1L, 1, TEST_GROUP));
+        assertEquals(expected, actual);
     }
 
     @Test
     void findById_shouldReturnCorrectStudent_whenInputExistId() {
-        Student expected = new Student(1L, 1, null, null);
-        assertEquals(expected, studentDao.findById(1L));
+        assertEquals(TEST_STUDENT, studentDao.findById(10L));
     }
 
     @Test
@@ -39,13 +45,13 @@ class StudentDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateStudent_whenInputExistId() {
-        boolean actual = studentDao.update(TEST_STUDENT_WITH_ID);
+        boolean actual = studentDao.update(TEST_STUDENT);
         assertTrue(actual);
     }
 
     @Test
     void delete_shouldDeleteStudent_whenInputExistId() {
-        boolean actual = studentDao.delete(1L);
+        boolean actual = studentDao.deleteById(10L);
         assertTrue(actual);
     }
 }

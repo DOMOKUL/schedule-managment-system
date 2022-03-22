@@ -24,16 +24,16 @@ public class Lecture {
     private Integer number;
     private Date date;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "audience_id", nullable = false)
+    @JoinColumn(name = "audience_id")
     private Audience audience;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id")
     private Group group;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lesson_id", nullable = false)
+    @JoinColumn(name = "lesson_id")
     private Lesson lesson;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id", nullable = false)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     public Lecture(Integer number, Date date, Audience audience, Group group, Lesson lesson, Teacher teacher) {

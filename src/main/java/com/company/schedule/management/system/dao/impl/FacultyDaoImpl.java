@@ -1,87 +1,51 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.FacultyDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.InvalidResultSetAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
-import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class FacultyDaoImpl implements FacultyDao {
 
-    private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public FacultyDaoImpl(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    private final EntityManager entityManager;
 
     @Override
     public Faculty create(Faculty faculty) {
-        try {
-            SimpleJdbcInsert insertFaculty = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("faculties")
-                    .usingGeneratedKeyColumns("id");
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("name", faculty.getName());
-            Number newId = insertFaculty.executeAndReturnKey(parameters);
-            faculty.setId(newId.longValue());
-            return new Faculty(newId.longValue(), faculty.getName(), null, null);
-        } catch (Exception cause) {
-            throw new DaoException("Faculty with id: " + faculty.getId() + " already exist", cause);
-        }
+        entityManager.merge(faculty);
+        return faculty;
     }
-
 
     @Override
     public Faculty findById(Long id) {
-        try {
-            return jdbcTemplate.queryForObject("SELECT * FROM faculties WHERE id=?", new Object[]{id},
-                    new BeanPropertyRowMapper<>(Faculty.class));
-        } catch (InvalidResultSetAccessException cause) {
-            throw new DaoException("Faculty with id: " + id + " doesn't exist", cause);
-        } catch (DataAccessException cause) {
-            throw new DaoException("Trouble with access to database ", cause);
-        }
+        Query findByIdFacultyQuery = entityManager.createQuery("select f from Faculty f " +
+                "left join fetch f.groups where f.id = :id");
+        findByIdFacultyQuery.setParameter("id", id);
+        return (Faculty) findByIdFacultyQuery.getSingleResult();
     }
 
     @Override
     public List<Faculty> findAll() {
-        try {
-            return jdbcTemplate.query("SELECT * FROM faculties", new BeanPropertyRowMapper<>(Faculty.class));
-        } catch (InvalidResultSetAccessException cause) {
-            throw new DaoException("Faculties doesn't exist", cause);
-        } catch (DataAccessException cause) {
-            throw new DaoException("Trouble with access to database ", cause);
-        }
+        return entityManager.createQuery("select f from Faculty f").getResultList();
     }
-
 
     @Override
     public boolean update(Faculty faculty) {
-        var updateRowCount = jdbcTemplate.update("UPDATE faculties SET name=? WHERE id=?",
-                faculty.getName(), faculty.getId());
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Update isn't available");
+        Query updateFacultyQuery = entityManager.createQuery("update Faculty set name=:name where id =: id");
+        updateFacultyQuery.setParameter("name", faculty.getName());
+        updateFacultyQuery.setParameter("id", faculty.getId());
+        return updateFacultyQuery.executeUpdate() != 0;
     }
 
     @Override
-    public boolean delete(Long id) {
-        var updateRowCount = jdbcTemplate.update("DELETE FROM faculties WHERE id=?", id);
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Delete isn't available");
+    public boolean deleteById(Long id) {
+        Query deleteFacultyQuery = entityManager.createQuery("delete Faculty where id =: id");
+        deleteFacultyQuery.setParameter("id", id);
+        return deleteFacultyQuery.executeUpdate() != 0;
     }
 }

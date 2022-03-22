@@ -22,9 +22,9 @@ public class Faculty {
             generator = "faculty_sequence")
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
     private List<Group> groups;
-    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
     private List<Teacher> teachers;
 
     public Faculty(String name, List<Group> groups, List<Teacher> teachers) {

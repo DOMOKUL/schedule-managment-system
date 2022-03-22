@@ -23,11 +23,11 @@ public class Group {
     private Long id;
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "faculty_id", nullable = false)
+    @JoinColumn(name = "faculty_id")
     private Faculty faculty;
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<Student> students;
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<Lecture> lectures;
 
     public Group(String name, Faculty faculty, List<Student> students, List<Lecture> lectures) {

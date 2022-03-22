@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "subjects")
@@ -21,6 +22,8 @@ public class Subject {
             generator = "subject_sequence")
     private Long id;
     private String name;
+    @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
+    private List<Lesson> lessons;
 
     public Subject(String name) {
         this.name = name;

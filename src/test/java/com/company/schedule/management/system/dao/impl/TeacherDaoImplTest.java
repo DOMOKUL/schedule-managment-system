@@ -4,29 +4,36 @@ import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Teacher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-
+@Transactional
+@SpringBootTest
+@ActiveProfiles("test")
 class TeacherDaoImplTest extends BaseIntegrationTest {
 
-    private static final Teacher TEST_TEACHER = new Teacher(new Faculty(1L, "INASD", null, null), null);
-    private static final Teacher TEST_TEACHER_WITH_ID = new Teacher(1L,
-            new Faculty(1L, "INASD", null, null), null);
+    private static final Faculty TEST_FACULTY = new Faculty(10L, null, null, null);
+    private static final Teacher TEST_TEACHER = new Teacher(10L, TEST_FACULTY, null);
+
+    @Autowired
     private TeacherDaoImpl teacherDao;
 
     @Test
     void create_shouldReturnCorrectTeacher_whenInputCorrectData() {
-        teacherDao.delete(1L);
-        Assertions.assertEquals(1L, teacherDao.create(TEST_TEACHER).getId());
+        Teacher expected = new Teacher(1L, TEST_FACULTY, null);
+        Teacher actual = teacherDao.create(new Teacher(1L, TEST_FACULTY, null));
+        assertEquals(expected, actual);
     }
 
     @Test
     void findById_shouldReturnCorrectTeacher_whenInputExistId() {
-        Assertions.assertEquals(new Teacher(1L, null, null), teacherDao.findById(1L));
+        Assertions.assertEquals(TEST_TEACHER, teacherDao.findById(10L));
     }
 
     @Test
@@ -37,13 +44,13 @@ class TeacherDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateTeacher_whenInputExistId() {
-        boolean actual = teacherDao.update(TEST_TEACHER_WITH_ID);
+        boolean actual = teacherDao.update(TEST_TEACHER);
         assertTrue(actual);
     }
 
     @Test
     void delete_shouldDeleteTeacher_whenInputExistId() {
-        boolean actual = teacherDao.delete(1L);
+        boolean actual = teacherDao.deleteById(10L);
         assertTrue(actual);
     }
 }

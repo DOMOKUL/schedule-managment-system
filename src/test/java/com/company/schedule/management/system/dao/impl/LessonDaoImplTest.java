@@ -1,39 +1,41 @@
 package com.company.schedule.management.system.dao.impl;
 
-import com.company.schedule.management.system.model.Lesson;
-import com.company.schedule.management.system.model.Subject;
+import com.company.schedule.management.system.model.*;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Transactional
+@SpringBootTest
+@ActiveProfiles("test")
 class LessonDaoImplTest extends BaseIntegrationTest {
 
-    private static final Lesson TEST_LESSON = new Lesson(Duration.ofMinutes(90L),
-            1, LocalTime.of(13, 0, 0),
-            new Subject(1L, "math"), null);
-    private static final Lesson TEST_LESSON_WITH_ID = new Lesson(1L,
-            1, LocalTime.of(13, 0, 0), Duration.ofMinutes(90L),
-            new Subject(1L, "math"), null);
+    private static final Subject TEST_SUBJECT = new Subject(1L, "math", null);
+    private static final Lesson TEST_LESSON = new Lesson(10L, 1, LocalTime.of(13, 0, 0),
+            Duration.ofMinutes(90L), TEST_SUBJECT, null);
+
+    @Autowired
     private LessonDaoImpl lessonDao;
 
     @Test
     void create_shouldReturnCorrectLesson_whenInputCorrectData() {
-        lessonDao.delete(1L);
-        assertEquals(1L, lessonDao.create(TEST_LESSON).getId());
+        Lesson expected = new Lesson(1L,1,null,null,TEST_SUBJECT,null);
+        Lesson actual = lessonDao.create(new Lesson(1L,1,null,null,TEST_SUBJECT,null));
+        assertEquals(expected, actual);
     }
 
     @Test
     void findById_shouldReturnCorrectLesson_whenInputExistId() {
-        Lesson expected = new Lesson(1L, 1,
-                LocalTime.of(13, 0, 0),
-                Duration.ofMillis(5400000000000L),
-                new Subject(1L, null),
-                null);
-        assertEquals(expected, lessonDao.findById(1L));
+        assertEquals(TEST_LESSON, lessonDao.findById(10L));
     }
 
     @Test
@@ -44,13 +46,13 @@ class LessonDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateLesson_whenInputExistId() {
-        boolean actual = lessonDao.update(TEST_LESSON_WITH_ID);
+        boolean actual = lessonDao.update(TEST_LESSON);
         assertTrue(actual);
     }
 
     @Test
     void delete_shouldDeleteLesson_whenInputExistId() {
-        boolean actual = lessonDao.delete(1L);
+        boolean actual = lessonDao.deleteById(10L);
         assertTrue(actual);
     }
 }

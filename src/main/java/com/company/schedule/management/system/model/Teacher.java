@@ -23,9 +23,9 @@ public class Teacher extends Person {
             generator = "teacher_sequence")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "faculty_id", nullable = false)
+    @JoinColumn(name = "faculty_id")
     private Faculty faculty;
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
     private List<Lecture> lectures;
 
     public Teacher(Faculty faculty, List<Lecture> lectures) {

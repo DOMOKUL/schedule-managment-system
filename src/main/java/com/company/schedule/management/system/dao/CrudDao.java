@@ -12,5 +12,5 @@ public interface CrudDao<T> {
 
     boolean update(T t);
 
-    boolean delete(Long id);
+    boolean deleteById(Long id);
 }

@@ -1,85 +1,50 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.SubjectDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.InvalidResultSetAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
-import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class SubjectDaoImpl implements SubjectDao {
 
-    private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public SubjectDaoImpl(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    private final EntityManager entityManager;
 
     @Override
     public Subject create(Subject subject) {
-        try {
-            SimpleJdbcInsert insertSubject = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("subjects")
-                    .usingGeneratedKeyColumns("id");
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("name", subject.getName());
-            Number newId = insertSubject.executeAndReturnKey(parameters);
-            subject.setId(newId.longValue());
-            return new Subject(newId.longValue(), subject.getName());
-        } catch (Exception cause) {
-            throw new DaoException("Subject with id: " + subject.getId() + " already exist", cause);
-        }
+        entityManager.merge(subject);
+        return subject;
     }
 
     @Override
     public Subject findById(Long id) {
-        try {
-            return jdbcTemplate.queryForObject("SELECT * FROM subjects WHERE id=?", new Object[]{id},
-                    new BeanPropertyRowMapper<>(Subject.class));
-        } catch (InvalidResultSetAccessException cause) {
-            throw new DaoException("Subject with id: " + id + " doesn't exist", cause);
-        } catch (DataAccessException cause) {
-            throw new DaoException("Trouble with access to database ", cause);
-        }
+        Query findByIdSubjectQuery = entityManager.createQuery("select s from Subject s" +
+                " left join fetch s.lessons  where s.id = :id");
+        findByIdSubjectQuery.setParameter("id", id);
+        return (Subject) findByIdSubjectQuery.getSingleResult();
     }
 
     @Override
     public List<Subject> findAll() {
-        try {
-            return jdbcTemplate.query("SELECT * FROM subjects", new BeanPropertyRowMapper<>(Subject.class));
-        } catch (InvalidResultSetAccessException cause) {
-            throw new DaoException("Subject doesn't exist", cause);
-        } catch (DataAccessException cause) {
-            throw new DaoException("Trouble with access to database ", cause);
-        }
+        return entityManager.createQuery("select s from Subject s").getResultList();
     }
 
     @Override
     public boolean update(Subject subject) {
-        var updateRowCount = jdbcTemplate.update("UPDATE subjects SET name=? WHERE id=?",
-                subject.getName(), subject.getId());
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Update isn't available");
+        Query updateSubjectQuery = entityManager.createQuery("update Subject set name=:name where id =: id");
+        updateSubjectQuery.setParameter("name", subject.getName());
+        updateSubjectQuery.setParameter("id", subject.getId());
+        return updateSubjectQuery.executeUpdate() != 0;
     }
 
-    @Override
-    public boolean delete(Long id) {
-        var updateRowCount = jdbcTemplate.update("DELETE FROM subjects WHERE id=?", id);
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Delete isn't available");
+    public boolean deleteById(Long id) {
+        Query deleteSubjectQuery = entityManager.createQuery("delete Subject where id =: id");
+        deleteSubjectQuery.setParameter("id", id);
+        return deleteSubjectQuery.executeUpdate() != 0;
     }
 }

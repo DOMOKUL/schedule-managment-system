@@ -22,15 +22,11 @@ public class Student extends Person {
     private Long id;
     private Integer courseNumber;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "group_id")
     private Group group;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "faculty_id", nullable = false)
-    private Faculty faculty;
 
-    public Student(Integer courseNumber, Group group, Faculty faculty) {
+    public Student(Integer courseNumber, Group group) {
         this.courseNumber = courseNumber;
         this.group = group;
-        this.faculty = faculty;
     }
 }

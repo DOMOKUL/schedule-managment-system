@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "audiences")
@@ -22,6 +23,8 @@ public class Audience {
     private Long id;
     private Integer number;
     private Integer capacity;
+    @OneToMany(mappedBy = "audience", fetch = FetchType.LAZY)
+    private List<Lecture> lectures;
 
     public Audience(Integer number, Integer capacity) {
         this.number = number;

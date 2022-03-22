@@ -9,8 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
@@ -22,15 +21,15 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void create_shouldReturnCorrectIdAudience_whenInputCorrectData() {
-        Audience actual = audienceDao.create(new Audience(1, 1));
-        Audience expected = new Audience(1L, 1, 1);
+        Audience actual = audienceDao.create(new Audience(1L, 1, 1, null));
+        Audience expected = new Audience(1L, 1, 1, null);
         assertEquals(expected, actual);
     }
 
     @Test
     void findById_shouldReturnCorrectAudience_whenInputExistId() {
-        Audience testAudience = new Audience(1L, 1, 1);
-        assertEquals(testAudience, audienceDao.findById(1L));
+        Audience testAudience = new Audience(10L, 10, 10, null);
+        assertEquals(testAudience, audienceDao.findById(10L));
     }
 
     @Test
@@ -41,10 +40,14 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateAudience_whenInputExistId() {
-
+        Audience testAudience = new Audience(10L, 11, 11, null);
+        boolean actual = audienceDao.update(testAudience);
+        assertTrue(actual);
     }
 
     @Test
     void delete_shouldDeleteAudience_whenInputExistId() {
+        boolean actual = audienceDao.deleteById(10L);
+        assertTrue(actual);
     }
 }

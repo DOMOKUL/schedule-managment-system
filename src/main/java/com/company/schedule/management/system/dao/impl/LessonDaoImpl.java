@@ -1,88 +1,55 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.LessonDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
-import com.company.schedule.management.system.dao.mapper.LessonMapper;
 import com.company.schedule.management.system.model.Lesson;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.InvalidResultSetAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
-import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class LessonDaoImpl implements LessonDao {
 
-    private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public LessonDaoImpl(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    private final EntityManager entityManager;
 
     @Override
     public Lesson create(Lesson lesson) {
-        try {
-            SimpleJdbcInsert insertLesson = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("lessons")
-                    .usingGeneratedKeyColumns("id");
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("duration", lesson.getDuration().toMillis());
-            parameters.put("number", lesson.getNumber());
-            parameters.put("start_time", lesson.getStartTime());
-            parameters.put("subject_id", lesson.getSubject().getId());
-            Number newId = insertLesson.executeAndReturnKey(parameters);
-            lesson.setId(newId.longValue());
-            return new Lesson(newId.longValue(), lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(),
-                    lesson.getSubject(), lesson.getLectures());
-        } catch (Exception cause) {
-            throw new DaoException("Lesson with id: " + lesson.getId() + " already exist", cause);
-        }
+        entityManager.merge(lesson);
+        return lesson;
     }
 
     @Override
     public Lesson findById(Long id) {
-        try {
-            return jdbcTemplate.queryForObject("SELECT * FROM lessons WHERE id=?", new Object[]{id}, new LessonMapper());
-        } catch (InvalidResultSetAccessException cause) {
-            throw new DaoException("Lesson with id: " + id + " doesn't exist", cause);
-        } catch (DataAccessException cause) {
-            throw new DaoException("Trouble with access to database ", cause);
-        }
+        Query findByIdLessonQuery = entityManager.createQuery("select l from Lesson l" +
+                " left join fetch l.subject s" +
+                " left join fetch s.lessons where l.id = :id");
+        findByIdLessonQuery.setParameter("id", id);
+        return (Lesson) findByIdLessonQuery.getSingleResult();
     }
 
     @Override
     public List<Lesson> findAll() {
-        try {
-            return jdbcTemplate.query("SELECT * FROM lessons", new LessonMapper());
-        } catch (InvalidResultSetAccessException cause) {
-            throw new DaoException("Lessons doesn't exist", cause);
-        } catch (DataAccessException cause) {
-            throw new DaoException("Trouble with access to database ", cause);
-        }
+        return entityManager.createQuery("select l from Lesson l").getResultList();
     }
 
     @Override
     public boolean update(Lesson lesson) {
-        var updateRowCount = jdbcTemplate.update("UPDATE lessons SET duration=?, number=?, start_time=?, subject_id=? WHERE id=?",
-                lesson.getDuration().toMillis(), lesson.getNumber(), lesson.getStartTime(), lesson.getSubject().getId(), lesson.getId());
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Update isn't available");
+        Query updateLessonQuery = entityManager.createQuery("update Lesson set number=:number, startTime=:startTime," +
+                " duration=:duration where id =: id");
+        updateLessonQuery.setParameter("number", lesson.getNumber());
+        updateLessonQuery.setParameter("startTime", lesson.getStartTime());
+        updateLessonQuery.setParameter("duration", lesson.getDuration());
+        updateLessonQuery.setParameter("id", lesson.getId());
+        return updateLessonQuery.executeUpdate() != 0;
     }
 
     @Override
-    public boolean delete(Long id) {
-        var updateRowCount = jdbcTemplate.update("DELETE FROM lessons WHERE id=?", id);
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Delete isn't available");
+    public boolean deleteById(Long id) {
+        Query deleteLessonQuery = entityManager.createQuery("delete Lesson where id =: id");
+        deleteLessonQuery.setParameter("id", id);
+        return deleteLessonQuery.executeUpdate() != 0;
     }
 }

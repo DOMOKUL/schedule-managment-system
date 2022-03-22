@@ -1,93 +1,56 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.StudentDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Student;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.InvalidResultSetAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
-import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class StudentDaoImpl implements StudentDao {
 
-    private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public StudentDaoImpl(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    private final EntityManager entityManager;
 
     @Override
     public Student create(Student student) {
-        try {
-
-            SimpleJdbcInsert insertStudent = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("students")
-                    .usingGeneratedKeyColumns("id");
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("first_name", student.getFirstName());
-            parameters.put("last_name", student.getLastName());
-            parameters.put("middle_name", student.getMiddleName());
-            parameters.put("course_number", student.getCourseNumber());
-            parameters.put("faculty_id", student.getFaculty().getId());
-            parameters.put("group_id", student.getGroup().getId());
-            Number newId = insertStudent.executeAndReturnKey(parameters);
-            student.setId(newId.longValue());
-            return new Student(newId.longValue(), student.getCourseNumber(), student.getGroup(), student.getFaculty());
-        } catch (Exception cause) {
-            throw new DaoException("Student with id: " + student.getId() + " already exist", cause);
-        }
+        entityManager.merge(student);
+        return student;
     }
 
     @Override
     public Student findById(Long id) {
-        try {
-            return jdbcTemplate.queryForObject("SELECT * FROM students WHERE id=?", new Object[]{id},
-                    new BeanPropertyRowMapper<>(Student.class));
-        } catch (InvalidResultSetAccessException cause) {
-            throw new DaoException("Student with id: " + id + " doesn't exist", cause);
-        } catch (DataAccessException cause) {
-            throw new DaoException("Trouble with access to database ", cause);
-        }
+        Query findByIdStudentQuery = entityManager.createQuery("select s from Student s" +
+                " left join fetch s.group g" +
+                " left join fetch g.faculty where s.id = :id");
+        findByIdStudentQuery.setParameter("id", id);
+        return (Student) findByIdStudentQuery.getSingleResult();
     }
 
     @Override
     public List<Student> findAll() {
-        try {
-            return jdbcTemplate.query("SELECT * FROM students", new BeanPropertyRowMapper<>(Student.class));
-        } catch (InvalidResultSetAccessException cause) {
-            throw new DaoException("Student doesn't exist", cause);
-        } catch (DataAccessException cause) {
-            throw new DaoException("Trouble with access to database ", cause);
-        }
+        return entityManager.createQuery("select s from Student s").getResultList();
     }
 
     @Override
     public boolean update(Student student) {
-        var updateRowCount = jdbcTemplate.update("UPDATE students SET course_number=?, first_name=?, last_name=?," +
-                        " middle_name=?, faculty_id=?, group_id=? WHERE id=?",
-                student.getCourseNumber(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                student.getFaculty().getId(), student.getGroup().getId(), student.getId());
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Update isn't available");
+        Query updateStudentQuery = entityManager.createQuery("update Student set courseNumber=:courseNumber," +
+                " firstName=:firstName, lastName=:lastName, middleName=:middleName where id =: id");
+        updateStudentQuery.setParameter("courseNumber", student.getCourseNumber());
+        updateStudentQuery.setParameter("firstName", student.getFirstName());
+        updateStudentQuery.setParameter("lastName", student.getLastName());
+        updateStudentQuery.setParameter("middleName", student.getMiddleName());
+        updateStudentQuery.setParameter("id", student.getId());
+        return updateStudentQuery.executeUpdate() != 0;
     }
 
     @Override
-    public boolean delete(Long id) {
-        var updateRowCount = jdbcTemplate.update("DELETE FROM students WHERE id=?", id);
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Delete isn't available");
+    public boolean deleteById(Long id) {
+        Query deleteStudentQuery = entityManager.createQuery("delete Student where id =: id");
+        deleteStudentQuery.setParameter("id", id);
+        return deleteStudentQuery.executeUpdate() != 0;
     }
 }

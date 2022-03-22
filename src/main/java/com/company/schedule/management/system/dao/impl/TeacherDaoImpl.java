@@ -1,89 +1,60 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.TeacherDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Teacher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.InvalidResultSetAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
-import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class TeacherDaoImpl implements TeacherDao {
 
-    private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public TeacherDaoImpl(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    private final EntityManager entityManager;
 
     @Override
     public Teacher create(Teacher teacher) {
-        try {
-            SimpleJdbcInsert insertTeacher = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("teachers")
-                    .usingGeneratedKeyColumns("id");
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("first_name", teacher.getFirstName());
-            parameters.put("last_name", teacher.getLastName());
-            parameters.put("middle_name", teacher.getMiddleName());
-            parameters.put("faculty_id", teacher.getFaculty().getId());
-            Number newId = insertTeacher.executeAndReturnKey(parameters);
-            teacher.setId(newId.longValue());
-            return new Teacher(newId.longValue(), teacher.getFaculty(), teacher.getLectures());
-        } catch (Exception cause) {
-            throw new DaoException("Teacher with id: " + teacher.getId() + " already exist", cause);
-        }
+        entityManager.merge(teacher);
+        return teacher;
     }
 
     @Override
     public Teacher findById(Long id) {
-        try {
-            return jdbcTemplate.queryForObject("SELECT * FROM teachers WHERE id=?", new Object[]{id},
-                    new BeanPropertyRowMapper<>(Teacher.class));
-        } catch (InvalidResultSetAccessException cause) {
-            throw new DaoException("Teacher with id: " + id + " doesn't exist", cause);
-        } catch (DataAccessException cause) {
-            throw new DaoException("Trouble with access to database ", cause);
-        }
+        Query findByIdTeacherQuery = entityManager.createQuery("select t from Teacher t" +
+                " left join fetch t.faculty" +
+                " left join fetch t.lectures l" +
+                " left join fetch l.group g" +
+                " left join fetch g.faculty" +
+                " left join fetch l.audience" +
+                " left join fetch l.lesson le" +
+                " left join fetch le.subject where t.id =:id");
+        findByIdTeacherQuery.setParameter("id", id);
+        return (Teacher) findByIdTeacherQuery.getSingleResult();
     }
 
     @Override
     public List<Teacher> findAll() {
-        try {
-            return jdbcTemplate.query("SELECT * FROM teachers", new BeanPropertyRowMapper<>(Teacher.class));
-        } catch (InvalidResultSetAccessException cause) {
-            throw new DaoException("Teacher doesn't exist", cause);
-        } catch (DataAccessException cause) {
-            throw new DaoException("Trouble with access to database ", cause);
-        }
+        return entityManager.createQuery("select t from Teacher t").getResultList();
     }
 
     @Override
     public boolean update(Teacher teacher) {
-        var updateRowCount = jdbcTemplate.update("UPDATE teachers SET first_name=?, last_name=?, middle_name=?, faculty_id=? WHERE id=?",
-                teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(),
-                teacher.getFaculty().getId(), teacher.getId());
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Update isn't available");
+        Query updateTeacherQuery = entityManager.createQuery("update Teacher set firstName=:firstName, lastName=:lastName," +
+                " middleName=:middleName where id =: id");
+        updateTeacherQuery.setParameter("firstName", teacher.getFirstName());
+        updateTeacherQuery.setParameter("lastName", teacher.getLastName());
+        updateTeacherQuery.setParameter("middleName", teacher.getMiddleName());
+        updateTeacherQuery.setParameter("id", teacher.getId());
+        return updateTeacherQuery.executeUpdate() != 0;
     }
 
     @Override
-    public boolean delete(Long id) {
-        var updateRowCount = jdbcTemplate.update("DELETE FROM teachers WHERE id=?", id);
-        if (updateRowCount != 0) {
-            return true;
-        }
-        throw new DaoException("Delete isn't available");
+    public boolean deleteById(Long id) {
+        Query deleteTeacherQuery = entityManager.createQuery("delete Teacher where id =: id");
+        deleteTeacherQuery.setParameter("id", id);
+        return deleteTeacherQuery.executeUpdate() != 0;
     }
 }
