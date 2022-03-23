@@ -1,6 +1,7 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.LectureDao;
+import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.model.Lecture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -23,21 +24,24 @@ public class LectureDaoImpl implements LectureDao {
 
     @Override
     public Lecture findById(Long id) {
-        Query findByIdLectureQuery = entityManager.createQuery("select l from Lecture l " +
-                " left join fetch l.group g " +
-                " left join fetch g.faculty " +
-                " left join fetch l.audience " +
-                " left join fetch l.lesson le " +
-                " left join fetch le.subject " +
-                " left join fetch l.teacher t " +
-                " left join fetch t.faculty where l.id=:id");
+        Query findByIdLectureQuery = entityManager.createQuery("select l from Lecture l" +
+                " left join l.group g left join g.faculty left join l.audience" +
+                " left join l.lesson le left join le.subject left join l.teacher" +
+                " t left join t.faculty where l.id =:id");
         findByIdLectureQuery.setParameter("id", id);
         return (Lecture) findByIdLectureQuery.getSingleResult();
     }
 
     @Override
     public List<Lecture> findAll() {
-        return entityManager.createQuery("select l from Lecture l").getResultList();
+        return entityManager.createQuery("select l from Lecture l" +
+                " left join fetch l.group g" +
+                " left join fetch g.faculty" +
+                " left join fetch l.audience" +
+                " left join fetch l.lesson le" +
+                " left join fetch le.subject" +
+                " left join fetch l.teacher" +
+                " t left join fetch t.faculty").getResultList();
     }
 
     @Override

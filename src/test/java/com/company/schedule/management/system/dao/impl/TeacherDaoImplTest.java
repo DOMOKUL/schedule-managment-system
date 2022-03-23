@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class TeacherDaoImplTest extends BaseIntegrationTest {
 
-    private static final Faculty TEST_FACULTY = new Faculty(10L, null, null, null);
+    private static final Faculty TEST_FACULTY = new Faculty(10L, "IKBSP", null, null);
     private static final Teacher TEST_TEACHER = new Teacher(10L, TEST_FACULTY, null);
 
     @Autowired

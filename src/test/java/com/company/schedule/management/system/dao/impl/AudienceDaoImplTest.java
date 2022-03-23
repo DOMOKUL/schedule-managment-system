@@ -19,6 +19,7 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
     @Autowired
     private AudienceDaoImpl audienceDao;
 
+
     @Test
     void create_shouldReturnCorrectIdAudience_whenInputCorrectData() {
         Audience actual = audienceDao.create(new Audience(1L, 1, 1, null));

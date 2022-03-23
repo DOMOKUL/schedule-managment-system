@@ -23,7 +23,7 @@ public class AudienceDaoImpl implements AudienceDao {
 
     @Override
     public Audience findById(Long id) {
-        Query findByIdAudienceQuery = entityManager.createQuery("select distinct a from Audience a " +
+        Query findByIdAudienceQuery = entityManager.createQuery("select a from Audience a " +
                 "left join fetch a.lectures l " +
                 "left join fetch l.group g " +
                 "left join fetch g.faculty " +

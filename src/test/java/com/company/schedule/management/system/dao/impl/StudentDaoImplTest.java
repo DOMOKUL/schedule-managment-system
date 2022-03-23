@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class StudentDaoImplTest extends BaseIntegrationTest {
 
-    private static final Faculty TEST_FACULTY = new Faculty(10L, null, null, null);
-    private static final Group TEST_GROUP = new Group(10L, null, TEST_FACULTY, null, null);
-    private static final Student TEST_STUDENT = new Student(10L, 1, TEST_GROUP);
+    private static final Faculty TEST_FACULTY = new Faculty(10L, "IKBSP", null, null);
+    private static final Group TEST_GROUP = new Group(10L, "BSBO-04-20", TEST_FACULTY, null, null);
+    private static final Student TEST_STUDENT = new Student(10L, 10, TEST_GROUP);
 
     @Autowired
     private StudentDaoImpl studentDao;

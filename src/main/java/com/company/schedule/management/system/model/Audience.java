@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "audiences")
@@ -29,5 +30,23 @@ public class Audience {
     public Audience(Integer number, Integer capacity) {
         this.number = number;
         this.capacity = capacity;
+    }
+
+    @Override
+    public String toString() {
+        return "Audience{" +
+                "id=" + id +
+                ", number=" + number +
+                ", capacity=" + capacity +
+                ", lectures=" + lectures +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Audience audience = (Audience) o;
+        return Objects.equals(id, audience.id) && Objects.equals(number, audience.number) && Objects.equals(capacity, audience.capacity);
     }
 }

@@ -19,17 +19,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class LessonDaoImplTest extends BaseIntegrationTest {
 
-    private static final Subject TEST_SUBJECT = new Subject(1L, "math", null);
-    private static final Lesson TEST_LESSON = new Lesson(10L, 1, LocalTime.of(13, 0, 0),
+    private static final Subject TEST_SUBJECT = new Subject(10L, "math", null);
+    private static final Lesson TEST_LESSON = new Lesson(10L,10,LocalTime.of(13, 0, 0),
             Duration.ofMinutes(90L), TEST_SUBJECT, null);
+
 
     @Autowired
     private LessonDaoImpl lessonDao;
 
     @Test
     void create_shouldReturnCorrectLesson_whenInputCorrectData() {
-        Lesson expected = new Lesson(1L,1,null,null,TEST_SUBJECT,null);
-        Lesson actual = lessonDao.create(new Lesson(1L,1,null,null,TEST_SUBJECT,null));
+        Lesson expected = new Lesson(10L,10,null,null,TEST_SUBJECT,null);
+        Lesson actual = lessonDao.create(new Lesson(10L,10,null,null,TEST_SUBJECT,null));
         assertEquals(expected, actual);
     }
 

@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class GroupDaoImplTest extends BaseIntegrationTest {
 
-    private static final Faculty TEST_FACULTY = new Faculty(10L, null, null, null);
-    private static final Group TEST_GROUP = new Group(10L, null, TEST_FACULTY, null, null);
+    private static final Faculty TEST_FACULTY = new Faculty(10L, "IKBSP", null, null);
+    private static final Group TEST_GROUP = new Group(10L, "BSBO-04-20", TEST_FACULTY, null, null);
 
     @Autowired
     private GroupDaoImpl groupDao;
@@ -34,7 +34,7 @@ class GroupDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void findById_shouldReturnCorrectGroup_whenInputExistId() {
-        Group testGroup = new Group(1L, "BSBO-04-20", null, null, null);
+        Group testGroup = new Group(10L, "BSBO-04-20", TEST_FACULTY, null, null);
         assertEquals(testGroup, groupDao.findById(10L));
     }
 

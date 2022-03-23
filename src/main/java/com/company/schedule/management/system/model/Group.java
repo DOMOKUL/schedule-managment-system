@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "groups")
@@ -23,7 +24,7 @@ public class Group {
     private Long id;
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "faculty_id")
+    @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<Student> students;
@@ -35,5 +36,29 @@ public class Group {
         this.faculty = faculty;
         this.students = students;
         this.lectures = lectures;
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", faculty=" + faculty.getName() +
+                ", students=" + students +
+                ", lectures=" + lectures +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Group group = (Group) o;
+        return Objects.equals(id, group.id) && Objects.equals(name, group.name) && Objects.equals(faculty, group.faculty);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, faculty);
     }
 }
