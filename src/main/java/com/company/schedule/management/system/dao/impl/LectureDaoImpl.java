@@ -23,10 +23,10 @@ public class LectureDaoImpl implements LectureDao {
     public Lecture create(Lecture lecture) {
         try {
             entityManager.persist(lecture);
-            return lecture;
         } catch (EntityExistsException cause) {
             throw new DaoException("Lecture with id: " + lecture.getId() + " already exist", cause);
         }
+        return lecture;
     }
 
     @Override
@@ -70,12 +70,9 @@ public class LectureDaoImpl implements LectureDao {
 
     @Override
     public boolean deleteById(Long id) {
-        try {
-            Lecture lecture = findById(id).get();
-            entityManager.remove(lecture);
-            return true;
-        } catch (IllegalArgumentException cause) {
-            throw new DaoException("Lecture with id: " + id + " doesn't exist", cause);
-        }
+        Lecture lecture = findById(id)
+                .orElseThrow(() -> new DaoException("Lecture with id: " + id + " doesn't exist"));
+        entityManager.remove(lecture);
+        return true;
     }
 }

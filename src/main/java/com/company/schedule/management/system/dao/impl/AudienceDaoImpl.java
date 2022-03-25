@@ -23,10 +23,10 @@ public class AudienceDaoImpl implements AudienceDao {
     public Audience create(Audience audience) {
         try {
             entityManager.persist(audience);
-            return audience;
         } catch (EntityExistsException cause) {
             throw new DaoException("Audience with id: " + audience.getId() + " already exist", cause);
         }
+        return audience;
     }
 
     @Override
@@ -66,12 +66,9 @@ public class AudienceDaoImpl implements AudienceDao {
 
     @Override
     public boolean deleteById(Long id) {
-        try {
-            Audience audience = findById(id).get();
-            entityManager.remove(audience);
-            return true;
-        } catch (IllegalArgumentException cause) {
-            throw new DaoException("Audience with id: " + id + " doesn't exist", cause);
-        }
+        Audience audience = findById(id)
+                .orElseThrow(() -> new DaoException("Audience with id: " + id + " doesn't exist"));
+        entityManager.remove(audience);
+        return true;
     }
 }

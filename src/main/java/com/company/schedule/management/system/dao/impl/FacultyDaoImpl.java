@@ -23,10 +23,10 @@ public class FacultyDaoImpl implements FacultyDao {
     public Faculty create(Faculty faculty) {
         try {
             entityManager.persist(faculty);
-            return faculty;
         } catch (EntityExistsException cause) {
             throw new DaoException("Faculty with id: " + faculty.getId() + " already exist", cause);
         }
+        return faculty;
     }
 
     @Override
@@ -61,12 +61,9 @@ public class FacultyDaoImpl implements FacultyDao {
 
     @Override
     public boolean deleteById(Long id) {
-        try {
-            Faculty faculty = findById(id).get();
-            entityManager.remove(faculty);
-            return true;
-        } catch (IllegalArgumentException cause) {
-            throw new DaoException("Faculty with id: " + id + " doesn't exist", cause);
-        }
+        Faculty faculty = findById(id)
+                .orElseThrow(() -> new DaoException("Faculty with id: " + id + " doesn't exist"));
+        entityManager.remove(faculty);
+        return true;
     }
 }

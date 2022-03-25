@@ -23,10 +23,10 @@ public class GroupDaoImpl implements GroupDao {
     public Group create(Group group) {
         try {
             entityManager.persist(group);
-            return group;
         } catch (EntityExistsException cause) {
             throw new DaoException("Group with id: " + group.getId() + " already exist", cause);
         }
+        return group;
     }
 
     @Override
@@ -67,12 +67,9 @@ public class GroupDaoImpl implements GroupDao {
 
     @Override
     public boolean deleteById(Long id) {
-        try {
-            Group group = findById(id).get();
-            entityManager.remove(group);
-            return true;
-        } catch (IllegalArgumentException cause) {
-            throw new DaoException("Group with id: " + id + " doesn't exist", cause);
-        }
+        Group group = findById(id)
+                .orElseThrow(() -> new DaoException("Group with id: " + id + " doesn't exist"));
+        entityManager.remove(group);
+        return true;
     }
 }

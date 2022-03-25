@@ -23,10 +23,10 @@ public class SubjectDaoImpl implements SubjectDao {
     public Subject create(Subject subject) {
         try {
             entityManager.persist(subject);
-            return subject;
         } catch (EntityExistsException cause) {
             throw new DaoException("Subject with id: " + subject.getId() + " already exist", cause);
         }
+        return subject;
     }
 
     @Override
@@ -59,13 +59,11 @@ public class SubjectDaoImpl implements SubjectDao {
         return subject;
     }
 
+    @Override
     public boolean deleteById(Long id) {
-        try {
-            Subject subject = findById(id).get();
-            entityManager.remove(subject);
-            return true;
-        } catch (IllegalArgumentException cause) {
-            throw new DaoException("Subject with id: " + id + " doesn't exist", cause);
-        }
+        Subject subject = findById(id)
+                .orElseThrow(() -> new DaoException("Subject with id: " + id + " doesn't exist"));
+        entityManager.remove(subject);
+        return true;
     }
 }

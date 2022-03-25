@@ -23,10 +23,10 @@ public class StudentDaoImpl implements StudentDao {
     public Student create(Student student) {
         try {
             entityManager.persist(student);
-            return student;
         } catch (EntityExistsException cause) {
             throw new DaoException("Student with id: " + student.getId() + " already exist", cause);
         }
+        return student;
     }
 
     @Override
@@ -61,12 +61,9 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public boolean deleteById(Long id) {
-        try {
-            Student student = findById(id).get();
-            entityManager.remove(student);
-            return true;
-        } catch (IllegalArgumentException cause) {
-            throw new DaoException("Student with id: " + id + " doesn't exist", cause);
-        }
+        Student student = findById(id)
+                .orElseThrow(() -> new DaoException("Student with id: " + id + " doesn't exist"));
+        entityManager.remove(student);
+        return true;
     }
 }

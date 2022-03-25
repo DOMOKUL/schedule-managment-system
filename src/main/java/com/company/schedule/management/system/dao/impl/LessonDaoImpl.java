@@ -23,10 +23,10 @@ public class LessonDaoImpl implements LessonDao {
     public Lesson create(Lesson lesson) {
         try {
             entityManager.persist(lesson);
-            return lesson;
         } catch (EntityExistsException cause) {
             throw new DaoException("Lesson with id: " + lesson.getId() + " already exist", cause);
         }
+        return lesson;
     }
 
     @Override
@@ -61,12 +61,9 @@ public class LessonDaoImpl implements LessonDao {
 
     @Override
     public boolean deleteById(Long id) {
-        try {
-            Lesson lesson = findById(id).get();
-            entityManager.remove(lesson);
-            return true;
-        } catch (IllegalArgumentException cause) {
-            throw new DaoException("Lesson with id: " + id + " doesn't exist", cause);
-        }
+        Lesson lesson = findById(id)
+                .orElseThrow(() -> new DaoException("Lesson with id: " + id + " doesn't exist"));
+        entityManager.remove(lesson);
+        return true;
     }
 }

@@ -23,10 +23,10 @@ public class TeacherDaoImpl implements TeacherDao {
     public Teacher create(Teacher teacher) {
         try {
             entityManager.persist(teacher);
-            return teacher;
         } catch (EntityExistsException cause) {
             throw new DaoException("Teacher with id: " + teacher.getId() + " already exist", cause);
         }
+        return teacher;
     }
 
     @Override
@@ -66,12 +66,9 @@ public class TeacherDaoImpl implements TeacherDao {
 
     @Override
     public boolean deleteById(Long id) {
-        try {
-            Teacher teacher = findById(id).get();
-            entityManager.remove(teacher);
-            return true;
-        } catch (IllegalArgumentException cause) {
-            throw new DaoException("Teacher with id: " + id + " doesn't exist", cause);
-        }
+        Teacher teacher = findById(id)
+                .orElseThrow(() -> new DaoException("Teacher with id: " + id + " doesn't exist"));
+        entityManager.remove(teacher);
+        return true;
     }
 }
