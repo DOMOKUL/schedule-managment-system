@@ -1,13 +1,17 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.StudentDao;
+import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,40 +21,52 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public Student create(Student student) {
-        entityManager.merge(student);
-        return student;
+        try {
+            entityManager.persist(student);
+            return student;
+        } catch (EntityExistsException cause) {
+            throw new DaoException("Student with id: " + student.getId() + " already exist", cause);
+        }
     }
 
     @Override
-    public Student findById(Long id) {
-        Query findByIdStudentQuery = entityManager.createQuery("select s from Student s" +
-                " left join fetch s.group g" +
-                " left join fetch g.faculty where s.id = :id");
-        findByIdStudentQuery.setParameter("id", id);
-        return (Student) findByIdStudentQuery.getSingleResult();
+    public Optional<Student> findById(Long id) {
+        try {
+            return Optional.ofNullable((Student) entityManager.createQuery("select s from Student s" +
+                    " left join fetch s.group g" +
+                    " left join fetch g.faculty where s.id = :id").setParameter("id", id).getSingleResult());
+        } catch (NoResultException cause) {
+            throw new DaoException("Student with id: " + id + " doesn't exist", cause);
+        }
     }
 
     @Override
     public List<Student> findAll() {
-        return entityManager.createQuery("select s from Student s").getResultList();
+        try {
+            return entityManager.createQuery("select s from Student s").getResultList();
+        } catch (IllegalArgumentException cause) {
+            throw new DaoException(cause);
+        }
     }
 
     @Override
-    public boolean update(Student student) {
-        Query updateStudentQuery = entityManager.createQuery("update Student set courseNumber=:courseNumber," +
-                " firstName=:firstName, lastName=:lastName, middleName=:middleName where id =: id");
-        updateStudentQuery.setParameter("courseNumber", student.getCourseNumber());
-        updateStudentQuery.setParameter("firstName", student.getFirstName());
-        updateStudentQuery.setParameter("lastName", student.getLastName());
-        updateStudentQuery.setParameter("middleName", student.getMiddleName());
-        updateStudentQuery.setParameter("id", student.getId());
-        return updateStudentQuery.executeUpdate() != 0;
+    public Student update(Student student) {
+        try {
+            entityManager.merge(student);
+        } catch (PersistenceException cause) {
+            throw new DaoException("Update Error: " + cause.getMessage());
+        }
+        return student;
     }
 
     @Override
     public boolean deleteById(Long id) {
-        Query deleteStudentQuery = entityManager.createQuery("delete Student where id =: id");
-        deleteStudentQuery.setParameter("id", id);
-        return deleteStudentQuery.executeUpdate() != 0;
+        try {
+            Student student = findById(id).get();
+            entityManager.remove(student);
+            return true;
+        } catch (IllegalArgumentException cause) {
+            throw new DaoException("Student with id: " + id + " doesn't exist", cause);
+        }
     }
 }

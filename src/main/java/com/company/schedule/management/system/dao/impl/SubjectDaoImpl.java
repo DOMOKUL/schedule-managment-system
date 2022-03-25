@@ -1,13 +1,17 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.SubjectDao;
+import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Subject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,34 +21,51 @@ public class SubjectDaoImpl implements SubjectDao {
 
     @Override
     public Subject create(Subject subject) {
-        entityManager.merge(subject);
-        return subject;
+        try {
+            entityManager.persist(subject);
+            return subject;
+        } catch (EntityExistsException cause) {
+            throw new DaoException("Subject with id: " + subject.getId() + " already exist", cause);
+        }
     }
 
     @Override
-    public Subject findById(Long id) {
-        Query findByIdSubjectQuery = entityManager.createQuery("select s from Subject s" +
-                " left join fetch s.lessons  where s.id = :id");
-        findByIdSubjectQuery.setParameter("id", id);
-        return (Subject) findByIdSubjectQuery.getSingleResult();
+    public Optional<Subject> findById(Long id) {
+        try {
+            return Optional.ofNullable((Subject) entityManager.createQuery("select s from Subject s" +
+                    " left join fetch s.lessons  where s.id = :id").setParameter("id", id).getSingleResult());
+        } catch (NoResultException cause) {
+            throw new DaoException("Subject with id: " + id + " doesn't exist", cause);
+        }
     }
 
     @Override
     public List<Subject> findAll() {
-        return entityManager.createQuery("select s from Subject s").getResultList();
+        try {
+            return entityManager.createQuery("select s from Subject s").getResultList();
+        } catch (IllegalArgumentException cause) {
+            throw new DaoException(cause);
+        }
+
     }
 
     @Override
-    public boolean update(Subject subject) {
-        Query updateSubjectQuery = entityManager.createQuery("update Subject set name=:name where id =: id");
-        updateSubjectQuery.setParameter("name", subject.getName());
-        updateSubjectQuery.setParameter("id", subject.getId());
-        return updateSubjectQuery.executeUpdate() != 0;
+    public Subject update(Subject subject) {
+        try {
+            entityManager.merge(subject);
+        } catch (PersistenceException cause) {
+            throw new DaoException("Update Error: " + cause.getMessage());
+        }
+        return subject;
     }
 
     public boolean deleteById(Long id) {
-        Query deleteSubjectQuery = entityManager.createQuery("delete Subject where id =: id");
-        deleteSubjectQuery.setParameter("id", id);
-        return deleteSubjectQuery.executeUpdate() != 0;
+        try {
+            Subject subject = findById(id).get();
+            entityManager.remove(subject);
+            return true;
+        } catch (IllegalArgumentException cause) {
+            throw new DaoException("Subject with id: " + id + " doesn't exist", cause);
+        }
     }
 }

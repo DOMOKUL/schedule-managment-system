@@ -1,13 +1,17 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.FacultyDao;
+import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,35 +21,52 @@ public class FacultyDaoImpl implements FacultyDao {
 
     @Override
     public Faculty create(Faculty faculty) {
-        entityManager.merge(faculty);
-        return faculty;
+        try {
+            entityManager.persist(faculty);
+            return faculty;
+        } catch (EntityExistsException cause) {
+            throw new DaoException("Faculty with id: " + faculty.getId() + " already exist", cause);
+        }
     }
 
     @Override
-    public Faculty findById(Long id) {
-        Query findByIdFacultyQuery = entityManager.createQuery("select f from Faculty f " +
-                "left join fetch f.groups where f.id = :id");
-        findByIdFacultyQuery.setParameter("id", id);
-        return (Faculty) findByIdFacultyQuery.getSingleResult();
+    public Optional<Faculty> findById(Long id) {
+        try {
+            return Optional.ofNullable((Faculty) entityManager.createQuery("select f from Faculty f " +
+                    "left join fetch f.groups where f.id = :id").setParameter("id", id).getSingleResult());
+        } catch (NoResultException cause) {
+            throw new DaoException("Faculty with id: " + id + " doesn't exist", cause);
+        }
     }
 
     @Override
     public List<Faculty> findAll() {
-        return entityManager.createQuery("select f from Faculty f").getResultList();
+        try {
+            return entityManager.createQuery("select f from Faculty f").getResultList();
+        } catch (IllegalArgumentException cause) {
+            throw new DaoException(cause);
+        }
     }
 
     @Override
-    public boolean update(Faculty faculty) {
-        Query updateFacultyQuery = entityManager.createQuery("update Faculty set name=:name where id =: id");
-        updateFacultyQuery.setParameter("name", faculty.getName());
-        updateFacultyQuery.setParameter("id", faculty.getId());
-        return updateFacultyQuery.executeUpdate() != 0;
+    public Faculty update(Faculty faculty) {
+        try {
+            entityManager.merge(faculty);
+
+        } catch (PersistenceException cause) {
+            throw new DaoException("Update Error: " + cause.getMessage());
+        }
+        return faculty;
     }
 
     @Override
     public boolean deleteById(Long id) {
-        Query deleteFacultyQuery = entityManager.createQuery("delete Faculty where id =: id");
-        deleteFacultyQuery.setParameter("id", id);
-        return deleteFacultyQuery.executeUpdate() != 0;
+        try {
+            Faculty faculty = findById(id).get();
+            entityManager.remove(faculty);
+            return true;
+        } catch (IllegalArgumentException cause) {
+            throw new DaoException("Faculty with id: " + id + " doesn't exist", cause);
+        }
     }
 }

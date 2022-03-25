@@ -1,13 +1,17 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.AudienceDao;
+import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Audience;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,44 +21,57 @@ public class AudienceDaoImpl implements AudienceDao {
 
     @Override
     public Audience create(Audience audience) {
-        entityManager.merge(audience);
-        return audience;
+        try {
+            entityManager.persist(audience);
+            return audience;
+        } catch (EntityExistsException cause) {
+            throw new DaoException("Audience with id: " + audience.getId() + " already exist", cause);
+        }
     }
 
     @Override
-    public Audience findById(Long id) {
-        Query findByIdAudienceQuery = entityManager.createQuery("select a from Audience a " +
-                "left join fetch a.lectures l " +
-                "left join fetch l.group g " +
-                "left join fetch g.faculty " +
-                "left join fetch l.teacher t " +
-                "left join fetch t.faculty " +
-                "left join fetch l.lesson le " +
-                " left join fetch le.subject where a.id =:id");
-        findByIdAudienceQuery.setParameter("id", id);
-        return (Audience) findByIdAudienceQuery.getSingleResult();
+    public Optional<Audience> findById(Long id) {
+        try {
+            return Optional.ofNullable((Audience) entityManager.createQuery("select a from Audience a " +
+                    "left join fetch a.lectures l " +
+                    "left join fetch l.group g " +
+                    "left join fetch g.faculty " +
+                    "left join fetch l.teacher t " +
+                    "left join fetch t.faculty " +
+                    "left join fetch l.lesson le " +
+                    " left join fetch le.subject where a.id =:id").setParameter("id", id).getSingleResult());
+        } catch (NoResultException cause) {
+            throw new DaoException("Audience with id: " + id + " doesn't exist", cause);
+        }
     }
 
     @Override
     public List<Audience> findAll() {
-        return entityManager.createQuery("select a from Audience a").getResultList();
+        try {
+            return entityManager.createQuery("select a from Audience a").getResultList();
+        } catch (IllegalArgumentException cause) {
+            throw new DaoException(cause);
+        }
     }
 
     @Override
-    public boolean update(Audience audience) {
-        Query updateAudienceQuery = entityManager.createQuery("update Audience set capacity=:capacity, number =: number" +
-                " where id =: id");
-        updateAudienceQuery.setParameter("capacity", audience.getCapacity());
-        updateAudienceQuery.setParameter("number", audience.getNumber());
-        updateAudienceQuery.setParameter("id", audience.getId());
-        return updateAudienceQuery.executeUpdate() != 0;
+    public Audience update(Audience audience) {
+        try {
+            entityManager.merge(audience);
+        } catch (PersistenceException cause) {
+            throw new DaoException("Update Error: " + cause.getMessage());
+        }
+        return audience;
     }
 
     @Override
     public boolean deleteById(Long id) {
-        Query deleteAudienceQuery = entityManager.createQuery("delete Audience where id =: id");
-        deleteAudienceQuery.setParameter("id", id);
-        return deleteAudienceQuery.executeUpdate() != 0;
+        try {
+            Audience audience = findById(id).get();
+            entityManager.remove(audience);
+            return true;
+        } catch (IllegalArgumentException cause) {
+            throw new DaoException("Audience with id: " + id + " doesn't exist", cause);
+        }
     }
-
 }

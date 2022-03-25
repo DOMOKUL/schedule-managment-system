@@ -1,13 +1,17 @@
 package com.company.schedule.management.system.dao.impl;
 
 import com.company.schedule.management.system.dao.LessonDao;
+import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Lesson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,39 +21,52 @@ public class LessonDaoImpl implements LessonDao {
 
     @Override
     public Lesson create(Lesson lesson) {
-        entityManager.merge(lesson);
-        return lesson;
+        try {
+            entityManager.persist(lesson);
+            return lesson;
+        } catch (EntityExistsException cause) {
+            throw new DaoException("Lesson with id: " + lesson.getId() + " already exist", cause);
+        }
     }
 
     @Override
-    public Lesson findById(Long id) {
-        Query findByIdLessonQuery = entityManager.createQuery("select l from Lesson l" +
-                " left join fetch l.subject s" +
-                " left join fetch s.lessons where l.id = :id");
-        findByIdLessonQuery.setParameter("id", id);
-        return (Lesson) findByIdLessonQuery.getSingleResult();
+    public Optional<Lesson> findById(Long id) {
+        try {
+            return Optional.ofNullable((Lesson) entityManager.createQuery("select l from Lesson l" +
+                    " left join fetch l.subject s" +
+                    " left join fetch s.lessons where l.id = :id").setParameter("id", id).getSingleResult());
+        } catch (NoResultException cause) {
+            throw new DaoException("Lesson with id: " + id + " doesn't exist", cause);
+        }
     }
 
     @Override
     public List<Lesson> findAll() {
-        return entityManager.createQuery("select l from Lesson l").getResultList();
+        try {
+            return entityManager.createQuery("select l from Lesson l").getResultList();
+        } catch (IllegalArgumentException cause) {
+            throw new DaoException(cause);
+        }
     }
 
     @Override
-    public boolean update(Lesson lesson) {
-        Query updateLessonQuery = entityManager.createQuery("update Lesson set number=:number, startTime=:startTime," +
-                " duration=:duration where id =: id");
-        updateLessonQuery.setParameter("number", lesson.getNumber());
-        updateLessonQuery.setParameter("startTime", lesson.getStartTime());
-        updateLessonQuery.setParameter("duration", lesson.getDuration());
-        updateLessonQuery.setParameter("id", lesson.getId());
-        return updateLessonQuery.executeUpdate() != 0;
+    public Lesson update(Lesson lesson) {
+        try {
+            entityManager.merge(lesson);
+        } catch (PersistenceException cause) {
+            throw new DaoException("Update Error: " + cause.getMessage());
+        }
+        return lesson;
     }
 
     @Override
     public boolean deleteById(Long id) {
-        Query deleteLessonQuery = entityManager.createQuery("delete Lesson where id =: id");
-        deleteLessonQuery.setParameter("id", id);
-        return deleteLessonQuery.executeUpdate() != 0;
+        try {
+            Lesson lesson = findById(id).get();
+            entityManager.remove(lesson);
+            return true;
+        } catch (IllegalArgumentException cause) {
+            throw new DaoException("Lesson with id: " + id + " doesn't exist", cause);
+        }
     }
 }
