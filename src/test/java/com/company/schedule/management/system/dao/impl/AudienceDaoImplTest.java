@@ -49,9 +49,7 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void delete_shouldDeleteAudience_whenInputExistId() {
-        audienceDao.create(new Audience(20, 20, null));
-        boolean actual = audienceDao.deleteById(1L);
-        Optional<Audience> byId = audienceDao.findById(1L);
-        assertNull(byId.get());
+        boolean actual = audienceDao.deleteById(10L);
+        assertTrue(actual);
     }
 }
