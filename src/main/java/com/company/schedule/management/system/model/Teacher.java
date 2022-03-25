@@ -1,8 +1,9 @@
 package com.company.schedule.management.system.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,9 +12,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "teachers")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Teacher extends Person {
 
     @Id
@@ -33,6 +35,7 @@ public class Teacher extends Person {
         this.faculty = faculty;
         this.lectures = lectures;
     }
+
     @Override
     public String toString() {
         return "Teacher{" +

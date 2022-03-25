@@ -1,8 +1,9 @@
 package com.company.schedule.management.system.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,9 +11,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "subjects")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Subject {
 
     @Id
@@ -26,8 +28,9 @@ public class Subject {
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<Lesson> lessons;
 
-    public Subject(String name) {
+    public Subject(String name, List<Lesson> lessons) {
         this.name = name;
+        this.lessons = lessons;
     }
 
     @Override

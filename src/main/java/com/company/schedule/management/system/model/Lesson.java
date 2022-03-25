@@ -1,8 +1,9 @@
 package com.company.schedule.management.system.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.Duration;
@@ -12,9 +13,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "lessons")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Lesson {
 
     @Id
@@ -33,7 +35,7 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Lecture> lectures;
 
-    public Lesson(Duration duration, Integer number, LocalTime startTime, Subject subject, List<Lecture> lectures) {
+    public Lesson(Integer number, LocalTime startTime, Duration duration, Subject subject, List<Lecture> lectures) {
         this.number = number;
         this.startTime = startTime;
         this.duration = duration;
