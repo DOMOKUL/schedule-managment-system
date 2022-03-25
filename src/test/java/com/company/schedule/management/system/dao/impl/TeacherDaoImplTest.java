@@ -27,13 +27,13 @@ class TeacherDaoImplTest extends BaseIntegrationTest {
     @Test
     void create_shouldReturnCorrectTeacher_whenInputCorrectData() {
         Teacher expected = new Teacher(1L, TEST_FACULTY, null);
-        Teacher actual = teacherDao.create(new Teacher(1L, TEST_FACULTY, null));
+        Teacher actual = teacherDao.create(new Teacher(TEST_FACULTY, null));
         assertEquals(expected, actual);
     }
 
     @Test
     void findById_shouldReturnCorrectTeacher_whenInputExistId() {
-        Assertions.assertEquals(TEST_TEACHER, teacherDao.findById(10L));
+        Assertions.assertEquals(TEST_TEACHER, teacherDao.findById(10L).get());
     }
 
     @Test
@@ -44,8 +44,8 @@ class TeacherDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateTeacher_whenInputExistId() {
-        boolean actual = teacherDao.update(TEST_TEACHER);
-        assertTrue(actual);
+        Teacher actual = teacherDao.update(TEST_TEACHER);
+        assertEquals(TEST_TEACHER, actual);
     }
 
     @Test

@@ -1,13 +1,13 @@
 package com.company.schedule.management.system.dao.impl;
 
-import com.company.schedule.management.system.model.*;
+import com.company.schedule.management.system.model.Lesson;
+import com.company.schedule.management.system.model.Subject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LessonDaoImplTest extends BaseIntegrationTest {
 
     private static final Subject TEST_SUBJECT = new Subject(10L, "math", null);
-    private static final Lesson TEST_LESSON = new Lesson(10L,10,LocalTime.of(13, 0, 0),
+    private static final Lesson TEST_LESSON = new Lesson(10L, 10, LocalTime.of(13, 0, 0),
             Duration.ofMinutes(90L), TEST_SUBJECT, null);
 
 
@@ -29,14 +29,14 @@ class LessonDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void create_shouldReturnCorrectLesson_whenInputCorrectData() {
-        Lesson expected = new Lesson(10L,10,null,null,TEST_SUBJECT,null);
-        Lesson actual = lessonDao.create(new Lesson(10L,10,null,null,TEST_SUBJECT,null));
+        Lesson expected = new Lesson(1L, 10, null, null, TEST_SUBJECT, null);
+        Lesson actual = lessonDao.create(new Lesson(10, null, null, TEST_SUBJECT, null));
         assertEquals(expected, actual);
     }
 
     @Test
     void findById_shouldReturnCorrectLesson_whenInputExistId() {
-        assertEquals(TEST_LESSON, lessonDao.findById(10L));
+        assertEquals(TEST_LESSON, lessonDao.findById(10L).get());
     }
 
     @Test
@@ -47,8 +47,8 @@ class LessonDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateLesson_whenInputExistId() {
-        boolean actual = lessonDao.update(TEST_LESSON);
-        assertTrue(actual);
+        Lesson actual = lessonDao.update(TEST_LESSON);
+        assertEquals(TEST_LESSON, actual);
     }
 
     @Test

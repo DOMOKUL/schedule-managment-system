@@ -8,6 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +23,7 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void create_shouldReturnCorrectIdAudience_whenInputCorrectData() {
-        Audience actual = audienceDao.create(new Audience(1L, 1, 1, null));
+        Audience actual = audienceDao.create(new Audience(1, 1, null));
         Audience expected = new Audience(1L, 1, 1, null);
         assertEquals(expected, actual);
     }
@@ -30,7 +31,7 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
     @Test
     void findById_shouldReturnCorrectAudience_whenInputExistId() {
         Audience testAudience = new Audience(10L, 10, 10, null);
-        assertEquals(testAudience, audienceDao.findById(10L));
+        assertEquals(testAudience, audienceDao.findById(10L).get());
     }
 
     @Test
@@ -42,13 +43,15 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
     @Test
     void update_shouldUpdateAudience_whenInputExistId() {
         Audience testAudience = new Audience(10L, 11, 11, null);
-        boolean actual = audienceDao.update(testAudience);
-        assertTrue(actual);
+        Audience actual = audienceDao.update(testAudience);
+        assertEquals(testAudience, actual);
     }
 
     @Test
     void delete_shouldDeleteAudience_whenInputExistId() {
-        boolean actual = audienceDao.deleteById(10L);
-        assertTrue(actual);
+        audienceDao.create(new Audience(20, 20, null));
+        boolean actual = audienceDao.deleteById(1L);
+        Optional<Audience> byId = audienceDao.findById(1L);
+        assertNull(byId.get());
     }
 }

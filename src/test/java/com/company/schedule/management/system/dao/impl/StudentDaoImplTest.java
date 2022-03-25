@@ -28,13 +28,13 @@ class StudentDaoImplTest extends BaseIntegrationTest {
     @Test
     void create_shouldReturnCorrectStudent_whenInputCorrectData() {
         Student expected = new Student(1L, 1, TEST_GROUP);
-        Student actual = studentDao.create(new Student(1L, 1, TEST_GROUP));
+        Student actual = studentDao.create(new Student(1, TEST_GROUP));
         assertEquals(expected, actual);
     }
 
     @Test
     void findById_shouldReturnCorrectStudent_whenInputExistId() {
-        assertEquals(TEST_STUDENT, studentDao.findById(10L));
+        assertEquals(TEST_STUDENT, studentDao.findById(10L).get());
     }
 
     @Test
@@ -45,8 +45,8 @@ class StudentDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateStudent_whenInputExistId() {
-        boolean actual = studentDao.update(TEST_STUDENT);
-        assertTrue(actual);
+        Student actual = studentDao.update(TEST_STUDENT);
+        assertEquals(TEST_STUDENT, actual);
     }
 
     @Test

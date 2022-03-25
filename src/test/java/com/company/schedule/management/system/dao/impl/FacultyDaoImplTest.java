@@ -23,7 +23,7 @@ class FacultyDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void create_shouldReturnCorrectFaculty_whenInputCorrectData() {
-        Faculty actual = facultyDao.create(new Faculty(1L, null, null, null));
+        Faculty actual = facultyDao.create(new Faculty(null, null, null));
         Faculty expected = new Faculty(1L, null, null, null);
         assertEquals(expected, actual);
     }
@@ -31,7 +31,7 @@ class FacultyDaoImplTest extends BaseIntegrationTest {
     @Test
     void findById_shouldReturnCorrectFaculty_whenInputExistId() {
         Faculty testFaculty = new Faculty(10L, "IKBSP", null, null);
-        assertEquals(testFaculty, facultyDao.findById(10L));
+        assertEquals(testFaculty, facultyDao.findById(10L).get());
     }
 
     @Test
@@ -42,8 +42,8 @@ class FacultyDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateFaculty_whenInputExistId() {
-        boolean actual = facultyDao.update(TEST_FACULTY);
-        assertTrue(actual);
+        Faculty actual = facultyDao.update(TEST_FACULTY);
+        assertEquals(TEST_FACULTY, actual);
     }
 
     @Test

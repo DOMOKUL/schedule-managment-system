@@ -1,15 +1,13 @@
 package com.company.schedule.management.system.dao.impl;
 
-import com.company.schedule.management.system.model.*;
+import com.company.schedule.management.system.model.Faculty;
+import com.company.schedule.management.system.model.Group;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,15 +25,15 @@ class GroupDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void create_shouldReturnCorrectGroup_whenInputCorrectData() {
-        Group actual = groupDao.create(new Group(1L, null, TEST_FACULTY,null,null));
-        Group expected = new Group(1L, null, TEST_FACULTY,null,null);
+        Group actual = groupDao.create(new Group(null, TEST_FACULTY, null, null));
+        Group expected = new Group(1L, null, TEST_FACULTY, null, null);
         assertEquals(expected, actual);
     }
 
     @Test
     void findById_shouldReturnCorrectGroup_whenInputExistId() {
         Group testGroup = new Group(10L, "BSBO-04-20", TEST_FACULTY, null, null);
-        assertEquals(testGroup, groupDao.findById(10L));
+        assertEquals(testGroup, groupDao.findById(10L).get());
     }
 
     @Test
@@ -46,8 +44,8 @@ class GroupDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateGroup_whenInputExistId() {
-        boolean actual = groupDao.update(TEST_GROUP);
-        assertTrue(actual);
+        Group actual = groupDao.update(TEST_GROUP);
+        assertEquals(TEST_GROUP, actual);
     }
 
     @Test

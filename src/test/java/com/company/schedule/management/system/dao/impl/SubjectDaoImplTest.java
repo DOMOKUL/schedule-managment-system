@@ -24,13 +24,13 @@ class SubjectDaoImplTest extends BaseIntegrationTest {
     @Test
     void create_shouldReturnCorrectSubject_whenInputCorrectData() {
         Subject expected = new Subject(1L, null, null);
-        Subject actual = subjectDao.create(new Subject(1L, null, null));
+        Subject actual = subjectDao.create(new Subject(null, null));
         assertEquals(expected, actual);
     }
 
     @Test
     void findById_shouldReturnCorrectSubject_whenInputExistId() {
-        assertEquals(TEST_SUBJECT, subjectDao.findById(10L));
+        assertEquals(TEST_SUBJECT, subjectDao.findById(10L).get());
     }
 
     @Test
@@ -41,8 +41,8 @@ class SubjectDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateSubject_whenInputExistId() {
-        boolean actual = subjectDao.update(TEST_SUBJECT);
-        assertTrue(actual);
+        Subject actual = subjectDao.update(TEST_SUBJECT);
+        assertEquals(TEST_SUBJECT, actual);
     }
 
     @Test

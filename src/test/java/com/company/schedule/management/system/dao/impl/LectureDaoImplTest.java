@@ -40,19 +40,19 @@ class LectureDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void create_shouldReturnCorrectLecture_whenInputCorrectData() {
-        Lecture actual = lectureDao.create(new Lecture(1L, 1, Date.valueOf("2019-01-26"),
+        Lecture actual = lectureDao.create(new Lecture(10, Date.valueOf("2019-01-26"),
                 TEST_AUDIENCE, TEST_GROUP,
                 new Lesson(10L, 1, LocalTime.of(13, 0, 0),
                         Duration.ofMinutes(90L), TEST_SUBJECT, null),
                 new Teacher(10L, TEST_FACULTY, null)));
-        Lecture expected = new Lecture(1L, 1, Date.valueOf("2019-01-26"), TEST_AUDIENCE, TEST_GROUP,
+        Lecture expected = new Lecture(1L, 10, Date.valueOf("2019-01-26"), TEST_AUDIENCE, TEST_GROUP,
                 TEST_LESSON, TEST_TEACHER);
         assertEquals(expected, actual);
     }
 
     @Test
     void findById_shouldReturnCorrectLecture_whenInputExistId() {
-        assertEquals(TEST_LECTURE, lectureDao.findById(10L));
+        assertEquals(TEST_LECTURE, lectureDao.findById(10L).get());
     }
 
     @Test
@@ -63,8 +63,8 @@ class LectureDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void update_shouldUpdateLecture_whenInputExistId() {
-        boolean actual = lectureDao.update(TEST_LECTURE);
-        assertTrue(actual);
+        Lecture actual = lectureDao.update(TEST_LECTURE);
+        assertEquals(TEST_LECTURE, actual);
     }
 
     @Test
