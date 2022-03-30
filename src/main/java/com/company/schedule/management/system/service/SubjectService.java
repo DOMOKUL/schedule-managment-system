@@ -15,6 +15,4 @@ public interface SubjectService {
     Subject updateSubject(Subject subject);
 
     boolean deleteSubjectById(Long id);
-
-    List<Subject> saveAllSubjects(List<Subject> subjects);
 }

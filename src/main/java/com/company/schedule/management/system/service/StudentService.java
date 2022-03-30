@@ -16,6 +16,4 @@ public interface StudentService {
     Student updateStudent(Student student);
 
     boolean deleteStudentById(Long id);
-
-    List<Student> saveAllStudents(List<Student> students);
 }

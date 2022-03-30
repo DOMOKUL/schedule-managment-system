@@ -61,15 +61,4 @@ public class FacultyServiceImpl implements FacultyService {
             throw new ServiceException(cause);
         }
     }
-
-    @Override
-    public List<Faculty> saveAllFaculties(List<Faculty> faculties) {
-        List<Faculty> result = new ArrayList<>();
-        try {
-            faculties.forEach(faculty -> result.add(saveFaculty(faculty)));
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
-        return result;
-    }
 }

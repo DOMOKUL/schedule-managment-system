@@ -15,7 +15,4 @@ public interface AudienceService {
     Audience updateAudience(Audience audience);
 
     boolean deleteAudienceById(Long id);
-
-    List<Audience> saveAllAudiences(List<Audience> audiences);
-
 }

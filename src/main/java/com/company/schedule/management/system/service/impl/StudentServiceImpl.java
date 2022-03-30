@@ -61,15 +61,4 @@ public class StudentServiceImpl implements StudentService {
             throw new ServiceException(cause);
         }
     }
-
-    @Override
-    public List<Student> saveAllStudents(List<Student> students) {
-        List<Student> result = new ArrayList<>();
-        try {
-            students.forEach(student -> result.add(saveStudent(student)));
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
-        return result;
-    }
 }

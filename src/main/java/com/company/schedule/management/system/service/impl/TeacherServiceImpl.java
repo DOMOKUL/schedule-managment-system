@@ -61,15 +61,4 @@ public class TeacherServiceImpl implements TeacherService {
             throw new ServiceException(cause);
         }
     }
-
-    @Override
-    public List<Teacher> saveAllTeachers(List<Teacher> teachers) {
-        List<Teacher> result = new ArrayList<>();
-        try {
-            teachers.forEach(teacher -> result.add(saveTeacher(teacher)));
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
-        return result;
-    }
 }

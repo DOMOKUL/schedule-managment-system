@@ -60,15 +60,4 @@ public class LessonServiceImpl implements LessonService {
             throw new ServiceException(cause);
         }
     }
-
-    @Override
-    public List<Lesson> saveAllLessons(List<Lesson> lessons) {
-        List<Lesson> result = new ArrayList<>();
-        try {
-            lessons.forEach(lesson -> result.add(saveLesson(lesson)));
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
-        return result;
-    }
 }

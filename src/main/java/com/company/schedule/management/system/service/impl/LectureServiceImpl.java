@@ -61,15 +61,4 @@ public class LectureServiceImpl implements LectureService {
             throw new ServiceException(cause);
         }
     }
-
-    @Override
-    public List<Lecture> saveAllLectures(List<Lecture> lectures) {
-        List<Lecture> result = new ArrayList<>();
-        try {
-            lectures.forEach(lecture -> result.add(saveLecture(lecture)));
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
-        return result;
-    }
 }

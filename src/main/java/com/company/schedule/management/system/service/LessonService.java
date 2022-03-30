@@ -15,6 +15,4 @@ public interface LessonService {
     Lesson updateLesson(Lesson lesson);
 
     boolean deleteLessonById(Long id);
-
-    List<Lesson> saveAllLessons(List<Lesson> lessons);
 }

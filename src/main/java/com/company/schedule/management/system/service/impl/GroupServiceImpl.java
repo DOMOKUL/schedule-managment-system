@@ -62,15 +62,4 @@ public class GroupServiceImpl implements GroupService {
             throw new ServiceException(cause);
         }
     }
-
-    @Override
-    public List<Group> saveAllGroups(List<Group> groups) {
-        List<Group> result = new ArrayList<>();
-        try {
-            groups.forEach(group -> result.add(saveGroup(group)));
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
-        return result;
-    }
 }

@@ -15,6 +15,4 @@ public interface GroupService {
     Group updateGroup(Group group);
 
     boolean deleteGroupById(Long id);
-
-    List<Group> saveAllGroups(List<Group> groups);
 }

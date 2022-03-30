@@ -61,15 +61,4 @@ public class SubjectServiceImpl implements SubjectService {
             throw new ServiceException(cause);
         }
     }
-
-    @Override
-    public List<Subject> saveAllSubjects(List<Subject> subjects) {
-        List<Subject> result = new ArrayList<>();
-        try {
-            subjects.forEach(subject -> result.add(saveSubject(subject)));
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
-        return result;
-    }
 }

@@ -15,6 +15,4 @@ public interface FacultyService {
     Faculty updateFaculty(Faculty faculty);
 
     boolean deleteFacultyById(Long id);
-
-    List<Faculty> saveAllFaculties(List<Faculty> faculties);
 }

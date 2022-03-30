@@ -61,15 +61,4 @@ public class AudienceServiceImpl implements AudienceService {
             throw new ServiceException(cause);
         }
     }
-
-    @Override
-    public List<Audience> saveAllAudiences(List<Audience> audiences) {
-        List<Audience> result = new ArrayList<>();
-        try {
-            audiences.forEach(audience -> result.add(saveAudience(audience)));
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
-        return result;
-    }
 }

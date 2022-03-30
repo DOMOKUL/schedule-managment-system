@@ -15,6 +15,4 @@ public interface LectureService {
     Lecture updateLecture(Lecture lecture);
 
     boolean deleteLectureById(Long id);
-
-    List<Lecture> saveAllLectures(List<Lecture> lectures);
 }
