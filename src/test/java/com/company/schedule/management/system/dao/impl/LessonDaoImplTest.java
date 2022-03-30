@@ -23,7 +23,6 @@ class LessonDaoImplTest extends BaseIntegrationTest {
     private static final Lesson TEST_LESSON = new Lesson(10L, 10, LocalTime.of(13, 0, 0),
             Duration.ofMinutes(90L), TEST_SUBJECT, null);
 
-
     @Autowired
     private LessonDaoImpl lessonDao;
 
