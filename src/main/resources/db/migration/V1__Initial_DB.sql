@@ -1,12 +1,3 @@
-create sequence audience_sequence start 1 increment 1;
-create sequence faculty_sequence start 1 increment 1;
-create sequence group_sequence start 1 increment 1;
-create sequence lecture_sequence start 1 increment 1;
-create sequence lesson_sequence start 1 increment 1;
-create sequence student_sequence start 1 increment 1;
-create sequence subject_sequence start 1 increment 1;
-create sequence teacher_sequence start 1 increment 1;
-
 create table audiences
 (
     id       bigint not null,
