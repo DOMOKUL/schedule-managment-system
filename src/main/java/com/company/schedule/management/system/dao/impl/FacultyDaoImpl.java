@@ -4,6 +4,7 @@ import com.company.schedule.management.system.dao.FacultyDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityExistsException;
@@ -23,7 +24,7 @@ public class FacultyDaoImpl implements FacultyDao {
     public Faculty create(Faculty faculty) {
         try {
             entityManager.persist(faculty);
-        } catch (EntityExistsException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Faculty with id: " + faculty.getId() + " already exist", cause);
         }
         return faculty;

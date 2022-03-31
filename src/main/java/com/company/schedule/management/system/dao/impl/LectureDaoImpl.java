@@ -4,6 +4,7 @@ import com.company.schedule.management.system.dao.LectureDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Lecture;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityExistsException;
@@ -23,7 +24,7 @@ public class LectureDaoImpl implements LectureDao {
     public Lecture create(Lecture lecture) {
         try {
             entityManager.persist(lecture);
-        } catch (EntityExistsException cause) {
+        } catch (InvalidDataAccessApiUsageException cause) {
             throw new DaoException("Lecture with id: " + lecture.getId() + " already exist", cause);
         }
         return lecture;

@@ -4,12 +4,12 @@ import com.company.schedule.management.system.dao.GroupDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Group;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +23,7 @@ public class GroupDaoImpl implements GroupDao {
     public Group create(Group group) {
         try {
             entityManager.persist(group);
-        } catch (EntityExistsException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Group with id: " + group.getId() + " already exist", cause);
         }
         return group;
@@ -58,8 +58,7 @@ public class GroupDaoImpl implements GroupDao {
     public Group update(Group group) {
         try {
             entityManager.merge(group);
-
-        } catch (PersistenceException cause) {
+        } catch (ConstraintViolationException cause) {
             throw new DaoException("Update Error: " + cause.getMessage());
         }
         return group;

@@ -4,9 +4,9 @@ import com.company.schedule.management.system.dao.StudentDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Student;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
@@ -23,7 +23,7 @@ public class StudentDaoImpl implements StudentDao {
     public Student create(Student student) {
         try {
             entityManager.persist(student);
-        } catch (EntityExistsException cause) {
+        } catch (InvalidDataAccessApiUsageException cause) {
             throw new DaoException("Student with id: " + student.getId() + " already exist", cause);
         }
         return student;

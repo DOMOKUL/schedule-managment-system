@@ -4,9 +4,9 @@ import com.company.schedule.management.system.dao.LessonDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Lesson;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
@@ -23,7 +23,7 @@ public class LessonDaoImpl implements LessonDao {
     public Lesson create(Lesson lesson) {
         try {
             entityManager.persist(lesson);
-        } catch (EntityExistsException cause) {
+        } catch (InvalidDataAccessApiUsageException cause) {
             throw new DaoException("Lesson with id: " + lesson.getId() + " already exist", cause);
         }
         return lesson;

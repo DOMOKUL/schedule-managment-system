@@ -4,6 +4,7 @@ import com.company.schedule.management.system.dao.TeacherDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Teacher;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityExistsException;
@@ -23,7 +24,7 @@ public class TeacherDaoImpl implements TeacherDao {
     public Teacher create(Teacher teacher) {
         try {
             entityManager.persist(teacher);
-        } catch (EntityExistsException cause) {
+        } catch (InvalidDataAccessApiUsageException cause) {
             throw new DaoException("Teacher with id: " + teacher.getId() + " already exist", cause);
         }
         return teacher;

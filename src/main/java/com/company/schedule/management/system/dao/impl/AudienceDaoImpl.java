@@ -4,6 +4,7 @@ import com.company.schedule.management.system.dao.AudienceDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Audience;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityExistsException;
@@ -23,7 +24,7 @@ public class AudienceDaoImpl implements AudienceDao {
     public Audience create(Audience audience) {
         try {
             entityManager.persist(audience);
-        } catch (EntityExistsException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Audience with id: " + audience.getId() + " already exist", cause);
         }
         return audience;

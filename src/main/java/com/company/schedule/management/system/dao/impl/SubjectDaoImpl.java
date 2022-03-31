@@ -4,6 +4,7 @@ import com.company.schedule.management.system.dao.SubjectDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Subject;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityExistsException;
@@ -23,7 +24,7 @@ public class SubjectDaoImpl implements SubjectDao {
     public Subject create(Subject subject) {
         try {
             entityManager.persist(subject);
-        } catch (EntityExistsException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Subject with id: " + subject.getId() + " already exist", cause);
         }
         return subject;
