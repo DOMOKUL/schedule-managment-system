@@ -1,9 +1,10 @@
-package com.company.schedule.management.system.service.impl;
+package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.dao.FacultyDao;
-import com.company.schedule.management.system.model.Audience;
+import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
-import org.junit.jupiter.api.AfterEach;
+import com.company.schedule.management.system.service.exception.ServiceException;
+import com.company.schedule.management.system.service.impl.FacultyServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +15,18 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {FacultyServiceImpl.class})
 class FacultyServiceImplTest {
 
+    @Autowired
+    private FacultyServiceImpl facultyServiceImpl;
+
     @MockBean
     private FacultyDao facultyDao;
 
-    @Autowired
-    private FacultyServiceImpl facultyServiceImpl;
     private Faculty facultyWithId;
     private Faculty facultyWithoutId;
     private List<Faculty> facultyList;
@@ -37,27 +38,33 @@ class FacultyServiceImplTest {
         facultyList = List.of(facultyWithId);
     }
 
-    @AfterEach
-    public void tearDown() {
-        facultyWithId = facultyWithoutId = null;
-        facultyList = null;
-    }
-
     @Test
-    void saveFaculty() {
+    void saveFaculty_shouldReturnNewFaculty_whenInputCorrectData() {
         when(facultyDao.create(facultyWithoutId)).thenReturn(facultyWithId);
         facultyServiceImpl.saveFaculty(facultyWithoutId);
         verify(facultyDao, times(1)).create(facultyWithoutId);
     }
 
     @Test
-    void getFacultyById() {
+    void saveFaculty_shouldThrowException_whenInputExistFaculty() {
+        when(facultyDao.create(facultyWithId)).thenThrow(DaoException.class);
+        assertThrows(ServiceException.class, () -> facultyServiceImpl.saveFaculty(facultyWithId));
+    }
+
+    @Test
+    void getFacultyById_shouldReturnFaculty_whenInputExistId() {
         when(facultyDao.findById(1L)).thenReturn(Optional.ofNullable(facultyWithId));
         assertThat(facultyServiceImpl.getFacultyById(facultyWithId.getId())).isEqualTo(facultyWithId);
     }
 
     @Test
-    void getAllFaculties() {
+    void getFacultyById_shouldThrowException_whenInputNonExistFacultyId() {
+        when(facultyDao.findById(facultyWithId.getId())).thenThrow(DaoException.class);
+        assertThrows(DaoException.class, () -> facultyServiceImpl.getFacultyById(facultyWithId.getId()));
+    }
+
+    @Test
+    void getAllFaculties_shouldReturnListFaculties() {
         when(facultyDao.findAll()).thenReturn(facultyList);
         List<Faculty> faculties = facultyServiceImpl.getAllFaculties();
 
@@ -66,7 +73,7 @@ class FacultyServiceImplTest {
     }
 
     @Test
-    void updateFaculty() {
+    void updateFaculty_shouldReturnUpdatedFaculty_whenInputExistFaculty() {
         Faculty expected = new Faculty(1L, "IT", null, null);
 
         when(facultyDao.update(expected)).thenReturn(expected);
@@ -77,11 +84,24 @@ class FacultyServiceImplTest {
     }
 
     @Test
-    void deleteFacultyById() {
+    void updateFaculty_shouldThrowException_whenInputNonExistFaculty() {
+        when(facultyDao.update(facultyWithId)).thenThrow(DaoException.class);
+        assertThrows(ServiceException.class, () -> facultyServiceImpl.updateFaculty(facultyWithId));
+    }
+
+    @Test
+    void deleteFacultyById_shouldReturnTrue_whenInputExistFaculty() {
         when(facultyDao.deleteById(facultyWithId.getId())).thenReturn(true);
 
         assertTrue(facultyServiceImpl.deleteFacultyById(facultyWithId.getId()));
 
         verify(facultyDao, times(1)).deleteById(facultyWithId.getId());
+    }
+
+    @Test
+    void deleteFacultyById_shouldThrowException_whenInputNonExistFacultyId() {
+        when(facultyDao.deleteById(facultyWithId.getId())).thenThrow(DaoException.class);
+
+        assertThrows(ServiceException.class, () -> facultyServiceImpl.deleteFacultyById(facultyWithId.getId()));
     }
 }

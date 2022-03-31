@@ -1,10 +1,12 @@
-package com.company.schedule.management.system.service.impl;
+package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.dao.StudentDao;
+import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.model.Student;
-import org.junit.jupiter.api.AfterEach;
+import com.company.schedule.management.system.service.exception.ServiceException;
+import com.company.schedule.management.system.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {StudentServiceImpl.class})
@@ -25,11 +26,11 @@ class StudentServiceImplTest {
     private static final Faculty TEST_FACULTY = new Faculty(1L, "IKBSP", null, null);
     private static final Group TEST_GROUP = new Group(1L, "BSBO-04-20", TEST_FACULTY, null, null);
 
-    @MockBean
-    StudentDao studentDao;
-
     @Autowired
     StudentServiceImpl studentServiceImpl;
+
+    @MockBean
+    StudentDao studentDao;
 
     private Student studentWithId;
     private Student studentWithoutId;
@@ -42,27 +43,34 @@ class StudentServiceImplTest {
         studentList = List.of(studentWithId);
     }
 
-    @AfterEach
-    public void tearDown() {
-        studentWithId = null;
-        studentList = null;
-    }
-
     @Test
-    void saveStudent() {
+    void saveStudent_shouldReturnStudent_whenInputCorrectValue() {
         when(studentDao.create(studentWithoutId)).thenReturn(studentWithId);
         studentServiceImpl.saveStudent(studentWithoutId);
         verify(studentDao, times(1)).create(new Student(1, TEST_GROUP));
     }
 
     @Test
-    void getStudentById() {
+    void saveStudent_shouldThrowException_whenInputExistStudent() {
+        when(studentDao.create(studentWithId)).thenThrow(DaoException.class);
+        assertThrows(ServiceException.class, () -> studentServiceImpl.saveStudent(studentWithId));
+    }
+
+    @Test
+    void getStudentById_shouldReturnStudent_whenInputExistId() {
         when(studentDao.findById(1L)).thenReturn(Optional.ofNullable(studentWithId));
         assertThat(studentServiceImpl.getStudentById(studentWithId.getId())).isEqualTo(studentWithId);
     }
 
     @Test
-    void getAllStudents() {
+    void getStudentById_shouldThrowException_whenInputNonExistStudent() {
+        when(studentDao.findById(studentWithId.getId())).thenThrow(DaoException.class);
+        assertThrows(DaoException.class, () -> studentServiceImpl.getStudentById(studentWithId.getId()));
+        //TODO странная штука
+    }
+
+    @Test
+    void getAllStudents_shouldReturnListStudents() {
         when(studentDao.findAll()).thenReturn(studentList);
         List<Student> students = studentServiceImpl.getAllStudents();
 
@@ -71,7 +79,7 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void updateStudent() {
+    void updateStudent_shouldReturnUpdatedStudent_whenInputCorrectStudent() {
         Student expected = new Student(1L, 2, TEST_GROUP);
 
         when(studentDao.update(expected)).thenReturn(new Student(1L, 2, TEST_GROUP));
@@ -82,7 +90,13 @@ class StudentServiceImplTest {
     }
 
     @Test
-    void deleteStudentById() {
+    void updateStudent_shouldThrowException_whenInputNonExistStudent() {
+        when(studentDao.update(studentWithId)).thenThrow(DaoException.class);
+        assertThrows(ServiceException.class, () -> studentServiceImpl.updateStudent(studentWithId));
+    }
+
+    @Test
+    void deleteStudentById_shouldReturnTrue_whenInputExistStudentId() {
         when(studentDao.deleteById(studentWithId.getId())).thenReturn(true);
 
         assertTrue(studentServiceImpl.deleteStudentById(studentWithId.getId()));
@@ -90,4 +104,10 @@ class StudentServiceImplTest {
         verify(studentDao, times(1)).deleteById(studentWithId.getId());
     }
 
+    @Test
+    void deleteLessonById_shouldThrowException_whenInputNonExistLessonId() {
+        when(studentDao.deleteById(studentWithId.getId())).thenThrow(DaoException.class);
+
+        assertThrows(ServiceException.class, () -> studentServiceImpl.deleteStudentById(studentWithId.getId()));
+    }
 }

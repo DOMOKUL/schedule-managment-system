@@ -1,7 +1,10 @@
-package com.company.schedule.management.system.service.impl;
+package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.dao.AudienceDao;
+import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Audience;
+import com.company.schedule.management.system.service.exception.ServiceException;
+import com.company.schedule.management.system.service.impl.AudienceServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,23 +38,39 @@ class AudienceServiceImplTest {
     }
 
     @Test
-    void saveAudience() {
+    void saveAudience_shouldReturnAudience_whenInputCorrectValue() {
         when(audienceDao.create(audienceWithoutId)).thenReturn(audienceWithId);
         audienceServiceImpl.saveAudience(audienceWithoutId);
         verify(audienceDao, times(1)).create(audienceWithoutId);
     }
 
     @Test
-    void getAudienceById() {
-        when(audienceDao.findById(1L)).thenReturn(Optional.ofNullable(audienceWithId));
-
-        Audience testAudience = audienceServiceImpl.getAudienceById(1L);
-        assertNotNull(testAudience);
-        assertEquals(10, testAudience.getNumber());
+    void saveAudience_shouldThrowException_whenInputExistAudience() {
+        when(audienceDao.create(audienceWithId)).thenThrow(DaoException.class);
+        assertThrows(ServiceException.class, () -> audienceServiceImpl.saveAudience(audienceWithId));
+        //TODO дописать тесты для exception
     }
 
     @Test
-    void getAllAudiences() {
+    void getAudienceById_shouldReturnAudience_whenInputExistId() {
+        when(audienceDao.findById(1L)).thenReturn(Optional.ofNullable(audienceWithId));
+
+        Audience testAudience = audienceServiceImpl.getAudienceById(1L);
+        assertAll(
+                () -> assertNotNull(testAudience),
+                () -> assertEquals(10, testAudience.getNumber())
+        );
+    }
+
+    @Test
+    void getAudienceById_shouldThrowException_whenInputNonExistAudience() {
+        when(audienceDao.findById(audienceWithId.getId())).thenThrow(DaoException.class);
+        assertThrows(DaoException.class, () -> audienceServiceImpl.getAudienceById(audienceWithId.getId()));
+        //TODO странная штука
+    }
+
+    @Test
+    void getAllAudiences_shouldReturnListAudiences() {
         when(audienceDao.findAll()).thenReturn(audienceList);
         List<Audience> audiences = audienceServiceImpl.getAllAudiences();
 
@@ -60,7 +79,7 @@ class AudienceServiceImplTest {
     }
 
     @Test
-    void updateAudience() {
+    void updateAudience_shouldReturnUpdatedAudience_whenInputCorrectAudience() {
         Audience expected = new Audience(1L, 100, 128, null);
 
         when(audienceDao.update(expected)).thenReturn(expected);
@@ -71,11 +90,24 @@ class AudienceServiceImplTest {
     }
 
     @Test
-    void deleteAudienceById() {
+    void updateAudience_shouldThrowException_whenInputNonExistAudience() {
+        when(audienceDao.update(audienceWithId)).thenThrow(DaoException.class);
+        assertThrows(ServiceException.class, () -> audienceServiceImpl.updateAudience(audienceWithId));
+    }
+
+    @Test
+    void deleteAudienceById_shouldReturnTrue_whenInputExistAudienceId() {
         when(audienceDao.deleteById(audienceWithId.getId())).thenReturn(true);
 
         assertTrue(audienceServiceImpl.deleteAudienceById(audienceWithId.getId()));
 
         verify(audienceDao, times(1)).deleteById(audienceWithId.getId());
+    }
+
+    @Test
+    void deleteAudienceById_shouldThrowException_whenInputNonExistAudienceId() {
+        when(audienceDao.deleteById(audienceWithId.getId())).thenThrow(DaoException.class);
+
+        assertThrows(ServiceException.class, () -> audienceServiceImpl.deleteAudienceById(audienceWithId.getId()));
     }
 }

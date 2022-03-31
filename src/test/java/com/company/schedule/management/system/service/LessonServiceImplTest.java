@@ -1,26 +1,24 @@
-package com.company.schedule.management.system.service.impl;
+package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.dao.LessonDao;
-import com.company.schedule.management.system.model.Lecture;
+import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.model.Subject;
-import com.company.schedule.management.system.model.Teacher;
-import org.junit.jupiter.api.AfterEach;
+import com.company.schedule.management.system.service.exception.ServiceException;
+import com.company.schedule.management.system.service.impl.LessonServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {LessonServiceImpl.class})
@@ -48,27 +46,34 @@ class LessonServiceImplTest {
         lessonList = List.of(lessonWithId);
     }
 
-    @AfterEach
-    public void tearDown() {
-        lessonWithId = lessonWithoutId = null;
-        lessonList = null;
-    }
-
     @Test
-    void saveLesson() {
+    void saveLesson_shouldReturnLesson_whenInputCorrectValue() {
         when(lessonDao.create(lessonWithoutId)).thenReturn(lessonWithId);
         lessonServiceImpl.saveLesson(lessonWithoutId);
         verify(lessonDao, times(1)).create(lessonWithoutId);
     }
 
     @Test
-    void getLessonById() {
+    void saveLesson_shouldThrowException_whenInputExistLesson() {
+        when(lessonDao.create(lessonWithId)).thenThrow(DaoException.class);
+        assertThrows(ServiceException.class, () -> lessonServiceImpl.saveLesson(lessonWithId));
+    }
+
+    @Test
+    void getLessonById_shouldReturnLesson_whenInputExistId() {
         when(lessonDao.findById(1L)).thenReturn(Optional.ofNullable(lessonWithId));
         assertThat(lessonServiceImpl.getLessonById(lessonWithId.getId())).isEqualTo(lessonWithId);
     }
 
     @Test
-    void getAllLessons() {
+    void getLessonById_shouldThrowException_whenInputNonExistLesson() {
+        when(lessonDao.findById(lessonWithId.getId())).thenThrow(DaoException.class);
+        assertThrows(DaoException.class, () -> lessonServiceImpl.getLessonById(lessonWithId.getId()));
+        //TODO странная штука
+    }
+
+    @Test
+    void getAllLessons_shouldReturnListLessons() {
         when(lessonDao.findAll()).thenReturn(lessonList);
         List<Lesson> lessons = lessonServiceImpl.getAllLessons();
 
@@ -77,7 +82,7 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void updateLesson() {
+    void updateLesson_shouldReturnUpdatedLesson_whenInputCorrectLesson() {
         Lesson expected = new Lesson(1L, 2, LocalTime.of(13, 0, 0),
                 Duration.ofMinutes(90), TEST_SUBJECT, null);
 
@@ -89,11 +94,24 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void deleteLessonById() {
+    void updateLesson_shouldThrowException_whenInputNonExistLesson() {
+        when(lessonDao.update(lessonWithId)).thenThrow(DaoException.class);
+        assertThrows(ServiceException.class, () -> lessonServiceImpl.updateLesson(lessonWithId));
+    }
+
+    @Test
+    void deleteLessonById_shouldReturnTrue_whenInputExistLessonId() {
         when(lessonDao.deleteById(lessonWithId.getId())).thenReturn(true);
 
         assertTrue(lessonServiceImpl.deleteLessonById(lessonWithId.getId()));
 
         verify(lessonDao, times(1)).deleteById(lessonWithId.getId());
+    }
+
+    @Test
+    void deleteLessonById_shouldThrowException_whenInputNonExistLessonId() {
+        when(lessonDao.deleteById(lessonWithId.getId())).thenThrow(DaoException.class);
+
+        assertThrows(ServiceException.class, () -> lessonServiceImpl.deleteLessonById(lessonWithId.getId()));
     }
 }
