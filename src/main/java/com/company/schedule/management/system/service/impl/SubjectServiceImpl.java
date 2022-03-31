@@ -5,21 +5,18 @@ import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.service.SubjectService;
 import com.company.schedule.management.system.service.exception.ServiceException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
 
-    private final SubjectDao subjectDao;
-
     @Autowired
-    public SubjectServiceImpl(SubjectDao subjectDao) {
-        this.subjectDao = subjectDao;
-    }
+    private final SubjectDao subjectDao;
 
     @Override
     public Subject saveSubject(Subject subject) {
@@ -58,7 +55,7 @@ public class SubjectServiceImpl implements SubjectService {
         try {
             return subjectDao.deleteById(id);
         } catch (DaoException cause) {
-            throw new ServiceException(cause);
+            throw new ServiceException("Subject doesn't delete ", cause);
         }
     }
 }

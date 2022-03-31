@@ -5,21 +5,18 @@ import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Teacher;
 import com.company.schedule.management.system.service.TeacherService;
 import com.company.schedule.management.system.service.exception.ServiceException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
 
-    private final TeacherDao teacherDao;
-
     @Autowired
-    public TeacherServiceImpl(TeacherDao teacherDao) {
-        this.teacherDao = teacherDao;
-    }
+    private final TeacherDao teacherDao;
 
     @Override
     public Teacher saveTeacher(Teacher teacher) {
@@ -58,7 +55,7 @@ public class TeacherServiceImpl implements TeacherService {
         try {
             return teacherDao.deleteById(id);
         } catch (DaoException cause) {
-            throw new ServiceException(cause);
+            throw new ServiceException("Teacher doesn't delete ", cause);
         }
     }
 }

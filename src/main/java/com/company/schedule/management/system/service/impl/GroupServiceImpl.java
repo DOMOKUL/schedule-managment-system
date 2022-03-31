@@ -3,24 +3,20 @@ package com.company.schedule.management.system.service.impl;
 import com.company.schedule.management.system.dao.GroupDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Group;
-import com.company.schedule.management.system.model.Student;
 import com.company.schedule.management.system.service.GroupService;
 import com.company.schedule.management.system.service.exception.ServiceException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
-    private final GroupDao groupDao;
-
     @Autowired
-    public GroupServiceImpl(GroupDao groupDao) {
-        this.groupDao = groupDao;
-    }
+    private final GroupDao groupDao;
 
     @Override
     public Group saveGroup(Group group) {
@@ -59,7 +55,7 @@ public class GroupServiceImpl implements GroupService {
         try {
             return groupDao.deleteById(id);
         } catch (DaoException cause) {
-            throw new ServiceException(cause);
+            throw new ServiceException("Group doesn't delete ", cause);
         }
     }
 }

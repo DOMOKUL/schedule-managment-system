@@ -2,27 +2,21 @@ package com.company.schedule.management.system.service.impl;
 
 import com.company.schedule.management.system.dao.LessonDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
-import com.company.schedule.management.system.model.Group;
-import com.company.schedule.management.system.model.Lecture;
 import com.company.schedule.management.system.model.Lesson;
-import com.company.schedule.management.system.model.Student;
 import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.exception.ServiceException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
 
-    private final LessonDao lessonDao;
-
     @Autowired
-    public LessonServiceImpl(LessonDao lessonDao) {
-        this.lessonDao = lessonDao;
-    }
+    private final LessonDao lessonDao;
 
     @Override
     public Lesson saveLesson(Lesson lesson) {
@@ -57,7 +51,7 @@ public class LessonServiceImpl implements LessonService {
         try {
             return lessonDao.deleteById(id);
         } catch (DaoException cause) {
-            throw new ServiceException(cause);
+            throw new ServiceException("Lesson doesn't delete ", cause);
         }
     }
 }

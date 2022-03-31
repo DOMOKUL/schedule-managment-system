@@ -5,21 +5,18 @@ import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.service.AudienceService;
 import com.company.schedule.management.system.service.exception.ServiceException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AudienceServiceImpl implements AudienceService {
 
-    private final AudienceDao audienceDao;
-
     @Autowired
-    public AudienceServiceImpl(AudienceDao audienceDao) {
-        this.audienceDao = audienceDao;
-    }
+    private final AudienceDao audienceDao;
 
     @Override
     public Audience saveAudience(Audience audience) {
@@ -58,7 +55,7 @@ public class AudienceServiceImpl implements AudienceService {
         try {
             return audienceDao.deleteById(id);
         } catch (DaoException cause) {
-            throw new ServiceException(cause);
+            throw new ServiceException("Audience doesn't delete ", cause);
         }
     }
 }

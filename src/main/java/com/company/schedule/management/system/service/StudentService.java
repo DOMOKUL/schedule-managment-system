@@ -1,6 +1,5 @@
 package com.company.schedule.management.system.service;
 
-import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.model.Student;
 
 import java.util.List;
