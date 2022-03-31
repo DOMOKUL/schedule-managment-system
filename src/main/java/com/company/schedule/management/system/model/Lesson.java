@@ -20,11 +20,7 @@ import java.util.Objects;
 public class Lesson {
 
     @Id
-    @SequenceGenerator(name = "lesson_sequence",
-            sequenceName = "lesson_sequence",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "lesson_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer number;
     private LocalTime startTime;

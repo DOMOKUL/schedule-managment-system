@@ -18,11 +18,7 @@ import java.util.Objects;
 public class Subject {
 
     @Id
-    @SequenceGenerator(name = "subject_sequence",
-            sequenceName = "subject_sequence",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "subject_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)

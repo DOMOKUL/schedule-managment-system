@@ -19,11 +19,7 @@ import java.util.Objects;
 public class Teacher extends Person {
 
     @Id
-    @SequenceGenerator(name = "teacher_sequence",
-            sequenceName = "teacher_sequence",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "teacher_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id", nullable = false)

@@ -18,11 +18,7 @@ import java.util.Objects;
 public class Lecture {
 
     @Id
-    @SequenceGenerator(name = "lecture_sequence",
-            sequenceName = "lecture_sequence",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "lecture_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer number;
     private Date date;

@@ -18,15 +18,11 @@ import java.util.Objects;
 public class Audience {
 
     @Id
-    @SequenceGenerator(name = "audience_sequence",
-            sequenceName = "audience_sequence",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "audience_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer number;
     private Integer capacity;
-    @OneToMany(mappedBy = "audience", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "audience", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Lecture> lectures;
 
     public Audience(Integer number, Integer capacity, List<Lecture> lectures) {
@@ -51,5 +47,10 @@ public class Audience {
         if (o == null || getClass() != o.getClass()) return false;
         Audience audience = (Audience) o;
         return Objects.equals(id, audience.id) && Objects.equals(number, audience.number) && Objects.equals(capacity, audience.capacity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, number, capacity, lectures);
     }
 }

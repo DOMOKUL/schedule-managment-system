@@ -18,11 +18,7 @@ import java.util.Objects;
 public class Group {
 
     @Id
-    @SequenceGenerator(name = "group_sequence",
-            sequenceName = "group_sequence",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "group_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
