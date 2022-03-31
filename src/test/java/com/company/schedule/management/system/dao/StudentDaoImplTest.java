@@ -1,11 +1,14 @@
-package com.company.schedule.management.system.dao.impl;
+package com.company.schedule.management.system.dao;
 
+import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.dao.impl.StudentDaoImpl;
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.model.Student;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +36,20 @@ class StudentDaoImplTest extends BaseIntegrationTest {
     }
 
     @Test
+    void create_shouldThrowException_whenInputExistId() {
+        assertThrows(InvalidDataAccessApiUsageException.class, () ->
+                studentDao.create(TEST_STUDENT));
+    }
+
+    @Test
     void findById_shouldReturnCorrectStudent_whenInputExistId() {
         assertEquals(TEST_STUDENT, studentDao.findById(10L).get());
+    }
+
+    @Test
+    void findById_shouldThrowDaoException_whenInputNonExistentStudentId() {
+        assertThrows(DaoException.class, () ->
+                studentDao.findById(10000L));
     }
 
     @Test
@@ -53,5 +68,11 @@ class StudentDaoImplTest extends BaseIntegrationTest {
     void delete_shouldDeleteStudent_whenInputExistId() {
         boolean actual = studentDao.deleteById(10L);
         assertTrue(actual);
+    }
+
+    @Test
+    void delete_shouldThrowDaoException_whenInputNotExistStudentId() {
+        assertThrows(DaoException.class, () ->
+                studentDao.deleteById(100L));
     }
 }

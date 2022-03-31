@@ -1,7 +1,7 @@
-package com.company.schedule.management.system.dao.impl;
+package com.company.schedule.management.system.dao;
 
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +11,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @Transactional
+
 public class BaseIntegrationTest {
 
     @Container
@@ -24,8 +25,8 @@ public class BaseIntegrationTest {
         registry.add("spring.datasource.password", CONTAINER::getPassword);
     }
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void beforeAll() {
         CONTAINER.start();
     }
 }

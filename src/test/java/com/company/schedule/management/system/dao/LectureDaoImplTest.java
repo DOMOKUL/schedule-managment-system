@@ -1,9 +1,12 @@
-package com.company.schedule.management.system.dao.impl;
+package com.company.schedule.management.system.dao;
 
+import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.dao.impl.LectureDaoImpl;
 import com.company.schedule.management.system.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,11 +51,29 @@ class LectureDaoImplTest extends BaseIntegrationTest {
         Lecture expected = new Lecture(1L, 10, Date.valueOf("2019-01-26"), TEST_AUDIENCE, TEST_GROUP,
                 TEST_LESSON, TEST_TEACHER);
         assertEquals(expected, actual);
+        //same
+    }
+
+    @Test
+    void create_shouldThrowException_whenInputExistId() {
+        Lecture testLecture = new Lecture(10L, 10, Date.valueOf("1988-09-29"),
+                TEST_AUDIENCE, TEST_GROUP,
+                new Lesson(10L, 10, LocalTime.of(13, 0, 0),
+                        Duration.ofMinutes(90L), TEST_SUBJECT, null),
+                new Teacher(10L, TEST_FACULTY, null));
+        assertThrows(InvalidDataAccessApiUsageException.class, () ->
+                lectureDao.create(testLecture));
     }
 
     @Test
     void findById_shouldReturnCorrectLecture_whenInputExistId() {
         assertEquals(TEST_LECTURE, lectureDao.findById(10L).get());
+    }
+
+    @Test
+    void findById_shouldThrowDaoException_whenInputNonExistentLectureId() {
+        assertThrows(DaoException.class, () ->
+                lectureDao.findById(10000L));
     }
 
     @Test
@@ -69,7 +90,13 @@ class LectureDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void delete_shouldDeleteLecture_whenInputExistId() {
-        boolean actual = lectureDao.deleteById(10L);
+        boolean actual = lectureDao.deleteById(TEST_LECTURE.getId());
         assertTrue(actual);
+    }
+
+    @Test
+    void delete_shouldThrowDaoException_whenInputNotExistLectureId() {
+        assertThrows(DaoException.class, () ->
+                lectureDao.deleteById(100L));
     }
 }

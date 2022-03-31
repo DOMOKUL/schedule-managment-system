@@ -1,10 +1,13 @@
-package com.company.schedule.management.system.dao.impl;
+package com.company.schedule.management.system.dao;
 
+import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.dao.impl.LessonDaoImpl;
 import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.model.Subject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +37,20 @@ class LessonDaoImplTest extends BaseIntegrationTest {
     }
 
     @Test
+    void create_shouldThrowException_whenInputExistId() {
+        assertThrows(InvalidDataAccessApiUsageException.class, () ->
+                lessonDao.create(TEST_LESSON));
+    }
+
+    @Test
     void findById_shouldReturnCorrectLesson_whenInputExistId() {
         assertEquals(TEST_LESSON, lessonDao.findById(10L).get());
+    }
+
+    @Test
+    void findById_shouldThrowDaoException_whenInputNonExistentLessonId() {
+        assertThrows(DaoException.class, () ->
+                lessonDao.findById(10000L));
     }
 
     @Test
@@ -52,7 +67,13 @@ class LessonDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void delete_shouldDeleteLesson_whenInputExistId() {
-        boolean actual = lessonDao.deleteById(10L);
+        boolean actual = lessonDao.deleteById(TEST_LESSON.getId());
         assertTrue(actual);
+    }
+
+    @Test
+    void delete_shouldThrowDaoException_whenInputNotExistLessonId() {
+        assertThrows(DaoException.class, () ->
+                lessonDao.deleteById(100L));
     }
 }

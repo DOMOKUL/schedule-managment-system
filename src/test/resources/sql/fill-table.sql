@@ -1,12 +1,3 @@
-create sequence audience_sequence start 1 increment 1;
-create sequence faculty_sequence start 1 increment 1;
-create sequence group_sequence start 1 increment 1;
-create sequence lecture_sequence start 1 increment 1;
-create sequence lesson_sequence start 1 increment 1;
-create sequence student_sequence start 1 increment 1;
-create sequence subject_sequence start 1 increment 1;
-create sequence teacher_sequence start 1 increment 1;
-
 drop table if exists audiences cascade;
 
 drop table if exists faculties cascade;
@@ -69,16 +60,16 @@ create table teachers
 
 alter table audiences
     add column id       bigserial not null primary key,
-    add column number   integer,
+    add column number   integer unique,
     add column capacity integer;
 
 alter table subjects
     add column id   bigserial not null primary key,
-    add column name varchar(128);
+    add column name varchar(128) unique;
 
 alter table faculties
     add column id   bigserial not null primary key,
-    ADD COLUMN name varchar(128);
+    ADD COLUMN name varchar(128) unique;
 
 alter table lessons
     add column id         bigserial not null primary key,
@@ -91,7 +82,7 @@ alter table lessons
 
 alter table groups
     add column id         bigserial not null primary key,
-    add column name       varchar(128),
+    add column name       varchar(128) unique,
     add column faculty_id bigint references faculties (id) ON
         DELETE
         CASCADE;
