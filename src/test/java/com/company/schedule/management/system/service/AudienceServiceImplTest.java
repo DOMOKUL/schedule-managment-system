@@ -48,7 +48,6 @@ class AudienceServiceImplTest {
     void saveAudience_shouldThrowException_whenInputExistAudience() {
         when(audienceDao.create(audienceWithId)).thenThrow(DaoException.class);
         assertThrows(ServiceException.class, () -> audienceServiceImpl.saveAudience(audienceWithId));
-        //TODO дописать тесты для exception
     }
 
     @Test

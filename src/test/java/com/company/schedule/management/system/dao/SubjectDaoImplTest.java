@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,8 +45,7 @@ class SubjectDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void findById_shouldThrowDaoException_whenInputNonExistentSubjectId() {
-        assertThrows(DaoException.class, () ->
-                subjectDao.findById(10000L));
+        assertEquals(Optional.empty(), subjectDao.findById(10000L));
     }
 
     @Test

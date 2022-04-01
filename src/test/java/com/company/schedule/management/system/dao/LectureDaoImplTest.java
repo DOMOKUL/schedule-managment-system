@@ -14,6 +14,7 @@ import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,18 +52,12 @@ class LectureDaoImplTest extends BaseIntegrationTest {
         Lecture expected = new Lecture(1L, 10, Date.valueOf("2019-01-26"), TEST_AUDIENCE, TEST_GROUP,
                 TEST_LESSON, TEST_TEACHER);
         assertEquals(expected, actual);
-        //same
     }
 
     @Test
     void create_shouldThrowException_whenInputExistId() {
-        Lecture testLecture = new Lecture(10L, 10, Date.valueOf("1988-09-29"),
-                TEST_AUDIENCE, TEST_GROUP,
-                new Lesson(10L, 10, LocalTime.of(13, 0, 0),
-                        Duration.ofMinutes(90L), TEST_SUBJECT, null),
-                new Teacher(10L, TEST_FACULTY, null));
         assertThrows(InvalidDataAccessApiUsageException.class, () ->
-                lectureDao.create(testLecture));
+                lectureDao.create(TEST_LECTURE));
     }
 
     @Test
@@ -72,8 +67,7 @@ class LectureDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void findById_shouldThrowDaoException_whenInputNonExistentLectureId() {
-        assertThrows(DaoException.class, () ->
-                lectureDao.findById(10000L));
+        assertEquals(Optional.empty(), lectureDao.findById(10000L));
     }
 
     @Test
@@ -86,12 +80,6 @@ class LectureDaoImplTest extends BaseIntegrationTest {
     void update_shouldUpdateLecture_whenInputExistId() {
         Lecture actual = lectureDao.update(TEST_LECTURE);
         assertEquals(TEST_LECTURE, actual);
-    }
-
-    @Test
-    void delete_shouldDeleteLecture_whenInputExistId() {
-        boolean actual = lectureDao.deleteById(TEST_LECTURE.getId());
-        assertTrue(actual);
     }
 
     @Test

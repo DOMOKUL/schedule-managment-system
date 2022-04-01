@@ -5,7 +5,7 @@ import com.company.schedule.management.system.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,14 +41,12 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
         Audience actual = audienceDao.create(new Audience(null, null, null));
         Audience expected = new Audience(1L, null, null, null);
         assertEquals(expected, actual);
-        //TODO dankos i need help
     }
 
     @Test
     void create_shouldThrowException_whenInputExistId() {
-        Audience testAudience = new Audience(10, null, null);
-        assertThrows(DataIntegrityViolationException.class, () ->
-                audienceDao.create(testAudience));
+        assertThrows(InvalidDataAccessApiUsageException.class, () ->
+                audienceDao.create(TEST_AUDIENCE));
     }
 
     @Test
@@ -58,8 +57,7 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void findById_shouldThrowDaoException_whenInputNonExistentAudienceId() {
-        assertThrows(DaoException.class, () ->
-                audienceDao.findById(10000L));
+        assertEquals(Optional.empty(), audienceDao.findById(10000L));
     }
 
     @Test
@@ -72,13 +70,6 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
     void update_shouldUpdateAudience_whenInputExistId() {
         Audience actual = audienceDao.update(TEST_AUDIENCE);
         assertEquals(TEST_AUDIENCE, actual);
-    }
-
-    @Test
-    void update_shouldThrowDaoException_whenInputNotExistAudienceId() {
-        Audience testAudience = new Audience(10, null, null);
-        assertThrows(DaoException.class, () ->
-                audienceDao.update(testAudience));
     }
 
     @Test

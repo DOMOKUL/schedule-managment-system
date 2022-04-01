@@ -8,10 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,14 +33,12 @@ class GroupDaoImplTest extends BaseIntegrationTest {
         Group actual = groupDao.create(new Group(null, TEST_FACULTY, null, null));
         Group expected = new Group(1L, null, TEST_FACULTY, null, null);
         assertEquals(expected, actual);
-        //same
     }
 
     @Test
     void create_shouldThrowException_whenInputExistId() {
-        Group testGroup = new Group("BSBO-04-20", TEST_FACULTY, null, null);
-        assertThrows(DataIntegrityViolationException.class, () ->
-                groupDao.create(testGroup));
+        assertThrows(InvalidDataAccessApiUsageException.class, () ->
+                groupDao.create(TEST_GROUP));
     }
 
     @Test
@@ -49,8 +49,7 @@ class GroupDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void findById_shouldThrowDaoException_whenInputNonExistentGroupId() {
-        assertThrows(DaoException.class, () ->
-                groupDao.findById(10000L));
+        assertEquals(Optional.empty(), groupDao.findById(10000L));
     }
 
     @Test
@@ -63,13 +62,6 @@ class GroupDaoImplTest extends BaseIntegrationTest {
     void update_shouldUpdateGroup_whenInputExistId() {
         Group actual = groupDao.update(TEST_GROUP);
         assertEquals(TEST_GROUP, actual);
-    }
-
-    @Test
-    void update_shouldThrowDaoException_whenInputNotExistGroupId() {
-        Group testGroup = new Group("BSBO-04-20", TEST_FACULTY, null, null);
-        assertThrows(DataIntegrityViolationException.class, () ->
-                groupDao.update(testGroup));
     }
 
     @Test

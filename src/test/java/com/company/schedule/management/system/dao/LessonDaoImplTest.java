@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,8 +50,7 @@ class LessonDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void findById_shouldThrowDaoException_whenInputNonExistentLessonId() {
-        assertThrows(DaoException.class, () ->
-                lessonDao.findById(10000L));
+        assertEquals(Optional.empty(), lessonDao.findById(10000L));
     }
 
     @Test

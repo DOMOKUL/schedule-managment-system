@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,8 +49,7 @@ class StudentDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void findById_shouldThrowDaoException_whenInputNonExistentStudentId() {
-        assertThrows(DaoException.class, () ->
-                studentDao.findById(10000L));
+        assertEquals(Optional.empty(), studentDao.findById(10000L));
     }
 
     @Test

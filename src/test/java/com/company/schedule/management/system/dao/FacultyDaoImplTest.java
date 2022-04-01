@@ -7,10 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,9 +35,8 @@ class FacultyDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void create_shouldThrowException_whenInputExistId() {
-        Faculty testFaculty = new Faculty("IKBSP", null, null);
-        assertThrows(DataIntegrityViolationException.class, () ->
-                facultyDao.create(testFaculty));
+        assertThrows(InvalidDataAccessApiUsageException.class, () ->
+                facultyDao.create(TEST_FACULTY));
     }
 
     @Test
@@ -46,8 +47,7 @@ class FacultyDaoImplTest extends BaseIntegrationTest {
 
     @Test
     void findById_shouldThrowDaoException_whenInputNonExistentFacultyId() {
-        assertThrows(DaoException.class, () ->
-                facultyDao.findById(10000L));
+        assertEquals(Optional.empty(), facultyDao.findById(10000L));
     }
 
     @Test
@@ -60,13 +60,6 @@ class FacultyDaoImplTest extends BaseIntegrationTest {
     void update_shouldUpdateFaculty_whenInputExistId() {
         Faculty actual = facultyDao.update(TEST_FACULTY);
         assertEquals(TEST_FACULTY, actual);
-    }
-
-    @Test
-    void update_shouldThrowDaoException_whenInputNotExistFacultyId() {
-        Faculty testFaculty = new Faculty("IKBSP", null, null);
-        assertThrows(DaoException.class, () ->
-                facultyDao.update(testFaculty));
     }
 
     @Test
