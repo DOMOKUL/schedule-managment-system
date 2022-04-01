@@ -1,7 +1,9 @@
 package com.company.schedule.managment.system.dao.impl;
 
-import com.company.schedule.managment.system.model.Audience;
+import com.company.schedule.managment.system.models.Audience;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
 
 import java.util.List;
 
