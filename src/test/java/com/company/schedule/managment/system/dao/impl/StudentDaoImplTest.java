@@ -1,45 +1,23 @@
 package com.company.schedule.managment.system.dao.impl;
 
-import com.company.schedule.managment.system.models.Faculty;
-import com.company.schedule.managment.system.models.Group;
-import com.company.schedule.managment.system.models.Student;
-import org.junit.jupiter.api.BeforeEach;
+import com.company.schedule.managment.system.model.Faculty;
+import com.company.schedule.managment.system.model.Group;
+import com.company.schedule.managment.system.model.Student;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class StudentDaoImplTest {
+class StudentDaoImplTest extends BaseIntegrationTest {
 
     private static final Student TEST_STUDENT = new Student(1,
             new Group(1L, "BABO-02-12", null, null, null),
             new Faculty(1L, "IFGPA", null, null));
-
-    private static final Student TEST_STUDENT_WITH_ID = new Student(1L,1,
+    private static final Student TEST_STUDENT_WITH_ID = new Student(1L, 1,
             new Group(1L, "BABO-02-12", null, null, null),
             new Faculty(1L, "IFGPA", null, null));
-
-    @Container
-    private final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
-            .withInitScript("sql/fill-table.sql");
-    private StudentDaoImpl studentDao;
-
-
-    @BeforeEach
-    void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(container.getJdbcUrl());
-        dataSource.setUsername(container.getUsername());
-        dataSource.setPassword(container.getPassword());
-        studentDao = new StudentDaoImpl(dataSource);
-        container.start();
-    }
+    private final StudentDaoImpl studentDao = new StudentDaoImpl(DATA_SOURCE);
 
     @Test
     void create_shouldReturnCorrectStudent_whenInputCorrectData() {

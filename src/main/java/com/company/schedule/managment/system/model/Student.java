@@ -1,17 +1,16 @@
-package com.company.schedule.managment.system.models;
+package com.company.schedule.managment.system.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "students")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
 public class Student extends Person {
 
     @Id

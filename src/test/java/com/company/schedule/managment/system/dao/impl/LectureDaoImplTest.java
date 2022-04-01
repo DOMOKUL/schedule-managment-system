@@ -1,12 +1,7 @@
 package com.company.schedule.managment.system.dao.impl;
 
-import com.company.schedule.managment.system.models.*;
-import org.junit.jupiter.api.BeforeEach;
+import com.company.schedule.managment.system.model.*;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.sql.Date;
 import java.time.Duration;
@@ -15,8 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class LectureDaoImplTest {
+class LectureDaoImplTest extends BaseIntegrationTest {
 
     private static final Lecture TEST_LECTURE = new Lecture(
             1,
@@ -26,7 +20,6 @@ class LectureDaoImplTest {
             new Lesson(Duration.ofMinutes(90L), 1, LocalTime.of(13, 0, 0),
                     new Subject(1L, "math"), null),
             new Teacher(new Faculty(1L, "IKBSP", null, null), null));
-
     private static final Lecture TEST_LECTURE_WITH_ID = new Lecture(1L,
             1,
             Date.valueOf("2022-03-7"),
@@ -35,21 +28,7 @@ class LectureDaoImplTest {
             new Lesson(Duration.ofMinutes(90L), 1, LocalTime.of(13, 0, 0),
                     new Subject(1L, "math"), null),
             new Teacher(new Faculty(1L, "IKBSP", null, null), null));
-
-    @Container
-    private final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
-            .withInitScript("sql/fill-table.sql");
-    private LectureDaoImpl lectureDao;
-
-    @BeforeEach
-    void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(container.getJdbcUrl());
-        dataSource.setUsername(container.getUsername());
-        dataSource.setPassword(container.getPassword());
-        lectureDao = new LectureDaoImpl(dataSource);
-        container.start();
-    }
+    private final LectureDaoImpl lectureDao = new LectureDaoImpl(DATA_SOURCE);
 
     @Test
     void create_shouldReturnCorrectLecture_whenInputCorrectData() {

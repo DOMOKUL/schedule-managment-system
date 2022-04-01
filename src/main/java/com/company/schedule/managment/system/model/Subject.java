@@ -1,4 +1,4 @@
-package com.company.schedule.managment.system.models;
+package com.company.schedule.managment.system.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

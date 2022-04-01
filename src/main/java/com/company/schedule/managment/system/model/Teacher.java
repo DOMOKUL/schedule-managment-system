@@ -1,6 +1,8 @@
-package com.company.schedule.managment.system.models;
+package com.company.schedule.managment.system.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
@@ -8,12 +10,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "teachers")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
 public class Teacher extends Person {
 
     @Id

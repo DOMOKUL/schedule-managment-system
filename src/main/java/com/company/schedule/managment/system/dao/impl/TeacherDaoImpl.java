@@ -2,9 +2,10 @@ package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.TeacherDao;
 import com.company.schedule.managment.system.dao.exception.DaoException;
-import com.company.schedule.managment.system.models.Teacher;
-import lombok.AllArgsConstructor;
+import com.company.schedule.managment.system.model.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-@AllArgsConstructor
 public class TeacherDaoImpl implements TeacherDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -28,27 +28,43 @@ public class TeacherDaoImpl implements TeacherDao {
 
     @Override
     public Teacher create(Teacher teacher) {
-        SimpleJdbcInsert insertTeacher = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("teachers")
-                .usingGeneratedKeyColumns("id");
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("first_name", teacher.getFirstName());
-        parameters.put("last_name", teacher.getLastName());
-        parameters.put("middle_name", teacher.getMiddleName());
-        parameters.put("faculty_id", teacher.getFaculty().getId());
-        Number newId = insertTeacher.executeAndReturnKey(parameters);
-        teacher.setId(newId.longValue());
-        return new Teacher(newId.longValue(), teacher.getFaculty(), teacher.getLectures());
+        try {
+            SimpleJdbcInsert insertTeacher = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("teachers")
+                    .usingGeneratedKeyColumns("id");
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("first_name", teacher.getFirstName());
+            parameters.put("last_name", teacher.getLastName());
+            parameters.put("middle_name", teacher.getMiddleName());
+            parameters.put("faculty_id", teacher.getFaculty().getId());
+            Number newId = insertTeacher.executeAndReturnKey(parameters);
+            teacher.setId(newId.longValue());
+            return new Teacher(newId.longValue(), teacher.getFaculty(), teacher.getLectures());
+        } catch (Exception cause) {
+            throw new DaoException("Teacher with id: " + teacher.getId() + " already exist", cause);
+        }
     }
 
     @Override
     public Teacher findById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM teachers WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Teacher.class));
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM teachers WHERE id=?", new Object[]{id},
+                    new BeanPropertyRowMapper<>(Teacher.class));
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Teacher with id: " + id + " doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override
     public List<Teacher> findAll() {
-        return jdbcTemplate.query("SELECT * From teachers", new BeanPropertyRowMapper<>(Teacher.class));
+        try {
+            return jdbcTemplate.query("SELECT * FROM teachers", new BeanPropertyRowMapper<>(Teacher.class));
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Teacher doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override

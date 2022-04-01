@@ -1,43 +1,23 @@
 package com.company.schedule.managment.system.dao.impl;
 
-import com.company.schedule.managment.system.models.*;
-import org.junit.jupiter.api.BeforeEach;
+import com.company.schedule.managment.system.model.*;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.sql.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class FacultyDaoImplTest {
 
-    @Container
-    private final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
-            .withInitScript("sql/fill-table.sql");
-    private FacultyDaoImpl facultyDao;
-
-    @BeforeEach
-    void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(container.getJdbcUrl());
-        dataSource.setUsername(container.getUsername());
-        dataSource.setPassword(container.getPassword());
-        facultyDao = new FacultyDaoImpl(dataSource);
-        container.start();
-    }
+class FacultyDaoImplTest extends BaseIntegrationTest {
 
     private static final List<Group> TEST_GROUP_LIST = List.of(new Group("BSBO-04-20",
-            new Faculty(2L,"IKBSA",null,null),
-            List.of(new Student(2L,2,null,null)),
-            List.of(new Lecture(3L,2, Date.valueOf("2019-01-26"),null,null,null,null))));
-
+            new Faculty(2L, "IKBSA", null, null),
+            List.of(new Student(2L, 2, null, null)),
+            List.of(new Lecture(3L, 2, Date.valueOf("2019-01-26"), null, null, null, null))));
     private static final List<Teacher> TEST_TEACHER_LIST = List.of(new Teacher(
-            new Faculty(3L,"IKBSC",null,null), null));
+            new Faculty(3L, "IKBSC", null, null), null));
+    private final FacultyDaoImpl facultyDao = new FacultyDaoImpl(DATA_SOURCE);
 
     @Test
     void create_shouldReturnCorrectFaculty_whenInputCorrectData() {
@@ -49,7 +29,7 @@ class FacultyDaoImplTest {
 
     @Test
     void findById_shouldReturnCorrectFaculty_whenInputExistId() {
-        Faculty testFaculty = new Faculty(1L,"IKBSP", null, null);
+        Faculty testFaculty = new Faculty(1L, "IKBSP", null, null);
         assertEquals(testFaculty, facultyDao.findById(1L));
     }
 

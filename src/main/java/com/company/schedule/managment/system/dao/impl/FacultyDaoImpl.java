@@ -2,9 +2,10 @@ package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.FacultyDao;
 import com.company.schedule.managment.system.dao.exception.DaoException;
-import com.company.schedule.managment.system.models.Faculty;
-import lombok.AllArgsConstructor;
+import com.company.schedule.managment.system.model.Faculty;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-@AllArgsConstructor
 public class FacultyDaoImpl implements FacultyDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -28,25 +28,43 @@ public class FacultyDaoImpl implements FacultyDao {
 
     @Override
     public Faculty create(Faculty faculty) {
-        SimpleJdbcInsert insertFaculty = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("faculties")
-                .usingGeneratedKeyColumns("id");
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", faculty.getName());
-        Number newId = insertFaculty.executeAndReturnKey(parameters);
-        faculty.setId(newId.longValue());
-        return new Faculty(newId.longValue(), faculty.getName(), null, null);
+        try {
+            SimpleJdbcInsert insertFaculty = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("faculties")
+                    .usingGeneratedKeyColumns("id");
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("name", faculty.getName());
+            Number newId = insertFaculty.executeAndReturnKey(parameters);
+            faculty.setId(newId.longValue());
+            return new Faculty(newId.longValue(), faculty.getName(), null, null);
+        } catch (Exception cause) {
+            throw new DaoException("Faculty with id: " + faculty.getId() + " already exist", cause);
+        }
     }
+
 
     @Override
     public Faculty findById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM faculties WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Faculty.class));
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM faculties WHERE id=?", new Object[]{id},
+                    new BeanPropertyRowMapper<>(Faculty.class));
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Faculty with id: " + id + " doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override
     public List<Faculty> findAll() {
-        return jdbcTemplate.query("SELECT * From faculties", new BeanPropertyRowMapper<>(Faculty.class));
+        try {
+            return jdbcTemplate.query("SELECT * FROM faculties", new BeanPropertyRowMapper<>(Faculty.class));
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Faculties doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
+
 
     @Override
     public boolean update(Faculty faculty) {

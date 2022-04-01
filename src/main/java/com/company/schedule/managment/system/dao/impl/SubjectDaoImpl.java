@@ -2,9 +2,10 @@ package com.company.schedule.managment.system.dao.impl;
 
 import com.company.schedule.managment.system.dao.SubjectDao;
 import com.company.schedule.managment.system.dao.exception.DaoException;
-import com.company.schedule.managment.system.models.Subject;
-import lombok.AllArgsConstructor;
+import com.company.schedule.managment.system.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.InvalidResultSetAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-@AllArgsConstructor
 public class SubjectDaoImpl implements SubjectDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -28,24 +28,40 @@ public class SubjectDaoImpl implements SubjectDao {
 
     @Override
     public Subject create(Subject subject) {
-        SimpleJdbcInsert insertSubject = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("subjects")
-                .usingGeneratedKeyColumns("id");
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", subject.getName());
-        Number newId = insertSubject.executeAndReturnKey(parameters);
-        subject.setId(newId.longValue());
-        return new Subject(newId.longValue(), subject.getName());
+        try {
+            SimpleJdbcInsert insertSubject = new SimpleJdbcInsert(this.jdbcTemplate).withTableName("subjects")
+                    .usingGeneratedKeyColumns("id");
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("name", subject.getName());
+            Number newId = insertSubject.executeAndReturnKey(parameters);
+            subject.setId(newId.longValue());
+            return new Subject(newId.longValue(), subject.getName());
+        } catch (Exception cause) {
+            throw new DaoException("Subject with id: " + subject.getId() + " already exist", cause);
+        }
     }
 
     @Override
     public Subject findById(Long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM subjects WHERE id=?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Subject.class));
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM subjects WHERE id=?", new Object[]{id},
+                    new BeanPropertyRowMapper<>(Subject.class));
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Subject with id: " + id + " doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override
     public List<Subject> findAll() {
-        return jdbcTemplate.query("SELECT * From subjects", new BeanPropertyRowMapper<>(Subject.class));
+        try {
+            return jdbcTemplate.query("SELECT * FROM subjects", new BeanPropertyRowMapper<>(Subject.class));
+        } catch (InvalidResultSetAccessException cause) {
+            throw new DaoException("Subject doesn't exist", cause);
+        } catch (DataAccessException cause) {
+            throw new DaoException("Trouble with access to database ", cause);
+        }
     }
 
     @Override
