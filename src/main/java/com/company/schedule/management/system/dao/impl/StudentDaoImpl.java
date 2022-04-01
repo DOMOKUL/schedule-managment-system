@@ -36,7 +36,7 @@ public class StudentDaoImpl implements StudentDao {
                     " left join fetch s.group g" +
                     " left join fetch g.faculty where s.id = :id").setParameter("id", id).getSingleResult());
         } catch (NoResultException cause) {
-            throw new DaoException("Student with id: " + id + " doesn't exist", cause);
+            return Optional.empty();
         }
     }
 

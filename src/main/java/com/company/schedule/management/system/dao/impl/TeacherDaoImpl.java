@@ -41,7 +41,7 @@ public class TeacherDaoImpl implements TeacherDao {
                     " left join fetch l.lesson le" +
                     " left join fetch le.subject where t.id =:id").setParameter("id", id).getSingleResult());
         } catch (NoResultException cause) {
-            throw new DaoException("Teacher with id: " + id + " doesn't exist", cause);
+            return Optional.empty();
         }
     }
 

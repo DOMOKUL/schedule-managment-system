@@ -31,7 +31,7 @@ public class AudienceDaoImpl implements AudienceDao {
 
     @Override
     public Optional<Audience> findById(Long id) {
-        try {
+        try{
             return Optional.ofNullable((Audience) entityManager.createQuery("select a from Audience a " +
                     "left join fetch a.lectures l " +
                     "left join fetch l.group g " +
@@ -41,7 +41,7 @@ public class AudienceDaoImpl implements AudienceDao {
                     "left join fetch l.lesson le " +
                     " left join fetch le.subject where a.id =:id").setParameter("id", id).getSingleResult());
         } catch (NoResultException cause) {
-            throw new DaoException("Audience with id: " + id + " doesn't exist", cause);
+            return Optional.empty();
         }
     }
 

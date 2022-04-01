@@ -35,7 +35,7 @@ public class SubjectDaoImpl implements SubjectDao {
             return Optional.ofNullable((Subject) entityManager.createQuery("select s from Subject s" +
                     " left join fetch s.lessons  where s.id = :id").setParameter("id", id).getSingleResult());
         } catch (NoResultException cause) {
-            throw new DaoException("Subject with id: " + id + " doesn't exist", cause);
+            return Optional.empty();
         }
     }
 

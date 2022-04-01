@@ -36,7 +36,7 @@ public class LessonDaoImpl implements LessonDao {
                     " left join fetch l.subject s" +
                     " left join fetch s.lessons where l.id = :id").setParameter("id", id).getSingleResult());
         } catch (NoResultException cause) {
-            throw new DaoException("Lesson with id: " + id + " doesn't exist", cause);
+            return Optional.empty();
         }
     }
 

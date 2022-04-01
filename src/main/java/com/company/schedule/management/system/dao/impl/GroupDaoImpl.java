@@ -41,7 +41,7 @@ public class GroupDaoImpl implements GroupDao {
                     " left join fetch l.audience  " +
                     " left join fetch g.faculty where g.id =:id").setParameter("id", id).getSingleResult());
         } catch (NoResultException cause) {
-            throw new DaoException("Group with id: " + id + " doesn't exist", cause);
+            return Optional.empty();
         }
     }
 

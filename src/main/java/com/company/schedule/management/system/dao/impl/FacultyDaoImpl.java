@@ -35,7 +35,7 @@ public class FacultyDaoImpl implements FacultyDao {
             return Optional.ofNullable((Faculty) entityManager.createQuery("select f from Faculty f " +
                     "left join fetch f.groups where f.id = :id").setParameter("id", id).getSingleResult());
         } catch (NoResultException cause) {
-            throw new DaoException("Faculty with id: " + id + " doesn't exist", cause);
+            return Optional.empty();
         }
     }
 

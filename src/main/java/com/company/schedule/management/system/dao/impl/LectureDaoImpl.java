@@ -37,7 +37,7 @@ public class LectureDaoImpl implements LectureDao {
                     " left join l.lesson le left join le.subject left join l.teacher" +
                     " t left join t.faculty where l.id =:id").setParameter("id", id).getSingleResult());
         } catch (NoResultException cause) {
-            throw new DaoException("Lecture with id: " + id + " doesn't exist", cause);
+            return Optional.empty();
         }
     }
 
