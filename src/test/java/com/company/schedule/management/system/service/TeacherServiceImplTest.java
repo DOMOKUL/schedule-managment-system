@@ -66,8 +66,8 @@ class TeacherServiceImplTest {
 
     @Test
     void getTeacherById_shouldThrowException_whenInputNonExistTeacher() {
-        when(teacherDao.findById(teacherWithId.getId())).thenThrow(DaoException.class);
-        assertThrows(DaoException.class, () -> teacherServiceImpl.getTeacherById(teacherWithId.getId()));
+        when(teacherDao.findById(teacherWithId.getId())).thenReturn(Optional.empty());
+        assertThrows(ServiceException.class, () -> teacherServiceImpl.getTeacherById(teacherWithId.getId()));
     }
 
     @Test

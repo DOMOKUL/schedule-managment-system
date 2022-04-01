@@ -62,7 +62,7 @@ class GroupServiceImplTest {
 
     @Test
     void getGroupById_shouldThrowException_whenInputNonExistGroupId() {
-        when(groupDao.findById(groupWithId.getId())).thenThrow(DaoException.class);
+        when(groupDao.findById(groupWithId.getId())).thenReturn(Optional.empty());
         assertThrows(DaoException.class, () -> groupServiceImpl.getGroupById(groupWithId.getId()));
     }
 

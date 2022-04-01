@@ -59,8 +59,8 @@ class SubjectServiceImplTest {
 
     @Test
     void getStudentById_shouldThrowException_whenInputNonExistStudent() {
-        when(subjectDao.findById(subjectWithId.getId())).thenThrow(DaoException.class);
-        assertThrows(DaoException.class, () -> subjectServiceImpl.getSubjectById(subjectWithId.getId()));
+        when(subjectDao.findById(subjectWithId.getId())).thenReturn(Optional.empty());
+        assertThrows(ServiceException.class, () -> subjectServiceImpl.getSubjectById(subjectWithId.getId()));
     }
 
     @Test

@@ -67,9 +67,9 @@ class LessonServiceImplTest {
 
     @Test
     void getLessonById_shouldThrowException_whenInputNonExistLesson() {
-        when(lessonDao.findById(lessonWithId.getId())).thenThrow(DaoException.class);
-        assertThrows(DaoException.class, () -> lessonServiceImpl.getLessonById(lessonWithId.getId()));
-        //TODO странная штука
+        when(lessonDao.findById(lessonWithId.getId())).thenReturn(Optional.empty());
+        assertThrows(ServiceException.class, () -> lessonServiceImpl.getLessonById(lessonWithId.getId()));
+
     }
 
     @Test

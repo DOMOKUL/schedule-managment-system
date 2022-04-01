@@ -75,7 +75,7 @@ class LectureServiceImplTest {
 
     @Test
     void getLectureById_shouldThrowException_whenInputNonExistLectureId() {
-        when(lectureDao.findById(lectureWithId.getId())).thenThrow(DaoException.class);
+        when(lectureDao.findById(lectureWithId.getId())).thenReturn(Optional.empty());
         assertThrows(DaoException.class, () -> lectureServiceImpl.getLectureById(lectureWithId.getId()));
     }
 

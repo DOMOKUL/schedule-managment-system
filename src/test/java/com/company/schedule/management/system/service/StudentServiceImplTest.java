@@ -64,9 +64,8 @@ class StudentServiceImplTest {
 
     @Test
     void getStudentById_shouldThrowException_whenInputNonExistStudent() {
-        when(studentDao.findById(studentWithId.getId())).thenThrow(DaoException.class);
-        assertThrows(DaoException.class, () -> studentServiceImpl.getStudentById(studentWithId.getId()));
-        //TODO странная штука
+        when(studentDao.findById(studentWithId.getId())).thenReturn(Optional.empty());
+        assertThrows(ServiceException.class, () -> studentServiceImpl.getStudentById(studentWithId.getId()));
     }
 
     @Test

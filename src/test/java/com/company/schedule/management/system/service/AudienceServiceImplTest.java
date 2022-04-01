@@ -63,8 +63,8 @@ class AudienceServiceImplTest {
 
     @Test
     void getAudienceById_shouldThrowException_whenInputNonExistAudience() {
-        when(audienceDao.findById(audienceWithId.getId())).thenThrow(DaoException.class);
-        assertThrows(DaoException.class, () -> audienceServiceImpl.getAudienceById(audienceWithId.getId()));
+        when(audienceDao.findById(audienceWithId.getId())).thenReturn(Optional.empty());
+        assertThrows(ServiceException.class, () -> audienceServiceImpl.getAudienceById(audienceWithId.getId()));
         //TODO странная штука
     }
 

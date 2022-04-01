@@ -59,8 +59,8 @@ class FacultyServiceImplTest {
 
     @Test
     void getFacultyById_shouldThrowException_whenInputNonExistFacultyId() {
-        when(facultyDao.findById(facultyWithId.getId())).thenThrow(DaoException.class);
-        assertThrows(DaoException.class, () -> facultyServiceImpl.getFacultyById(facultyWithId.getId()));
+        when(facultyDao.findById(facultyWithId.getId())).thenReturn(Optional.empty());
+        assertThrows(ServiceException.class, () -> facultyServiceImpl.getFacultyById(facultyWithId.getId()));
     }
 
     @Test
