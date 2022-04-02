@@ -1,5 +1,6 @@
-package com.company.schedule.managment.system.models;
+package com.company.schedule.managment.system.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "audiences")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Audience {
 
     @Id

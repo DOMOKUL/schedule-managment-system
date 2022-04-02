@@ -1,17 +1,18 @@
-package com.company.schedule.managment.system.models;
+package com.company.schedule.managment.system.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
+
 @Entity
 @Table(name = "teachers")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
 public class Teacher extends Person {
 
     @Id
@@ -26,4 +27,9 @@ public class Teacher extends Person {
     private Faculty faculty;
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Lecture> lectures;
+
+    public Teacher(Faculty faculty, List<Lecture> lectures) {
+        this.faculty = faculty;
+        this.lectures = lectures;
+    }
 }

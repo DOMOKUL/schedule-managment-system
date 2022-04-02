@@ -1,5 +1,6 @@
-package com.company.schedule.managment.system.models;
+package com.company.schedule.managment.system.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "subjects")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Subject {
 
     @Id
@@ -19,4 +21,8 @@ public class Subject {
             generator = "subject_sequence")
     private Long id;
     private String name;
+
+    public Subject(String name) {
+        this.name = name;
+    }
 }

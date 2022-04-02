@@ -1,7 +1,7 @@
-package com.company.schedule.managment.system.models;
+package com.company.schedule.managment.system.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "students")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
 public class Student extends Person {
 
     @Id
@@ -27,4 +27,10 @@ public class Student extends Person {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
+
+    public Student(Integer courseNumber, Group group, Faculty faculty) {
+        this.courseNumber = courseNumber;
+        this.group = group;
+        this.faculty = faculty;
+    }
 }

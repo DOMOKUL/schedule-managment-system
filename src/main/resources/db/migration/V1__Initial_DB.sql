@@ -11,21 +11,21 @@ create table audiences
 (
     id       bigint not null,
     capacity integer,
-    number   integer,
+    number   integer unique,
     primary key (id)
 );
 
 create table faculties
 (
     id   bigint not null,
-    name varchar(255),
+    name varchar(128) unique,
     primary key (id)
 );
 
 create table groups
 (
     id         bigint not null,
-    name       varchar(255),
+    name       varchar(128) unique,
     faculty_id bigint not null,
     primary key (id)
 );
@@ -47,7 +47,7 @@ create table lessons
     id         bigint not null,
     duration   bigint,
     number     integer,
-    start_time time,
+    start_time timestamptz,
     subject_id bigint not null,
     primary key (id)
 );
@@ -55,6 +55,9 @@ create table lessons
 create table students
 (
     id            bigint not null,
+    first_name    varchar(128),
+    last_name     varchar(128),
+    middle_name   varchar(128),
     course_number integer,
     faculty_id    bigint not null,
     group_id      bigint not null,
@@ -64,14 +67,17 @@ create table students
 create table subjects
 (
     id   bigint not null,
-    name varchar(255),
+    name varchar(128) unique,
     primary key (id)
 );
 
 create table teachers
 (
-    id         bigint not null,
-    faculty_id bigint not null,
+    id          bigint not null,
+    first_name  varchar(128),
+    last_name   varchar(128),
+    middle_name varchar(128),
+    faculty_id  bigint not null,
     primary key (id)
 );
 

@@ -1,15 +1,17 @@
-package com.company.schedule.managment.system.models;
+package com.company.schedule.managment.system.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 @Table(name = "lectures")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Lecture {
 
     @Id
@@ -42,4 +44,5 @@ public class Lecture {
         this.lesson = lesson;
         this.teacher = teacher;
     }
+
 }
