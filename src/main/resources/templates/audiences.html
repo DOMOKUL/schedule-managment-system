@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <link rel="stylesheet"
+          href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <meta charset="UTF-8">
+    <title>Schedule university</title>
+</head>
+<body>
+<header>
+    <div th:replace="fragments/navbar :: navbar"></div>
+</header>
+
+<div class="flex-container-table">
+    <table class="table table-bordered w-25 text-center mx-auto mt-5">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Number</th>
+            <th scope="col">Capacity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="audience, iter: ${audiences}">
+            <td th:text="${audience.id}"></td>
+            <td th:text="${audience.number}"></td>
+            <td th:text="${audience.capacity}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="flex-container">
+    <div>
+        <h5>Save Audience</h5>
+        <form action="#" th:action="@{audiences/add}" th:object="${audience}"
+              method="POST">
+            <input type="text" th:field="*{number}"
+                   placeholder="Audience number" class="form-control">
+
+            <input type="text" th:field="*{capacity}"
+                   placeholder="Audience capacity" class="form-control">
+
+            <button type="submit" class="btn btn-info ">Save Audience</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

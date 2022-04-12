@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>NavigationBar</title>
+    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+</head>
+<body>
+
+<div th:fragment="navbar" class="navbar">
+    <div class="container-fluid">
+        <div>
+            <a class="navbar-brand" th:href="@{/}">University</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a class="nav-link" th:href="@{/templates/audiences.html}">Audiences</a></li>
+            <li><a class="nav-link" th:href="@{/templates/faculties.html}">Faculties</a></li>
+            <li><a class="nav-link" th:href="@{/templates/groups.html}">Groups</a></li>
+            <li><a class="nav-link" th:href="@{/templates/lectures.html}">Lectures</a></li>
+            <li><a class="nav-link" th:href="@{/templates/lessons.html}">Lessons</a></li>
+            <li><a class="nav-link" th:href="@{/templates/students.html}">Students</a></li>
+            <li><a class="nav-link" th:href="@{/templates/subjects.html}">Subjects</a></li>
+            <li><a class="nav-link" th:href="@{/templates/teachers.html}">Teachers</a></li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
