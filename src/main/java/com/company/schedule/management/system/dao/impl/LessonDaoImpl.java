@@ -23,6 +23,7 @@ public class LessonDaoImpl implements LessonDao {
     public Lesson create(Lesson lesson) {
         try {
             entityManager.persist(lesson);
+            entityManager.flush();
         } catch (InvalidDataAccessApiUsageException cause) {
             throw new DaoException("Lesson with id: " + lesson.getId() + " already exist", cause);
         }

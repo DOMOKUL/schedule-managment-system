@@ -23,6 +23,7 @@ public class LectureDaoImpl implements LectureDao {
     public Lecture create(Lecture lecture) {
         try {
             entityManager.persist(lecture);
+            entityManager.flush();
         } catch (InvalidDataAccessApiUsageException cause) {
             throw new DaoException("Lecture with id: " + lecture.getId() + " already exist", cause);
         }

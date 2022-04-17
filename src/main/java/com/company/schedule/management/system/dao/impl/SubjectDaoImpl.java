@@ -23,6 +23,7 @@ public class SubjectDaoImpl implements SubjectDao {
     public Subject create(Subject subject) {
         try {
             entityManager.persist(subject);
+            entityManager.flush();
         } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Subject with id: " + subject.getId() + " already exist", cause);
         }

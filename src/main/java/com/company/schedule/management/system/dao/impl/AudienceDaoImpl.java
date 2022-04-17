@@ -23,6 +23,7 @@ public class AudienceDaoImpl implements AudienceDao {
     public Audience create(Audience audience) {
         try {
             entityManager.persist(audience);
+            entityManager.flush();
         } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Audience with id: " + audience.getId() + " already exist", cause);
         }

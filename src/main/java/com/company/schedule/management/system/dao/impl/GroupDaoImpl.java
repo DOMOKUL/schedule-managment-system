@@ -23,6 +23,7 @@ public class GroupDaoImpl implements GroupDao {
     public Group create(Group group) {
         try {
             entityManager.persist(group);
+            entityManager.flush();
         } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Group with id: " + group.getId() + " already exist", cause);
         }

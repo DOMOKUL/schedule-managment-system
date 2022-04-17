@@ -23,6 +23,7 @@ public class StudentDaoImpl implements StudentDao {
     public Student create(Student student) {
         try {
             entityManager.persist(student);
+            entityManager.flush();
         } catch (InvalidDataAccessApiUsageException cause) {
             throw new DaoException("Student with id: " + student.getId() + " already exist", cause);
         }

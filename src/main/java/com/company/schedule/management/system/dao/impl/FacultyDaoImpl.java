@@ -23,6 +23,7 @@ public class FacultyDaoImpl implements FacultyDao {
     public Faculty create(Faculty faculty) {
         try {
             entityManager.persist(faculty);
+            entityManager.flush();
         } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Faculty with id: " + faculty.getId() + " already exist", cause);
         }

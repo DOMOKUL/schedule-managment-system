@@ -23,6 +23,7 @@ public class TeacherDaoImpl implements TeacherDao {
     public Teacher create(Teacher teacher) {
         try {
             entityManager.persist(teacher);
+            entityManager.flush();
         } catch (InvalidDataAccessApiUsageException cause) {
             throw new DaoException("Teacher with id: " + teacher.getId() + " already exist", cause);
         }
