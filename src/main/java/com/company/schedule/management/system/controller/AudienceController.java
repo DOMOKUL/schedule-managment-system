@@ -2,16 +2,19 @@ package com.company.schedule.management.system.controller;
 
 import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.service.AudienceService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
+@RequiredArgsConstructor
 public class AudienceController {
 
-    @Autowired
-    private AudienceService audienceService;
+    private final AudienceService audienceService;
 
     @PostMapping("/audiences/add")
     public String addAudience(Model model, @ModelAttribute("audience") Audience audience) {

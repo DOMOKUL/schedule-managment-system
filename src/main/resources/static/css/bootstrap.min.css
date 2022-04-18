@@ -2276,6 +2276,8 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
 
 .form-group {
     margin-bottom: 1rem;
+    position: absolute;               /* 2 */
+    top: 50%;
 }
 
 .form-text {
@@ -9761,6 +9763,10 @@ body {
 
 .div-inline-block{
     display: inline-block;
+    top: 50%;
+}
+.div-centr{
+    top: 50%;
 }
 
 /*# sourceMappingURL=bootstrap.css.map */
