@@ -22,7 +22,7 @@ public class Group {
     private Long id;
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "faculty_id", nullable = false)
+    @JoinColumn(name = "faculty_id")
     private Faculty faculty;
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<Student> students;
