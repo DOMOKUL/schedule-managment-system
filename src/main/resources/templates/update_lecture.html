@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Update User</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <link rel="stylesheet" href="../css/shards.min.css">
+</head>
+<body>
+<div class="container my-5">
+    <h2 class="mb-5">Update Lecture</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" th:action="@{/lectures/update/{id}(id=${updatedLecture.id})}"
+                  th:object="${updatedLecture}" method="POST">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="number" class="col-form-label">Number</label>
+                        <input type="number" th:field="*{number}" class="form-control" id="number" placeholder="Number">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="date" class="col-form-label">Date</label>
+                        <input type="date" th:field="*{date}" class="form-control" id="date" placeholder="Date">
+                    </div>
+                    <div class="div-inline-block div-centr">
+                        <label>Select an Audience:</label>
+                        <select class="input_" th:field="*{audience}" required>
+                            <th:block th:each="audience:${allAudiences}">
+                                <option th:text="${audience.number}" th:value="${audience.id}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="div-inline-block div-centr">
+                        <label>Select a Group:</label>
+                        <select class="input_" th:field="*{group}" required>
+                            <th:block th:each="group:${allGroups}">
+                                <option th:text="${group.name}" th:value="${group.id}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="div-inline-block div-centr">
+                        <label>Select a Lesson:</label>
+                        <select class="input_" th:field="*{lesson}" required>
+                            <th:block th:each="lesson:${allLessons}">
+                                <option th:text="${lesson.startTime}" th:value="${lesson.id}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="div-inline-block div-centr">
+                        <label>Select a Teacher:</label>
+                        <select class="input_" th:field="*{teacher}" required>
+                            <th:block th:each="teacher:${allTeachers}">
+                                <option th:text="${teacher.firstName}" th:value="${teacher.id}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <input type="submit" class="btn btn-primary" value="Update Lecture">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
