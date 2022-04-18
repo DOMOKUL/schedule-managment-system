@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LectureServiceImpl implements LectureService {
 
-    @Autowired
     private final LectureDao lectureDao;
 
     @Override

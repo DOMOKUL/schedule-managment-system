@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AudienceServiceImpl implements AudienceService {
 
-    @Autowired
     private final AudienceDao audienceDao;
 
     @Override

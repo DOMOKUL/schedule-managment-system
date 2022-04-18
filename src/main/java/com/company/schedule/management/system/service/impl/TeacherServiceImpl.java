@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
 
-    @Autowired
     private final TeacherDao teacherDao;
 
     @Override

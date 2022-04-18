@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
 
-    @Autowired
     private final LessonDao lessonDao;
 
     @Override

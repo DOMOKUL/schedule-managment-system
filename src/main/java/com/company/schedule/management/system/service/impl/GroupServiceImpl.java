@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
-    @Autowired
     private final GroupDao groupDao;
 
     @Override

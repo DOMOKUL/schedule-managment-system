@@ -1,6 +1,7 @@
 package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.model.Faculty;
+import com.company.schedule.management.system.model.Group;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface FacultyService {
     Faculty updateFaculty(Faculty faculty);
 
     boolean deleteFacultyById(Long id);
+
+    List<Faculty> getFacultiesForGroups(List<Group> allGroups);
 }

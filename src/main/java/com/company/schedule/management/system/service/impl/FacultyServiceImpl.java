@@ -3,6 +3,7 @@ package com.company.schedule.management.system.service.impl;
 import com.company.schedule.management.system.dao.FacultyDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
+import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.FacultyService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -11,13 +12,13 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class FacultyServiceImpl implements FacultyService {
 
-    @Autowired
     private final FacultyDao facultyDao;
 
     @Override
@@ -59,5 +60,12 @@ public class FacultyServiceImpl implements FacultyService {
         } catch (DaoException cause) {
             throw new ServiceException("Faculty doesn't delete ", cause);
         }
+    }
+
+    @Override
+    public List<Faculty> getFacultiesForGroups(List<Group> allGroups) {
+        return allGroups.stream()
+                .map(Group::getFaculty)
+                .collect(Collectors.toList());
     }
 }

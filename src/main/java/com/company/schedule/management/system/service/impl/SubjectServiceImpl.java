@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
 
-    @Autowired
     private final SubjectDao subjectDao;
 
     @Override
