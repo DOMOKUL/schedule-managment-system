@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
@@ -39,9 +40,9 @@ class LessonServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        lessonWithId = new Lesson(1L, 1, LocalTime.of(10, 0, 0),
+        lessonWithId = new Lesson(1L, 1, Time.valueOf(LocalTime.of(13, 0, 0)),
                 Duration.ofMinutes(90), TEST_SUBJECT, null);
-        lessonWithoutId = new Lesson(1, LocalTime.of(10, 0, 0),
+        lessonWithoutId = new Lesson(1, Time.valueOf(LocalTime.of(13, 0, 0)),
                 Duration.ofMinutes(90), TEST_SUBJECT, null);
         lessonList = List.of(lessonWithId);
     }
@@ -83,7 +84,7 @@ class LessonServiceImplTest {
 
     @Test
     void updateLesson_shouldReturnUpdatedLesson_whenInputCorrectLesson() {
-        Lesson expected = new Lesson(1L, 2, LocalTime.of(13, 0, 0),
+        Lesson expected = new Lesson(1L, 2, Time.valueOf(LocalTime.of(13, 0, 0)),
                 Duration.ofMinutes(90), TEST_SUBJECT, null);
 
         when(lessonDao.update(expected)).thenReturn(expected);

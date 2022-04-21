@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Update User</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+        integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/shards.min.css">
+</head>
+<body>
+<div class="container my-5">
+  <h2 class="mb-5">Update Teacher</h2>
+  <div class="row">
+    <div class="col-md-6">
+      <form action="#" th:action="@{/teachers/update/{id}(id=${updatedTeacher.id})}"
+            th:object="${updatedTeacher}" method="POST">
+        <div class="row">
+          <div class="form-group col-md-6">
+            <label for="first-name" class="col-form-label">First name</label>
+            <input type="text" th:field="*{firstName}" class="form-control" id="first-name" placeholder="First Name">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="last-name" class="col-form-label">Last name</label>
+            <input type="text" th:field="*{lastName}" class="form-control" id="last-name" placeholder="Last Name">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="middle-name" class="col-form-label">Middle name</label>
+            <input type="text" th:field="*{middleName}" class="form-control" id="middle-name" placeholder="Middle Name">
+          </div>
+          <div class="div-inline-block div-centr">
+            <label>Select a Faculty:</label>
+            <select class="input_" th:field="*{faculty}" required>
+              <th:block th:each="faculty:${allFaculties}">
+                <option th:text="${faculty.name}" th:value="${faculty.id}"></option>
+              </th:block>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mt-5">
+            <input type="submit" class="btn btn-primary" value="Update Lesson">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -7,7 +7,6 @@ import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.FacultyService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

@@ -38,7 +38,7 @@ create table lessons
     id         bigserial not null,
     duration   bigint,
     number     integer,
-    start_time timestamptz,
+    start_time time,
     subject_id bigint not null,
     primary key (id)
 );

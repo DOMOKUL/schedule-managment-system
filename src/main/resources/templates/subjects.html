@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <link rel="stylesheet"
+          href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Schedule university</title>
+</head>
+<body>
+<header>
+    <div th:replace="fragments/navbar :: navbar"></div>
+</header>
+
+<div class="flex-container-table" th:switch="${subjects}">
+    <table class="table table-bordered text-center">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="each_subject: ${subjects}">
+            <td th:text="${each_subject.id}"></td>
+            <td th:text="${each_subject.name}"></td>
+            <td>
+                <a th:href="@{/subjects/edit/{id}(id=${each_subject.id})}" class="btn btn-sm">
+                    <span>Edit</span>
+                </a>
+                <a th:href="@{/subjects/delete/{id}(id=${each_subject.id})}" class="btn btn-danger">
+                    <span>Delete</span>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="wrapper">
+    <div class="container">
+        <h5>Save Subject</h5>
+        <form action="#" th:action="@{/subjects/add}" th:object="${subject}"
+              method="POST">
+            <input type="text" th:field="*{name}"
+                   placeholder="Subject name" class="input_">
+
+            <button type="submit" class="btn btn-info">Save Subject</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

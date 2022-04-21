@@ -65,8 +65,14 @@
     <div class="container">
         <h5>Save Lecture</h5>
         <form method="post" th:action="@{/lectures/add}" th:object="${lecture}">
-            <input placeholder="Lecture Date" th:field="*{date}" type="date" class="input_">
-            <input placeholder="Lecture Number" th:field="*{number}" type="number" class="input_">
+            <label>
+                Select a Date:
+                <input placeholder="Lecture Date" th:field="*{date}" type="date" class="input_">
+            </label>
+            <label>
+                Select a Number:
+                <input placeholder="Lecture Number" th:field="*{number}" type="number" class="input_">
+            </label>
             <div class="div-inline-block">
                 <label>Select a Audience:</label>
                 <select class="input_" th:field="*{audience}" required>
@@ -74,23 +80,26 @@
                         <option th:text="${audience.number}" th:value="${audience.id}"></option>
                     </th:block>
                 </select>
+                <label>Select a Group:</label>
                 <select class="input_" th:field="*{group}" required>
                     <th:block th:each="group:${allGroups}">
                         <option th:text="${group.name}" th:value="${group.id}"></option>
                     </th:block>
                 </select>
+                <label>Select a Lesson:</label>
                 <select class="input_" th:field="*{lesson}" required>
                     <th:block th:each="lesson:${allLessons}">
                         <option th:text="${lesson.number}" th:value="${lesson.id}"></option>
                     </th:block>
                 </select>
+                <label>Select a Teacher:</label>
                 <select class="input_" th:field="*{teacher}" required>
                     <th:block th:each="teacher:${allTeachers}">
                         <option th:text="${teacher.firstName}" th:value="${teacher.id}"></option>
                     </th:block>
                 </select>
             </div>
-            <button type="submit" class="btn btn-info">Save Group</button>
+            <button type="submit" class="btn btn-info">Save Lecture</button>
         </form>
     </div>
 </div>

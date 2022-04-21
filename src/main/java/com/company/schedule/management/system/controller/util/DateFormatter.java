@@ -8,6 +8,7 @@ import java.util.Locale;
 
 @Component
 public class DateFormatter implements Formatter<Date> {
+
     @Override
     public Date parse(String text, Locale locale) {
         if (text.isEmpty()) return new Date(0);

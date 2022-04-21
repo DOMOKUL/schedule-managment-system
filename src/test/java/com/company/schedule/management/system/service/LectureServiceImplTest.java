@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
@@ -43,12 +44,12 @@ class LectureServiceImplTest {
     void setUp() {
         lectureWithId = new Lecture(1L, 10, Date.valueOf("1988-09-29"),
                 TEST_AUDIENCE, TEST_GROUP,
-                new Lesson(10L, 10, LocalTime.of(13, 0, 0),
+                new Lesson(10L, 10, Time.valueOf(LocalTime.of(13, 0, 0)),
                         Duration.ofMinutes(90L), TEST_SUBJECT, null),
                 new Teacher(10L, TEST_FACULTY, null));
         lectureWithoutId = new Lecture(10, Date.valueOf("1988-09-29"),
                 TEST_AUDIENCE, TEST_GROUP,
-                new Lesson(10L, 10, LocalTime.of(13, 0, 0),
+                new Lesson(10L, 10, Time.valueOf(LocalTime.of(13, 0, 0)),
                         Duration.ofMinutes(90L), TEST_SUBJECT, null),
                 new Teacher(10L, TEST_FACULTY, null));
         lectureList = List.of(lectureWithId);
@@ -92,7 +93,7 @@ class LectureServiceImplTest {
     void updateLecture_shouldReturnUpdatedLecture_whenInputExistLectureId() {
         Lecture expected = new Lecture(1L, 11, Date.valueOf("2022-09-29"),
                 TEST_AUDIENCE, TEST_GROUP,
-                new Lesson(10L, 10, LocalTime.of(13, 0, 0),
+                new Lesson(10L, 10, Time.valueOf(LocalTime.of(13, 0, 0)),
                         Duration.ofMinutes(90L), TEST_SUBJECT, null),
                 new Teacher(10L, TEST_FACULTY, null));
 

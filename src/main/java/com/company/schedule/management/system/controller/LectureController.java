@@ -1,6 +1,5 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.model.Lecture;
 import com.company.schedule.management.system.service.*;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ public class LectureController {
     private final AudienceService audienceService;
     private final LessonService lessonService;
     private final TeacherService teacherService;
-    private final SubjectService subjectService;
     private final GroupService groupService;
 
     @PostMapping("/lectures/add")

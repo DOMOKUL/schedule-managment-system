@@ -2,6 +2,7 @@ package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.model.Lesson;
 
+import java.time.Duration;
 import java.util.List;
 
 public interface LessonService {
@@ -15,4 +16,6 @@ public interface LessonService {
     Lesson updateLesson(Lesson lesson);
 
     boolean deleteLessonById(Long id);
+
+    List<Duration> getDurationsForLesson(List<Lesson> lessons);
 }

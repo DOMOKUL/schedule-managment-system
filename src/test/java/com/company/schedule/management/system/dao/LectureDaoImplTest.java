@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
@@ -30,11 +31,11 @@ class LectureDaoImplTest extends BaseIntegrationTest {
 
     private static final Lecture TEST_LECTURE = new Lecture(10L, 10, Date.valueOf("1988-09-29"),
             TEST_AUDIENCE, TEST_GROUP,
-            new Lesson(10L, 10, LocalTime.of(13, 0, 0),
+            new Lesson(10L, 10, Time.valueOf(LocalTime.of(13, 0, 0)),
                     Duration.ofMinutes(90L), TEST_SUBJECT, null),
             new Teacher(10L, TEST_FACULTY, null));
 
-    private static final Lesson TEST_LESSON = new Lesson(10L, 10, LocalTime.of(13, 0, 0),
+    private static final Lesson TEST_LESSON = new Lesson(10L, 10, Time.valueOf(LocalTime.of(13, 0, 0)),
             Duration.ofMinutes(90L), TEST_SUBJECT, null);
 
     private static final Teacher TEST_TEACHER = new Teacher(10L, TEST_FACULTY, null);
@@ -46,7 +47,7 @@ class LectureDaoImplTest extends BaseIntegrationTest {
     void create_shouldReturnCorrectLecture_whenInputCorrectData() {
         Lecture actual = lectureDao.create(new Lecture(10, Date.valueOf("2019-01-26"),
                 TEST_AUDIENCE, TEST_GROUP,
-                new Lesson(10L, 1, LocalTime.of(13, 0, 0),
+                new Lesson(10L, 1, Time.valueOf(LocalTime.of(13, 0, 0)),
                         Duration.ofMinutes(90L), TEST_SUBJECT, null),
                 new Teacher(10L, TEST_FACULTY, null)));
         Lecture expected = new Lecture(1L, 10, Date.valueOf("2019-01-26"), TEST_AUDIENCE, TEST_GROUP,

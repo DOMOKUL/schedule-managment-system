@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -54,5 +56,18 @@ public class LessonServiceImpl implements LessonService {
         } catch (DaoException cause) {
             throw new ServiceException("Lesson doesn't delete ", cause);
         }
+    }
+
+    @Override
+    public List<Duration> getDurationsForLesson(List<Lesson> lessons) {
+        List<Duration> result = new ArrayList<>();
+        for (Lesson lesson : lessons) {
+            if (lesson == null) {
+                result.add(null);
+            } else {
+                result.add(lesson.getDuration());
+            }
+        }
+        return result;
     }
 }

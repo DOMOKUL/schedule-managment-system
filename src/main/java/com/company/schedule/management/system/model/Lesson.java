@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer number;
-    private LocalTime startTime;
+    private Time startTime;
     private Duration duration;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
@@ -31,7 +32,7 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
     private List<Lecture> lectures;
 
-    public Lesson(Integer number, LocalTime startTime, Duration duration, Subject subject, List<Lecture> lectures) {
+    public Lesson(Integer number, Time startTime, Duration duration, Subject subject, List<Lecture> lectures) {
         this.number = number;
         this.startTime = startTime;
         this.duration = duration;
@@ -63,4 +64,5 @@ public class Lesson {
     public int hashCode() {
         return Objects.hash(id, number, startTime, duration, subject);
     }
+
 }

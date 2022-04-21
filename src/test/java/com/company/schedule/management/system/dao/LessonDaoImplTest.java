@@ -11,6 +11,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
@@ -24,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LessonDaoImplTest extends BaseIntegrationTest {
 
     private static final Subject TEST_SUBJECT = new Subject(10L, "math", null);
-    private static final Lesson TEST_LESSON = new Lesson(10L, 10, LocalTime.of(13, 0, 0),
+    private static final Lesson TEST_LESSON = new Lesson(10L, 10, Time.valueOf(LocalTime.of(13, 0, 0)),
             Duration.ofMinutes(90L), TEST_SUBJECT, null);
 
     @Autowired
