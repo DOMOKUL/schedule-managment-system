@@ -23,9 +23,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="each_faculty: ${faculties}">
+        <tr th:each="each_faculty, iter : ${faculties}">
             <td th:text="${each_faculty.id}"></td>
-            <td th:text="${each_faculty.name}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/faculties/'} + ${faculties.get(iter.index).getId()}"
+                   th:text="${each_faculty.name}"></a>
+            </td>
             <td>
                 <a th:href="@{/faculties/edit/{id}(id=${each_faculty.id})}" class="btn btn-sm">
                     <span>Edit</span>
@@ -44,8 +48,10 @@
         <h5>Save Faculty</h5>
         <form action="#" th:action="@{/faculties/add}" th:object="${faculty}"
               method="POST">
-            <input type="text" th:field="*{name}"
-                   placeholder="Faculty name" class="input_">
+            <label>
+                <input type="text" th:field="*{name}"
+                       placeholder="Faculty name" class="input_">
+            </label>
             <button type="submit" class="btn btn-info"> Save Faculty</button>
         </form>
     </div>

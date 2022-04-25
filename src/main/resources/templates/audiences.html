@@ -13,7 +13,7 @@
     <div th:replace="fragments/navbar :: navbar"></div>
 </header>
 
-<div class="flex-container-table" th:switch="${audiences}">
+<div class="flex-container-table">
     <table class="table table-bordered text-center">
         <thead>
         <tr>
@@ -24,9 +24,14 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="each_audience: ${audiences}">
-            <td th:text="${each_audience.id}"></td>
-            <td th:text="${each_audience.number}"></td>
+        <tr th:each="each_audience, iter : ${audiences}">
+            <td th:text="${each_audience.id}">
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/audiences/'} + ${audiences.get(iter.index).getId()}"
+                   th:text="${each_audience.number}"></a>
+            </td>
             <td th:text="${each_audience.capacity}"></td>
             <td>
                 <a th:href="@{/audiences/edit/{id}(id=${each_audience.id})}" class="btn btn-sm">
@@ -46,11 +51,15 @@
         <h5>Save Audience</h5>
         <form action="#" th:action="@{/audiences/add}" th:object="${audience}"
               method="POST">
-            <input type="number" th:field="*{number}"
-                   placeholder="Audience number" class="input_">
+            <label>
+                <input type="number" th:field="*{number}"
+                       placeholder="Audience number" class="input_">
+            </label>
 
-            <input type="number" th:field="*{capacity}"
-                   placeholder="Audience capacity" class="input_">
+            <label>
+                <input type="number" th:field="*{capacity}"
+                       placeholder="Audience capacity" class="input_">
+            </label>
 
             <button type="submit" class="btn btn-info">Save Audience</button>
         </form>

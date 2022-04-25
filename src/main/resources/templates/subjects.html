@@ -13,7 +13,7 @@
     <div th:replace="fragments/navbar :: navbar"></div>
 </header>
 
-<div class="flex-container-table" th:switch="${subjects}">
+<div class="flex-container-table">
     <table class="table table-bordered text-center">
         <thead>
         <tr>
@@ -23,9 +23,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="each_subject: ${subjects}">
+        <tr th:each="each_subject, iter: ${subjects}">
             <td th:text="${each_subject.id}"></td>
-            <td th:text="${each_subject.name}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+                   th:text="${each_subject.name}"></a>
+            </td>
             <td>
                 <a th:href="@{/subjects/edit/{id}(id=${each_subject.id})}" class="btn btn-sm">
                     <span>Edit</span>
@@ -44,8 +48,10 @@
         <h5>Save Subject</h5>
         <form action="#" th:action="@{/subjects/add}" th:object="${subject}"
               method="POST">
-            <input type="text" th:field="*{name}"
-                   placeholder="Subject name" class="input_">
+            <label>
+                <input type="text" th:field="*{name}"
+                       placeholder="Subject name" class="input_">
+            </label>
 
             <button type="submit" class="btn btn-info">Save Subject</button>
         </form>

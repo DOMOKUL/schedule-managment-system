@@ -13,7 +13,7 @@
     <div th:replace="fragments/navbar :: navbar"></div>
 </header>
 
-<div class="flex-container-table" th:switch="${groups}">
+<div class="flex-container-table">
     <table class="table table-bordered text-center">
         <thead>
         <tr>
@@ -24,12 +24,16 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="each_group: ${groups}">
+        <tr th:each="each_group, iter: ${groups}">
             <td th:text="${each_group.id}"></td>
-            <td th:text="${each_group.name}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/groups/'} + ${groups.get(iter.index).getId()}"
+                   th:text="${each_group.name}"></a>
+            </td>
             <td>
 				<span th:each="faculty : ${each_group.faculty}">
-					<span th:text="${faculty.name}"/>
+					<span th:text="${faculty.name}"></span>
 				</span>
             </td>
             <td>
@@ -50,14 +54,16 @@
     <div class="container">
         <h5>Save Group</h5>
         <form method="post" th:action="@{/groups/add}" th:object="${group}">
-            <input placeholder="Group Name" th:field="*{name}" type="text" class="input_">
+                <input placeholder="Group Name" th:field="*{name}" type="text" class="input_">
             <div class="div-inline-block">
                 <label>Select a Faculty:</label>
-                <select class="input_" th:field="*{faculty}" required>
-                    <th:block th:each="faculty:${allFaculties}">
-                        <option th:text="${faculty.name}" th:value="${faculty.id}"></option>
-                    </th:block>
-                </select>
+                <label>
+                    <select class="input_" th:field="*{faculty}" required>
+                        <th:block th:each="faculty:${allFaculties}">
+                            <option th:text="${faculty.name}" th:value="${faculty.id}"></option>
+                        </th:block>
+                    </select>
+                </label>
             </div>
             <button type="submit" class="btn btn-info">Save Group</button>
         </form>

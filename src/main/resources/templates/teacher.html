@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+  <link rel="stylesheet"
+        href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Schedule university</title>
+</head>
+<body>
+<header>
+  <div th:replace="fragments/navbar :: navbar"></div>
+</header>
+
+<div class="text-center">Teacher
+  <div class="flex-container-table">
+    <table class="table table-bordered text-center">
+      <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Middle Name</th>
+        <th scope="col">Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td th:text="${teacher.id}"></td>
+        <td th:text="${teacher.firstName}"></td>
+        <td th:text="${teacher.lastName}"></td>
+        <td th:text="${teacher.middleName}"></td>
+        <td>
+          <a th:href="@{/teachers/edit/{id}(id=${teacher.id})}" class="btn btn-sm">
+            <span>Edit</span>
+          </a>
+          <a th:href="@{/teachers/delete/{id}(id=${teacher.id})}" class="btn btn-danger">
+            <span>Delete</span>
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="text-center">
+  Lectures
+  <div class="flex-container-table">
+    <table class="table table-bordered text-center">
+      <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Number</th>
+        <th scope="col">Date</th>
+        <th scope="col">Start time</th>
+        <th scope="col">Audience</th>
+        <th scope="col">Group</th>
+        <th scope="col">Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="each_lecture: ${lectures}">
+        <td th:text="${each_lecture.id}"></td>
+        <td th:text="${each_lecture.number}"></td>
+        <td th:text="${each_lecture.date}"></td>
+        <td>
+				<span th:each="each_lesson : ${each_lecture.lesson}">
+					<span th:text="${each_lesson.startTime}"></span>
+				</span>
+        </td>
+        <td>
+				<span th:each="each_audience : ${each_lecture.audience}">
+					<span th:text="${each_audience.number}"></span>
+				</span>
+        </td>
+        <td>
+				<span th:each="each_group : ${each_lecture.group}">
+					<span th:text="${each_group.name}"></span>
+				</span>
+        </td>
+
+        <td>
+          <a th:href="@{/lectures/edit/{id}(id=${each_lecture.id})}" class="btn btn-sm">
+            <span>Edit</span>
+          </a>
+          <a th:href="@{/lectures/delete/{id}(id=${each_lecture.id})}" class="btn btn-danger">
+            <span>Delete</span>
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

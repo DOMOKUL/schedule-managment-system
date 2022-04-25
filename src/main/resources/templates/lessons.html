@@ -28,7 +28,11 @@
         <tbody>
         <tr th:each="each_lesson, iter: ${lessons}">
             <td th:text="${each_lesson.id}"></td>
-            <td th:text="${each_lesson.number}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/lessons/'} + ${lessons.get(iter.index).getId()}"
+                   th:text="${each_lesson.number}"></a>
+            </td>
             <td th:text="${durations.get(iter.index)}"></td>
             <td th:text="${each_lesson.startTime}"></td>
             <td>

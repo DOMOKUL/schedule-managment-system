@@ -26,11 +26,23 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="each_teacher: ${teachers}">
+        <tr th:each="each_teacher, iter : ${teachers}">
             <td th:text="${each_teacher.id}"></td>
-            <td th:text="${each_teacher.firstName}"></td>
-            <td th:text="${each_teacher.lastName}"></td>
-            <td th:text="${each_teacher.middleName}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
+                   th:text="${each_teacher.firstName}"></a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
+                   th:text="${each_teacher.lastName}"></a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
+                   th:text="${each_teacher.middleName}"></a>
+            </td>
             <td>
 				<span th:each="each_faculty : ${each_teacher.faculty}">
 					<span th:text="${each_faculty.name}"></span>
