@@ -13,5 +13,9 @@ public class StringUtils {
                 .map(duration -> durationFormatter.print(duration, Locale.getDefault()))
                 .collect(Collectors.toList());
     }
+
+    public static String formatDuration(Duration duration){
+        return durationFormatter.print(duration, Locale.getDefault());
+    }
 }
 
