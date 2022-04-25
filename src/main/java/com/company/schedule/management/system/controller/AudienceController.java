@@ -1,6 +1,6 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.model.Audience;
+import com.company.schedule.management.system.model.*;
 import com.company.schedule.management.system.service.AudienceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -27,9 +27,15 @@ public class AudienceController {
     }
 
     @GetMapping("/audiences/{id}")
-    public String getAudienceById(@PathVariable("id") Long id) {
-        audienceService.getAudienceById(id);
-        return "audiences";
+    public String getAudienceById(@PathVariable("id") Long id, Model model) {
+        Audience audience = audienceService.getAudienceById(id);
+        model.addAttribute("audience", audience);
+
+        model.addAttribute("lectures", audience.getLectures());
+
+        model.addAttribute("lecture", new Lecture());
+        model.addAttribute("allAudiences", audienceService.getAllAudiences());
+        return "audience";
     }
 
     @GetMapping("/audiences")

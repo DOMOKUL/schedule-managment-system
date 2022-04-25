@@ -1,5 +1,9 @@
 package com.company.schedule.management.system.controller;
 
+import com.company.schedule.management.system.controller.util.StringUtils;
+import com.company.schedule.management.system.model.Lecture;
+import com.company.schedule.management.system.model.Lesson;
+import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.model.Teacher;
 import com.company.schedule.management.system.service.FacultyService;
 import com.company.schedule.management.system.service.TeacherService;
@@ -24,6 +28,18 @@ public class TeacherController {
     public String addTeacher(@ModelAttribute Teacher teacher) {
         teacherService.saveTeacher(teacher);
         return "redirect:/teachers";
+    }
+
+    @GetMapping("/teachers/{id}")
+    public String getTeacherById(@PathVariable("id") Long id, Model model) {
+        Teacher teacher = teacherService.getTeacherById(id);
+        model.addAttribute("teacher", teacher);
+
+        model.addAttribute("lectures", teacher.getLectures());
+
+        model.addAttribute("lecture", new Lecture());
+        model.addAttribute("allTeachers", teacherService.getAllTeachers());
+        return "teacher";
     }
 
     @GetMapping("/teachers")

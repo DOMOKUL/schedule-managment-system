@@ -1,7 +1,5 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.model.Lecture;
-import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.model.Student;
 import com.company.schedule.management.system.service.*;
 import lombok.RequiredArgsConstructor;

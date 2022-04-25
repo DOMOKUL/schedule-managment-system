@@ -1,8 +1,10 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.model.Audience;
+import com.company.schedule.management.system.controller.util.StringUtils;
+import com.company.schedule.management.system.model.Lecture;
+import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.model.Subject;
-import com.company.schedule.management.system.service.AudienceService;
+import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.SubjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class SubjectController {
 
     private final SubjectService subjectService;
+    private final LessonService lessonService;
 
     @PostMapping("/subjects/add")
     public String addSubject(Model model, @ModelAttribute("subject") Subject subject) {
@@ -29,9 +32,16 @@ public class SubjectController {
     }
 
     @GetMapping("/subjects/{id}")
-    public String getSubjectById(@PathVariable("id") Long id) {
-        subjectService.getSubjectById(id);
-        return "subjects";
+    public String getSubjectById(@PathVariable("id") Long id, Model model) {
+        Subject subject = subjectService.getSubjectById(id);
+        model.addAttribute("subject", subject);
+
+        model.addAttribute("lessons", subject.getLessons());
+        model.addAttribute("durations", StringUtils.formatListOfDurations(lessonService.getDurationsForLesson(lessonService.getAllLessons())));
+
+        model.addAttribute("lesson", new Lesson());
+        model.addAttribute("allSubjects", subjectService.getAllSubjects());
+        return "subject";
     }
 
     @GetMapping("/subjects")

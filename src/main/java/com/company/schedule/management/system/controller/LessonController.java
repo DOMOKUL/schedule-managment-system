@@ -1,7 +1,11 @@
 package com.company.schedule.management.system.controller;
 
+import com.company.schedule.management.system.controller.util.DurationFormatter;
 import com.company.schedule.management.system.controller.util.StringUtils;
+import com.company.schedule.management.system.model.Group;
+import com.company.schedule.management.system.model.Lecture;
 import com.company.schedule.management.system.model.Lesson;
+import com.company.schedule.management.system.model.Student;
 import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.SubjectService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,19 @@ public class LessonController {
     public String addLesson(@ModelAttribute Lesson lesson) {
         lessonService.saveLesson(lesson);
         return "redirect:/lessons";
+    }
+
+    @GetMapping("/lessons/{id}")
+    public String getLessonById(@PathVariable("id") Long id, Model model) {
+        Lesson lesson = lessonService.getLessonById(id);
+        model.addAttribute("lesson", lesson);
+        model.addAttribute("duration", StringUtils.formatDuration(lesson.getDuration()));
+
+        model.addAttribute("lectures", lesson.getLectures());
+
+        model.addAttribute("lecture", new Lecture());
+        model.addAttribute("allGroups", lessonService.getAllLessons());
+        return "lesson";
     }
 
     @GetMapping("/lessons")

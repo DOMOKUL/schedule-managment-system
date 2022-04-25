@@ -1,9 +1,8 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.model.Group;
+import com.company.schedule.management.system.model.*;
 import com.company.schedule.management.system.service.FacultyService;
 import com.company.schedule.management.system.service.GroupService;
-import com.company.schedule.management.system.service.impl.GroupServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,9 +27,17 @@ public class GroupController {
     }
 
     @GetMapping("/groups/{id}")
-    public String getGroupById(@PathVariable("id") Long id) {
-        groupService.getGroupById(id);
-        return "groups";
+    public String getGroupById(@PathVariable("id") Long id, Model model) {
+        Group group = groupService.getGroupById(id);
+        model.addAttribute("group", group);
+
+        model.addAttribute("students", group.getStudents());
+        model.addAttribute("lectures", group.getLectures());
+
+        model.addAttribute("student", new Student());
+        model.addAttribute("lecture", new Lecture());
+        model.addAttribute("allGroups", groupService.getAllGroups());
+        return "group";
     }
 
     @GetMapping("/groups")
