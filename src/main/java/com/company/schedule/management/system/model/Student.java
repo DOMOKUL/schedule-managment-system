@@ -20,7 +20,7 @@ public class Student extends Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer courseNumber;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "group_id")
     private Group group;
 
@@ -34,7 +34,6 @@ public class Student extends Person {
         return "Student{" +
                 "id=" + id +
                 ", courseNumber=" + courseNumber +
-                ", group=" + group.getName() +
                 '}';
     }
 

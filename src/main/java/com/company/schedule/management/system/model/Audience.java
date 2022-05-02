@@ -22,7 +22,7 @@ public class Audience {
     private Long id;
     private Integer number;
     private Integer capacity;
-    @OneToMany(mappedBy = "audience", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "audience", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Lecture> lectures;
 
     public Audience(Integer number, Integer capacity, List<Lecture> lectures) {

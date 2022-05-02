@@ -8,7 +8,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.sql.Time;
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,10 +25,10 @@ public class Lesson {
     private Integer number;
     private Time startTime;
     private Duration duration;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "subject_id")
     private Subject subject;
-    @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Lecture> lectures;
 
     public Lesson(Integer number, Time startTime, Duration duration, Subject subject, List<Lecture> lectures) {
@@ -47,7 +46,6 @@ public class Lesson {
                 ", number=" + number +
                 ", startTime=" + startTime +
                 ", duration=" + duration +
-                ", subject=" + subject.getName() +
                 ", lectures=" + lectures +
                 '}';
     }

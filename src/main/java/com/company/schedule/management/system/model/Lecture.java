@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -23,16 +22,16 @@ public class Lecture {
     private Long id;
     private Integer number;
     private Date date;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "audience_id")
     private Audience audience;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "group_id")
     private Group group;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "lesson_id")
     private Lesson lesson;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
@@ -51,10 +50,6 @@ public class Lecture {
                 "id=" + id +
                 ", number=" + number +
                 ", date=" + date +
-                ", audience=" + audience.getId() +
-                ", group=" + group.getName() +
-                ", lesson=" + lesson.getId() +
-                ", teacher=" + teacher.getId() +
                 '}';
     }
 

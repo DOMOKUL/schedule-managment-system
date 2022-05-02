@@ -21,10 +21,10 @@ public class Teacher extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
-    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Lecture> lectures;
 
     public Teacher(Faculty faculty, List<Lecture> lectures) {
@@ -36,7 +36,6 @@ public class Teacher extends Person {
     public String toString() {
         return "Teacher{" +
                 "id=" + id +
-                ", faculty=" + faculty.getName() +
                 '}';
     }
 
