@@ -1,11 +1,7 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.controller.util.DurationFormatter;
 import com.company.schedule.management.system.controller.util.StringUtils;
-import com.company.schedule.management.system.model.Group;
-import com.company.schedule.management.system.model.Lecture;
 import com.company.schedule.management.system.model.Lesson;
-import com.company.schedule.management.system.model.Student;
 import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.SubjectService;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +35,7 @@ public class LessonController {
 
         model.addAttribute("lectures", lesson.getLectures());
 
-        model.addAttribute("lecture", new Lecture());
-        model.addAttribute("allGroups", lessonService.getAllLessons());
+        model.addAttribute("allLessons", lessonService.getAllLessons());
         return "lesson";
     }
 

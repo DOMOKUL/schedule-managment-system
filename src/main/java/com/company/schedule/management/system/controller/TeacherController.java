@@ -1,9 +1,5 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.controller.util.StringUtils;
-import com.company.schedule.management.system.model.Lecture;
-import com.company.schedule.management.system.model.Lesson;
-import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.model.Teacher;
 import com.company.schedule.management.system.service.FacultyService;
 import com.company.schedule.management.system.service.TeacherService;
@@ -37,7 +33,6 @@ public class TeacherController {
 
         model.addAttribute("lectures", teacher.getLectures());
 
-        model.addAttribute("lecture", new Lecture());
         model.addAttribute("allTeachers", teacherService.getAllTeachers());
         return "teacher";
     }

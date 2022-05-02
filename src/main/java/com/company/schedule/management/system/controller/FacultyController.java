@@ -1,8 +1,6 @@
 package com.company.schedule.management.system.controller;
 
 import com.company.schedule.management.system.model.Faculty;
-import com.company.schedule.management.system.model.Group;
-import com.company.schedule.management.system.model.Teacher;
 import com.company.schedule.management.system.service.FacultyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -36,8 +34,6 @@ public class FacultyController {
         model.addAttribute("groups", faculty.getGroups());
         model.addAttribute("teachers", faculty.getTeachers());
 
-        model.addAttribute("group", new Group());
-        model.addAttribute("teacher", new Teacher());
         model.addAttribute("allFaculties", facultyService.getAllFaculties());
         return "faculty";
     }

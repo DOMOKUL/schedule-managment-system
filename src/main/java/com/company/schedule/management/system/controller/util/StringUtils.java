@@ -14,7 +14,7 @@ public class StringUtils {
                 .collect(Collectors.toList());
     }
 
-    public static String formatDuration(Duration duration){
+    public static String formatDuration(Duration duration) {
         return durationFormatter.print(duration, Locale.getDefault());
     }
 }

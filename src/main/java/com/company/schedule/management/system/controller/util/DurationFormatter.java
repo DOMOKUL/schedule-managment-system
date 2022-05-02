@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.Locale;
 
 @Component
@@ -13,7 +12,7 @@ public class DurationFormatter implements Formatter<Duration> {
 
     @Override
     public Duration parse(String text, Locale locale) throws ParseException {
-       return Duration.ofMinutes(Long.parseLong(text));
+        return Duration.ofMinutes(Long.parseLong(text));
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.company.schedule.management.system.controller;
 
 import com.company.schedule.management.system.controller.util.StringUtils;
-import com.company.schedule.management.system.model.Lecture;
-import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.SubjectService;
@@ -39,7 +37,6 @@ public class SubjectController {
         model.addAttribute("lessons", subject.getLessons());
         model.addAttribute("durations", StringUtils.formatListOfDurations(lessonService.getDurationsForLesson(lessonService.getAllLessons())));
 
-        model.addAttribute("lesson", new Lesson());
         model.addAttribute("allSubjects", subjectService.getAllSubjects());
         return "subject";
     }

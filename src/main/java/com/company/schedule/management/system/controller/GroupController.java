@@ -1,6 +1,6 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.model.*;
+import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.FacultyService;
 import com.company.schedule.management.system.service.GroupService;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +34,6 @@ public class GroupController {
         model.addAttribute("students", group.getStudents());
         model.addAttribute("lectures", group.getLectures());
 
-        model.addAttribute("student", new Student());
-        model.addAttribute("lecture", new Lecture());
         model.addAttribute("allGroups", groupService.getAllGroups());
         return "group";
     }

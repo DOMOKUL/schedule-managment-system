@@ -1,7 +1,8 @@
 package com.company.schedule.management.system.controller;
 
 import com.company.schedule.management.system.model.Student;
-import com.company.schedule.management.system.service.*;
+import com.company.schedule.management.system.service.GroupService;
+import com.company.schedule.management.system.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

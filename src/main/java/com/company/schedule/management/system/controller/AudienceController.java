@@ -1,6 +1,6 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.model.*;
+import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.service.AudienceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,12 +17,8 @@ public class AudienceController {
     private final AudienceService audienceService;
 
     @PostMapping("/audiences/add")
-    public String addAudience(Model model, @ModelAttribute("audience") Audience audience) {
-        if (audience.getNumber() != 0 && audience.getNumber() != null) {
-            audienceService.saveAudience(audience);
-            return "redirect:/audiences";
-        }
-        model.addAttribute("errorMessage", "Audience not created");
+    public String addAudience(@ModelAttribute("audience") Audience audience) {
+        audienceService.saveAudience(audience);
         return "redirect:/audiences";
     }
 
@@ -33,7 +29,6 @@ public class AudienceController {
 
         model.addAttribute("lectures", audience.getLectures());
 
-        model.addAttribute("lecture", new Lecture());
         model.addAttribute("allAudiences", audienceService.getAllAudiences());
         return "audience";
     }
