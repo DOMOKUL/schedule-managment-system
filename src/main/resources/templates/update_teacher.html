@@ -1,55 +1,59 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Update User</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
-        integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-  <link rel="stylesheet" href="../css/shards.min.css">
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Update User</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" rel="stylesheet">
+    <link href="../css/shards.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container my-5">
-  <h2 class="mb-5">Update Teacher</h2>
-  <div class="row">
-    <div class="col-md-6">
-      <form action="#" th:action="@{/teachers/update/{id}(id=${updatedTeacher.id})}"
-            th:object="${updatedTeacher}" method="POST">
-        <div class="row">
-          <div class="form-group col-md-6">
-            <label for="first-name" class="col-form-label">First name</label>
-            <input type="text" th:field="*{firstName}" class="form-control" id="first-name" placeholder="First Name">
-          </div>
-          <div class="form-group col-md-6">
-            <label for="last-name" class="col-form-label">Last name</label>
-            <input type="text" th:field="*{lastName}" class="form-control" id="last-name" placeholder="Last Name">
-          </div>
-          <div class="form-group col-md-6">
-            <label for="middle-name" class="col-form-label">Middle name</label>
-            <input type="text" th:field="*{middleName}" class="form-control" id="middle-name" placeholder="Middle Name">
-          </div>
-          <div class="div-inline-block div-centr">
-            <label>Select a Faculty:</label>
-            <select class="input_" th:field="*{faculty}" required>
-              <th:block th:each="faculty:${allFaculties}">
-                <option th:text="${faculty.name}" th:value="${faculty.id}"></option>
-              </th:block>
-            </select>
-          </div>
-        </div>
+    <h2 class="mb-5">Update Teacher</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" method="POST"
+                  th:action="@{/teachers/update/{id}(id=${updatedTeacher.id})}" th:object="${updatedTeacher}">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="first-name">First name</label>
+                        <input class="form-control" id="first-name" placeholder="First Name" th:field="*{firstName}"
+                               type="text">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="last-name">Last name</label>
+                        <input class="form-control" id="last-name" placeholder="Last Name" th:field="*{lastName}"
+                               type="text">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="middle-name">Middle name</label>
+                        <input class="form-control" id="middle-name" placeholder="Middle Name" th:field="*{middleName}"
+                               type="text">
+                    </div>
+                    <div class="div-inline-block div-centr">
+                        <label>Select a Faculty:
+                            <select class="input_" required th:field="*{faculty}">
+                                <th:block th:each="faculty:${allFaculties}">
+                                    <option th:text="${faculty.name}" th:value="${faculty.id}"></option>
+                                </th:block>
+                            </select>
+                        </label>
+                    </div>
+                </div>
 
-        <div class="row">
-          <div class="col-md-6 mt-5">
-            <input type="submit" class="btn btn-primary" value="Update Teacher">
-          </div>
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <input class="btn btn-primary" type="submit" value="Update Teacher">
+                    </div>
+                </div>
+            </form>
         </div>
-      </form>
     </div>
-  </div>
 </div>
 </body>
 </html>

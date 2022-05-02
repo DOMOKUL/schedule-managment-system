@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
-    <link rel="stylesheet"
-          href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../static/css/bootstrap.min.css"
+          rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta charset="UTF-8">
     <title>Schedule university</title>
 </head>
@@ -30,10 +30,10 @@
                 <td th:text="${audience.number}"></td>
                 <td th:text="${audience.capacity}"></td>
                 <td>
-                    <a th:href="@{/audiences/edit/{id}(id=${audience.id})}" class="btn btn-sm">
+                    <a class="btn btn-sm" th:href="@{/audiences/edit/{id}(id=${audience.id})}">
                         <span>Edit</span>
                     </a>
-                    <a th:href="@{/audiences/delete/{id}(id=${audience.id})}" class="btn btn-danger">
+                    <a class="btn btn-danger" th:href="@{/audiences/delete/{id}(id=${audience.id})}">
                         <span>Delete</span>
                     </a>
                 </td>
@@ -80,10 +80,10 @@
                 </td>
 
                 <td>
-                    <a th:href="@{/lectures/edit/{id}(id=${each_lecture.id})}" class="btn btn-sm">
+                    <a class="btn btn-sm" th:href="@{/lectures/edit/{id}(id=${each_lecture.id})}">
                         <span>Edit</span>
                     </a>
-                    <a th:href="@{/lectures/delete/{id}(id=${each_lecture.id})}" class="btn btn-danger">
+                    <a class="btn btn-danger" th:href="@{/lectures/delete/{id}(id=${each_lecture.id})}">
                         <span>Delete</span>
                     </a>
                 </td>

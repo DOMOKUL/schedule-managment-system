@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
-    <link rel="stylesheet"
-          href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../static/css/bootstrap.min.css"
+          rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta charset="UTF-8">
     <title>Schedule university</title>
 </head>
@@ -41,10 +41,10 @@
 				</span>
             </td>
             <td>
-                <a th:href="@{/lessons/edit/{id}(id=${each_lesson.id})}" class="btn btn-sm">
+                <a class="btn btn-sm" th:href="@{/lessons/edit/{id}(id=${each_lesson.id})}">
                     <span>Edit</span>
                 </a>
-                <a th:href="@{/lessons/delete/{id}(id=${each_lesson.id})}" class="btn btn-danger">
+                <a class="btn btn-danger" th:href="@{/lessons/delete/{id}(id=${each_lesson.id})}">
                     <span>Delete</span>
                 </a>
             </td>
@@ -59,21 +59,21 @@
         <h5>Save Lesson</h5>
         <form method="post" th:action="@{/lessons/add}" th:object="${lesson}">
             <label>
-                <input placeholder="Lesson Number" th:field="*{number}" type="number" class="input_">
+                <input class="input_" placeholder="Lesson Number" th:field="*{number}" type="number">
             </label>
             <label>
                 Start time:
-                <input placeholder="Start Time" th:field="*{startTime}" required type="time" class="input_">
+                <input class="input_" placeholder="Start Time" required th:field="*{startTime}" type="time">
             </label>
             <label for="duration">
                 Duration
-                <input class="input_ " th:field="*{duration}" type="text" id="duration">
+                <input class="input_ " id="duration" th:field="*{duration}" type="text">
             </label>
 
             <div class="div-inline-block">
                 <label>Select a Subject:</label>
                 <label>
-                    <select class="input_" th:field="*{subject}" required>
+                    <select class="input_" required th:field="*{subject}">
                         <th:block th:each="subject:${allSubjects}">
                             <option th:text="${subject.name}" th:value="${subject.id}"></option>
                         </th:block>
@@ -81,7 +81,7 @@
                 </label>
 
             </div>
-            <button type="submit" class="btn btn-info">Save Lesson</button>
+            <button class="btn btn-info" type="submit">Save Lesson</button>
         </form>
     </div>
 </div>

@@ -1,12 +1,12 @@
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>NavigationBar</title>
-    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
 </head>
 <body>
 
-<div th:fragment="navbar" class="nav bg-dark">
+<div class="nav bg-dark" th:fragment="navbar">
     <div>
         <a class="navbar-brand" th:href="@{/}">University</a>
         <ul class="nav-list">

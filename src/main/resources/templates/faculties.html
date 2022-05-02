@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
-    <link rel="stylesheet"
-          href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../static/css/bootstrap.min.css"
+          rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta charset="UTF-8">
     <title>Schedule university</title>
 </head>
@@ -31,10 +31,10 @@
                    th:text="${each_faculty.name}"></a>
             </td>
             <td>
-                <a th:href="@{/faculties/edit/{id}(id=${each_faculty.id})}" class="btn btn-sm">
+                <a class="btn btn-sm" th:href="@{/faculties/edit/{id}(id=${each_faculty.id})}">
                     <span>Edit</span>
                 </a>
-                <a th:href="@{/faculties/delete/{id}(id=${each_faculty.id})}" class="btn btn-danger">
+                <a class="btn btn-danger" th:href="@{/faculties/delete/{id}(id=${each_faculty.id})}">
                     <span>Delete</span>
                 </a>
             </td>
@@ -46,13 +46,13 @@
 <div class="wrapper">
     <div class="container">
         <h5>Save Faculty</h5>
-        <form action="#" th:action="@{/faculties/add}" th:object="${faculty}"
-              method="POST">
+        <form action="#" method="POST" th:action="@{/faculties/add}"
+              th:object="${faculty}">
             <label>
-                <input type="text" th:field="*{name}"
-                       placeholder="Faculty name" class="input_">
+                <input class="input_" placeholder="Faculty name"
+                       th:field="*{name}" type="text">
             </label>
-            <button type="submit" class="btn btn-info"> Save Faculty</button>
+            <button class="btn btn-info" type="submit"> Save Faculty</button>
         </form>
     </div>
 </div>

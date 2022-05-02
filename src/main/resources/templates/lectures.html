@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
-    <link rel="stylesheet"
-          href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../static/css/bootstrap.min.css"
+          rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta charset="UTF-8">
     <title>Schedule university</title>
 </head>
@@ -48,10 +48,10 @@
             </td>
 
             <td>
-                <a th:href="@{/lectures/edit/{id}(id=${each_lecture.id})}" class="btn btn-sm">
+                <a class="btn btn-sm" th:href="@{/lectures/edit/{id}(id=${each_lecture.id})}">
                     <span>Edit</span>
                 </a>
-                <a th:href="@{/lectures/delete/{id}(id=${each_lecture.id})}" class="btn btn-danger">
+                <a class="btn btn-danger" th:href="@{/lectures/delete/{id}(id=${each_lecture.id})}">
                     <span>Delete</span>
                 </a>
             </td>
@@ -67,16 +67,16 @@
         <form method="post" th:action="@{/lectures/add}" th:object="${lecture}">
             <label>
                 Select a Date:
-                <input placeholder="Lecture Date" th:field="*{date}" type="date" class="input_">
+                <input class="input_" placeholder="Lecture Date" th:field="*{date}" type="date">
             </label>
             <label>
                 Select a Number:
-                <input placeholder="Lecture Number" th:field="*{number}" type="number" class="input_">
+                <input class="input_" placeholder="Lecture Number" th:field="*{number}" type="number">
             </label>
             <div class="div-inline-block">
                 <label>Select a Audience:</label>
                 <label>
-                    <select class="input_" th:field="*{audience}" required>
+                    <select class="input_" required th:field="*{audience}">
                         <th:block th:each="audience:${allAudiences}">
                             <option th:text="${audience.number}" th:value="${audience.id}"></option>
                         </th:block>
@@ -84,7 +84,7 @@
                 </label>
                 <label>Select a Group:</label>
                 <label>
-                    <select class="input_" th:field="*{group}" required>
+                    <select class="input_" required th:field="*{group}">
                         <th:block th:each="group:${allGroups}">
                             <option th:text="${group.name}" th:value="${group.id}"></option>
                         </th:block>
@@ -92,7 +92,7 @@
                 </label>
                 <label>Select a Lesson:</label>
                 <label>
-                    <select class="input_" th:field="*{lesson}" required>
+                    <select class="input_" required th:field="*{lesson}">
                         <th:block th:each="lesson:${allLessons}">
                             <option th:text="${lesson.number}" th:value="${lesson.id}"></option>
                         </th:block>
@@ -100,14 +100,15 @@
                 </label>
                 <label>Select a Teacher:</label>
                 <label>
-                    <select class="input_" th:field="*{teacher}" required>
+                    <select class="input_" required th:field="*{teacher}">
                         <th:block th:each="teacher:${allTeachers}">
-                            <option th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}" th:value="${teacher.id}"></option>
+                            <option th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
+                                    th:value="${teacher.id}"></option>
                         </th:block>
                     </select>
                 </label>
             </div>
-            <button type="submit" class="btn btn-info">Save Lecture</button>
+            <button class="btn btn-info" type="submit">Save Lecture</button>
         </form>
     </div>
 </div>

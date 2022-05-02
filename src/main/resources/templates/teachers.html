@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
-    <link rel="stylesheet"
-          href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../static/css/bootstrap.min.css"
+          rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta charset="UTF-8">
     <title>Schedule university</title>
 </head>
@@ -49,10 +49,10 @@
 				</span>
             </td>
             <td>
-                <a th:href="@{/teachers/edit/{id}(id=${each_teacher.id})}" class="btn btn-sm">
+                <a class="btn btn-sm" th:href="@{/teachers/edit/{id}(id=${each_teacher.id})}">
                     <span>Edit</span>
                 </a>
-                <a th:href="@{/teachers/delete/{id}(id=${each_teacher.id})}" class="btn btn-danger">
+                <a class="btn btn-danger" th:href="@{/teachers/delete/{id}(id=${each_teacher.id})}">
                     <span>Delete</span>
                 </a>
             </td>
@@ -66,19 +66,19 @@
         <h5>Save Teacher</h5>
         <form method="post" th:action="@{/teachers/add}" th:object="${teacher}">
             <label>
-                <input placeholder="First name" th:field="*{firstName}" type="text" class="input_">
+                <input class="input_" placeholder="First name" th:field="*{firstName}" type="text">
             </label>
             <label>
-                <input placeholder="Last name" th:field="*{lastName}" type="text" class="input_">
+                <input class="input_" placeholder="Last name" th:field="*{lastName}" type="text">
             </label>
             <label>
-                <input placeholder="Middle name" th:field="*{middleName}" type="text" class="input_">
+                <input class="input_" placeholder="Middle name" th:field="*{middleName}" type="text">
             </label>
 
             <div class="div-inline-block">
                 <label>Select a Faculty:</label>
                 <label>
-                    <select class="input_" th:field="*{faculty}" required>
+                    <select class="input_" required th:field="*{faculty}">
                         <th:block th:each="faculty:${allFaculties}">
                             <option th:text="${faculty.name}" th:value="${faculty.id}"></option>
                         </th:block>
@@ -86,7 +86,7 @@
                 </label>
 
             </div>
-            <button type="submit" class="btn btn-info">Save Student</button>
+            <button class="btn btn-info" type="submit">Save Student</button>
         </form>
     </div>
 </div>
