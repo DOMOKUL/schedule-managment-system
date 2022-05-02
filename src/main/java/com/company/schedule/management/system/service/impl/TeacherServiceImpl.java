@@ -6,7 +6,6 @@ import com.company.schedule.management.system.model.Teacher;
 import com.company.schedule.management.system.service.TeacherService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -52,11 +51,8 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public boolean deleteTeacherById(Long id) {
-        try {
-            return teacherDao.deleteById(id);
-        } catch (DaoException cause) {
-            throw new ServiceException("Teacher doesn't delete ", cause);
-        }
+    public void deleteTeacherById(Long id) {
+        teacherDao.findById(id).orElseThrow(() -> new ServiceException("Teacher with id: " + id + " doesn't exist"));
+        teacherDao.deleteById(id);
     }
 }

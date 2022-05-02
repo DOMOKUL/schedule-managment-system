@@ -14,5 +14,5 @@ public interface AudienceService {
 
     Audience updateAudience(Audience audience);
 
-    boolean deleteAudienceById(Long id);
+    void deleteAudienceById(Long id);
 }

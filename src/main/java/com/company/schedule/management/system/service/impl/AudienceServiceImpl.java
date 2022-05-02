@@ -6,7 +6,6 @@ import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.service.AudienceService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -52,11 +51,8 @@ public class AudienceServiceImpl implements AudienceService {
     }
 
     @Override
-    public boolean deleteAudienceById(Long id) {
-        try {
-            return audienceDao.deleteById(id);
-        } catch (DaoException cause) {
-            throw new ServiceException("Audience doesn't delete ", cause);
-        }
+    public void deleteAudienceById(Long id) {
+        audienceDao.findById(id).orElseThrow(() -> new ServiceException("Audience with id: " + id + " doesn't exist"));
+        audienceDao.deleteById(id);
     }
 }

@@ -6,7 +6,6 @@ import com.company.schedule.management.system.model.Lecture;
 import com.company.schedule.management.system.service.LectureService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -52,11 +51,8 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public boolean deleteLectureById(Long id) {
-        try {
-            return lectureDao.deleteById(id);
-        } catch (DaoException cause) {
-            throw new ServiceException("Lecture doesn't delete ", cause);
-        }
+    public void deleteLectureById(Long id) {
+        lectureDao.findById(id).orElseThrow(() -> new ServiceException("Lecture with id: " + id + " doesn't exist"));
+        lectureDao.deleteById(id);
     }
 }

@@ -15,7 +15,7 @@ public interface LessonService {
 
     Lesson updateLesson(Lesson lesson);
 
-    boolean deleteLessonById(Long id);
+    void deleteLessonById(Long id);
 
     List<Duration> getDurationsForLesson(List<Lesson> lessons);
 }

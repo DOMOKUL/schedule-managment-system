@@ -15,7 +15,7 @@ public interface FacultyService {
 
     Faculty updateFaculty(Faculty faculty);
 
-    boolean deleteFacultyById(Long id);
+    void deleteFacultyById(Long id);
 
     List<Faculty> getFacultiesForGroups(List<Group> allGroups);
 }

@@ -53,12 +53,9 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public boolean deleteFacultyById(Long id) {
-        try {
-            return facultyDao.deleteById(id);
-        } catch (DaoException cause) {
-            throw new ServiceException("Faculty doesn't delete ", cause);
-        }
+    public void deleteFacultyById(Long id) {
+        facultyDao.findById(id).orElseThrow(() -> new ServiceException("Faculty with id: " + id + " doesn't exist"));
+        facultyDao.deleteById(id);
     }
 
     @Override

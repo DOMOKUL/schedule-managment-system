@@ -6,7 +6,6 @@ import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -50,12 +49,9 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public boolean deleteLessonById(Long id) {
-        try {
-            return lessonDao.deleteById(id);
-        } catch (DaoException cause) {
-            throw new ServiceException("Lesson doesn't delete ", cause);
-        }
+    public void deleteLessonById(Long id) {
+        lessonDao.findById(id).orElseThrow(() -> new ServiceException("Lesson with id: " + id + " doesn't exist"));
+        lessonDao.deleteById(id);
     }
 
     @Override

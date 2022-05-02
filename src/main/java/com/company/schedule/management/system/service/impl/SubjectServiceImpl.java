@@ -6,7 +6,6 @@ import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.service.SubjectService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -52,11 +51,8 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public boolean deleteSubjectById(Long id) {
-        try {
-            return subjectDao.deleteById(id);
-        } catch (DaoException cause) {
-            throw new ServiceException("Subject doesn't delete ", cause);
-        }
+    public void deleteSubjectById(Long id) {
+        subjectDao.findById(id).orElseThrow(() -> new ServiceException("Subject with id: " + id + " doesn't exist"));
+        subjectDao.deleteById(id);
     }
 }

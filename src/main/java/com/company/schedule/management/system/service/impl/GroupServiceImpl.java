@@ -6,7 +6,6 @@ import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.GroupService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -52,11 +51,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean deleteGroupById(Long id) {
-        try {
-            return groupDao.deleteById(id);
-        } catch (DaoException cause) {
-            throw new ServiceException("Group doesn't delete ", cause);
-        }
+    public void deleteGroupById(Long id) {
+        groupDao.findById(id).orElseThrow(() -> new ServiceException("Group with id: " + id + " doesn't exist"));
+        groupDao.deleteById(id);
     }
 }
