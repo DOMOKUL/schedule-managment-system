@@ -23,7 +23,6 @@ class SubjectServiceImplTest {
 
     @Autowired
     SubjectServiceImpl subjectServiceImpl;
-
     @MockBean
     SubjectDao subjectDao;
 
@@ -93,7 +92,7 @@ class SubjectServiceImplTest {
     void deleteSubjectById_shouldReturnTrue_whenInputExistSubjectId() {
         when(subjectDao.deleteById(subjectWithId.getId())).thenReturn(true);
 
-        assertTrue(subjectServiceImpl.deleteSubjectById(subjectWithId.getId()));
+        subjectServiceImpl.deleteSubjectById(subjectWithId.getId());
 
         verify(subjectDao, times(1)).deleteById(subjectWithId.getId());
     }

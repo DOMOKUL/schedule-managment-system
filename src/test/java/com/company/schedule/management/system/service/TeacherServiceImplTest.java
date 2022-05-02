@@ -30,7 +30,6 @@ class TeacherServiceImplTest {
 
     @Autowired
     TeacherServiceImpl teacherServiceImpl;
-
     @MockBean
     TeacherDao teacherDao;
 
@@ -100,7 +99,7 @@ class TeacherServiceImplTest {
     void deleteSubjectById_shouldReturnTrue_whenInputExistSubjectId() {
         when(teacherDao.deleteById(teacherWithId.getId())).thenReturn(true);
 
-        assertTrue(teacherServiceImpl.deleteTeacherById(teacherWithId.getId()));
+        teacherServiceImpl.deleteTeacherById(teacherWithId.getId());
 
         verify(teacherDao, times(1)).deleteById(teacherWithId.getId());
     }

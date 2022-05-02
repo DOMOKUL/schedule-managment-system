@@ -29,7 +29,6 @@ class LessonServiceImplTest {
 
     @Autowired
     LessonServiceImpl lessonServiceImpl;
-
     @MockBean
     LessonDao lessonDao;
 
@@ -104,7 +103,7 @@ class LessonServiceImplTest {
     void deleteLessonById_shouldReturnTrue_whenInputExistLessonId() {
         when(lessonDao.deleteById(lessonWithId.getId())).thenReturn(true);
 
-        assertTrue(lessonServiceImpl.deleteLessonById(lessonWithId.getId()));
+        lessonServiceImpl.deleteLessonById(lessonWithId.getId());
 
         verify(lessonDao, times(1)).deleteById(lessonWithId.getId());
     }

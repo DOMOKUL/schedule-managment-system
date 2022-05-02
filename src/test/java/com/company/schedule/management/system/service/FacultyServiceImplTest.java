@@ -23,7 +23,6 @@ class FacultyServiceImplTest {
 
     @Autowired
     private FacultyServiceImpl facultyServiceImpl;
-
     @MockBean
     private FacultyDao facultyDao;
 
@@ -93,7 +92,7 @@ class FacultyServiceImplTest {
     void deleteFacultyById_shouldReturnTrue_whenInputExistFaculty() {
         when(facultyDao.deleteById(facultyWithId.getId())).thenReturn(true);
 
-        assertTrue(facultyServiceImpl.deleteFacultyById(facultyWithId.getId()));
+        facultyServiceImpl.deleteFacultyById(facultyWithId.getId());
 
         verify(facultyDao, times(1)).deleteById(facultyWithId.getId());
     }

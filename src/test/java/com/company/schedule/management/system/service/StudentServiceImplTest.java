@@ -28,7 +28,6 @@ class StudentServiceImplTest {
 
     @Autowired
     StudentServiceImpl studentServiceImpl;
-
     @MockBean
     StudentDao studentDao;
 
@@ -98,7 +97,7 @@ class StudentServiceImplTest {
     void deleteStudentById_shouldReturnTrue_whenInputExistStudentId() {
         when(studentDao.deleteById(studentWithId.getId())).thenReturn(true);
 
-        assertTrue(studentServiceImpl.deleteStudentById(studentWithId.getId()));
+        studentServiceImpl.deleteStudentById(studentWithId.getId());
 
         verify(studentDao, times(1)).deleteById(studentWithId.getId());
     }

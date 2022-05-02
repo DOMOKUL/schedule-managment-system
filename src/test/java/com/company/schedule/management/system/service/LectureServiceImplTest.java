@@ -32,7 +32,6 @@ class LectureServiceImplTest {
 
     @Autowired
     LectureServiceImpl lectureServiceImpl;
-
     @MockBean
     LectureDao lectureDao;
 
@@ -114,7 +113,7 @@ class LectureServiceImplTest {
     void deleteLectureById_shouldReturnTrue_whenInputExistLectureId() {
         when(lectureDao.deleteById(lectureWithId.getId())).thenReturn(true);
 
-        assertTrue(lectureServiceImpl.deleteLectureById(lectureWithId.getId()));
+        lectureServiceImpl.deleteLectureById(lectureWithId.getId());
 
         verify(lectureDao, times(1)).deleteById(lectureWithId.getId());
     }

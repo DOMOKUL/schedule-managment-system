@@ -24,7 +24,6 @@ class GroupServiceImplTest {
 
     @Autowired
     private GroupServiceImpl groupServiceImpl;
-
     @MockBean
     private GroupDao groupDao;
 
@@ -97,7 +96,7 @@ class GroupServiceImplTest {
     void deleteGroupById_shouldReturnTrue_whenInputExistGroupId() {
         when(groupDao.deleteById(groupWithId.getId())).thenReturn(true);
 
-        assertTrue(groupServiceImpl.deleteGroupById(groupWithId.getId()));
+        groupServiceImpl.deleteGroupById(groupWithId.getId());
 
         verify(groupDao, times(1)).deleteById(groupWithId.getId());
     }

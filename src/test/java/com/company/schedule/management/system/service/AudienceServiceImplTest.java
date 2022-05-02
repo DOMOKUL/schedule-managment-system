@@ -22,7 +22,6 @@ class AudienceServiceImplTest {
 
     @Autowired
     AudienceServiceImpl audienceServiceImpl;
-
     @MockBean
     AudienceDao audienceDao;
 
@@ -98,7 +97,7 @@ class AudienceServiceImplTest {
     void deleteAudienceById_shouldReturnTrue_whenInputExistAudienceId() {
         when(audienceDao.deleteById(audienceWithId.getId())).thenReturn(true);
 
-        assertTrue(audienceServiceImpl.deleteAudienceById(audienceWithId.getId()));
+       audienceServiceImpl.deleteAudienceById(audienceWithId.getId());
 
         verify(audienceDao, times(1)).deleteById(audienceWithId.getId());
     }
