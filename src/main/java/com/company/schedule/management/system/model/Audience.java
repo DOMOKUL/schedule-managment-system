@@ -37,7 +37,6 @@ public class Audience {
                 "id=" + id +
                 ", number=" + number +
                 ", capacity=" + capacity +
-                ", lectures=" + lectures +
                 '}';
     }
 

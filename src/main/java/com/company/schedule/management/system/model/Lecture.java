@@ -50,9 +50,12 @@ public class Lecture {
                 "id=" + id +
                 ", number=" + number +
                 ", date=" + date +
+                ", audience=" + audience +
+                ", group=" + group +
+                ", lesson=" + lesson +
+                ", teacher=" + teacher +
                 '}';
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

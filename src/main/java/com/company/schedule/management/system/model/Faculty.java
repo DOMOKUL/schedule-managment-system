@@ -36,9 +36,7 @@ public class Faculty {
     public String toString() {
         return "Faculty{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", groups=" + groups +
-                ", teachers=" + teachers +
+                ", name='" + name +
                 '}';
     }
 

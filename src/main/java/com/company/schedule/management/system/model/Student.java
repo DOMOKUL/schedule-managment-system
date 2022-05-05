@@ -34,6 +34,7 @@ public class Student extends Person {
         return "Student{" +
                 "id=" + id +
                 ", courseNumber=" + courseNumber +
+                ", group=" + group +
                 '}';
     }
 

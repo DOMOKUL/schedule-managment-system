@@ -33,8 +33,7 @@ public class Subject {
     public String toString() {
         return "Subject{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", lessons=" + lessons +
+                ", name='" + name +
                 '}';
     }
 

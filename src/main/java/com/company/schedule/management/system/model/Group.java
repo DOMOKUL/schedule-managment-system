@@ -41,8 +41,7 @@ public class Group {
         return "Group{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", students=" + students +
-                ", lectures=" + lectures +
+                ", faculty=" + faculty +
                 '}';
     }
 

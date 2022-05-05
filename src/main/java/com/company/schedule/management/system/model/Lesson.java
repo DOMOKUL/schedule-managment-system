@@ -46,7 +46,7 @@ public class Lesson {
                 ", number=" + number +
                 ", startTime=" + startTime +
                 ", duration=" + duration +
-                ", lectures=" + lectures +
+                ", subject=" + subject +
                 '}';
     }
 
