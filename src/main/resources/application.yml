@@ -7,3 +7,10 @@ spring:
     password: "postgres"
     url: "jdbc:postgresql://0.0.0.0:5832/postgres"
     driver-class-name: "org.postgresql.Driver"
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    com.company.schedule.management.system: DEBUG
+    org.hibernate: ERROR

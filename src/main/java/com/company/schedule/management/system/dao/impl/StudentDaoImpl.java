@@ -4,6 +4,8 @@ import com.company.schedule.management.system.dao.StudentDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Student;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StudentDaoImpl implements StudentDao {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentDaoImpl.class);
     private final EntityManager entityManager;
 
     @Override
@@ -27,15 +30,18 @@ public class StudentDaoImpl implements StudentDao {
         } catch (InvalidDataAccessApiUsageException cause) {
             throw new DaoException("Student with id: " + student.getId() + " already exist", cause);
         }
+        LOGGER.debug("Student is created: {}", student);
         return student;
     }
 
     @Override
     public Optional<Student> findById(Long id) {
+        Optional<Student> result = Optional.ofNullable((Student) entityManager.createQuery("select s from Student s" +
+                " left join fetch s.group g" +
+                " left join fetch g.faculty where s.id = :id").setParameter("id", id).getSingleResult());
+        LOGGER.debug("Student at id = {} found: {}", id, result.get());
         try {
-            return Optional.ofNullable((Student) entityManager.createQuery("select s from Student s" +
-                    " left join fetch s.group g" +
-                    " left join fetch g.faculty where s.id = :id").setParameter("id", id).getSingleResult());
+            return result;
         } catch (NoResultException cause) {
             return Optional.empty();
         }
@@ -43,8 +49,10 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public List<Student> findAll() {
+        List<Student> resultList = entityManager.createQuery("select s from Student s").getResultList();
+        LOGGER.debug("Students found: {}", resultList);
         try {
-            return entityManager.createQuery("select s from Student s").getResultList();
+            return resultList;
         } catch (IllegalArgumentException cause) {
             throw new DaoException(cause);
         }
@@ -57,6 +65,7 @@ public class StudentDaoImpl implements StudentDao {
         } catch (PersistenceException cause) {
             throw new DaoException("Update Error: " + cause.getMessage());
         }
+        LOGGER.debug("Student has been updated: {}", student);
         return student;
     }
 
@@ -65,6 +74,7 @@ public class StudentDaoImpl implements StudentDao {
         Student student = findById(id)
                 .orElseThrow(() -> new DaoException("Student with id: " + id + " doesn't exist"));
         entityManager.remove(student);
+        LOGGER.debug("Student with id: {} has been deleted: {}", id, student);
         return true;
     }
 }

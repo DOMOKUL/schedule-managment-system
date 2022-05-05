@@ -4,6 +4,8 @@ import com.company.schedule.management.system.dao.SubjectDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Subject;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SubjectDaoImpl implements SubjectDao {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubjectDaoImpl.class);
     private final EntityManager entityManager;
 
     @Override
@@ -27,14 +30,17 @@ public class SubjectDaoImpl implements SubjectDao {
         } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Subject with id: " + subject.getId() + " already exist", cause);
         }
+        LOGGER.debug("Subject is created: {}", subject);
         return subject;
     }
 
     @Override
     public Optional<Subject> findById(Long id) {
+        Optional<Subject> result = Optional.ofNullable((Subject) entityManager.createQuery("select s from Subject s" +
+                " left join fetch s.lessons  where s.id = :id").setParameter("id", id).getSingleResult());
+        LOGGER.debug("Subject at id = {} found: {}", id, result.get());
         try {
-            return Optional.ofNullable((Subject) entityManager.createQuery("select s from Subject s" +
-                    " left join fetch s.lessons  where s.id = :id").setParameter("id", id).getSingleResult());
+            return result;
         } catch (NoResultException cause) {
             return Optional.empty();
         }
@@ -42,8 +48,10 @@ public class SubjectDaoImpl implements SubjectDao {
 
     @Override
     public List<Subject> findAll() {
+        List<Subject> resultList = entityManager.createQuery("select s from Subject s").getResultList();
+        LOGGER.debug("Subjects found: {}", resultList);
         try {
-            return entityManager.createQuery("select s from Subject s").getResultList();
+            return resultList;
         } catch (IllegalArgumentException cause) {
             throw new DaoException(cause);
         }
@@ -57,6 +65,7 @@ public class SubjectDaoImpl implements SubjectDao {
         } catch (PersistenceException cause) {
             throw new DaoException("Update Error: " + cause.getMessage());
         }
+        LOGGER.debug("Subject has been updated: {}", subject);
         return subject;
     }
 
@@ -65,6 +74,7 @@ public class SubjectDaoImpl implements SubjectDao {
         Subject subject = findById(id)
                 .orElseThrow(() -> new DaoException("Subject with id: " + id + " doesn't exist"));
         entityManager.remove(subject);
+        LOGGER.debug("Subject with id: {} has been deleted: {}", id, subject);
         return true;
     }
 }

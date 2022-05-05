@@ -4,6 +4,8 @@ import com.company.schedule.management.system.dao.FacultyDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FacultyDaoImpl implements FacultyDao {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FacultyDaoImpl.class);
     private final EntityManager entityManager;
 
     @Override
@@ -27,14 +30,17 @@ public class FacultyDaoImpl implements FacultyDao {
         } catch (DataIntegrityViolationException cause) {
             throw new DaoException("Faculty with id: " + faculty.getId() + " already exist", cause);
         }
+        LOGGER.debug("Faculty is created: {}", faculty);
         return faculty;
     }
 
     @Override
     public Optional<Faculty> findById(Long id) {
+        Optional<Faculty> result = Optional.ofNullable((Faculty) entityManager.createQuery("select f from Faculty f " +
+                "left join fetch f.groups where f.id = :id").setParameter("id", id).getSingleResult());
+        LOGGER.debug("Faculty at id = {} found: {}", id, result.get());
         try {
-            return Optional.ofNullable((Faculty) entityManager.createQuery("select f from Faculty f " +
-                    "left join fetch f.groups where f.id = :id").setParameter("id", id).getSingleResult());
+            return result;
         } catch (NoResultException cause) {
             return Optional.empty();
         }
@@ -42,8 +48,10 @@ public class FacultyDaoImpl implements FacultyDao {
 
     @Override
     public List<Faculty> findAll() {
+        List<Faculty> resultList = entityManager.createQuery("select f from Faculty f").getResultList();
+        LOGGER.debug("Faculties found: {}", resultList);
         try {
-            return entityManager.createQuery("select f from Faculty f").getResultList();
+            return resultList;
         } catch (IllegalArgumentException cause) {
             throw new DaoException(cause);
         }
@@ -53,10 +61,10 @@ public class FacultyDaoImpl implements FacultyDao {
     public Faculty update(Faculty faculty) {
         try {
             entityManager.merge(faculty);
-
         } catch (PersistenceException cause) {
             throw new DaoException("Update Error: " + cause.getMessage());
         }
+        LOGGER.debug("Faculty has been updated: {}", faculty);
         return faculty;
     }
 
@@ -65,6 +73,7 @@ public class FacultyDaoImpl implements FacultyDao {
         Faculty faculty = findById(id)
                 .orElseThrow(() -> new DaoException("Faculty with id: " + id + " doesn't exist"));
         entityManager.remove(faculty);
+        LOGGER.debug("Faculty with id: {} has been deleted: {}",id,  faculty);
         return true;
     }
 }

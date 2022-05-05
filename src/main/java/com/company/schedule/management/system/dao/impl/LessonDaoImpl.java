@@ -4,6 +4,8 @@ import com.company.schedule.management.system.dao.LessonDao;
 import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.Lesson;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LessonDaoImpl implements LessonDao {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LessonDaoImpl.class);
     private final EntityManager entityManager;
 
     @Override
@@ -27,15 +30,18 @@ public class LessonDaoImpl implements LessonDao {
         } catch (InvalidDataAccessApiUsageException cause) {
             throw new DaoException("Lesson with id: " + lesson.getId() + " already exist", cause);
         }
+        LOGGER.debug("Lesson is created: {}", lesson);
         return lesson;
     }
 
     @Override
     public Optional<Lesson> findById(Long id) {
+        Optional<Lesson> result = Optional.ofNullable((Lesson) entityManager.createQuery("select l from Lesson l" +
+                " left join fetch l.subject s" +
+                " left join fetch s.lessons where l.id = :id").setParameter("id", id).getSingleResult());
+        LOGGER.debug("Lesson at id = {} found: {}", id, result.get());
         try {
-            return Optional.ofNullable((Lesson) entityManager.createQuery("select l from Lesson l" +
-                    " left join fetch l.subject s" +
-                    " left join fetch s.lessons where l.id = :id").setParameter("id", id).getSingleResult());
+            return result;
         } catch (NoResultException cause) {
             return Optional.empty();
         }
@@ -43,8 +49,10 @@ public class LessonDaoImpl implements LessonDao {
 
     @Override
     public List<Lesson> findAll() {
+        List<Lesson> resultList = entityManager.createQuery("select l from Lesson l").getResultList();
+        LOGGER.debug("Lessons found: {}", resultList);
         try {
-            return entityManager.createQuery("select l from Lesson l").getResultList();
+            return resultList;
         } catch (IllegalArgumentException cause) {
             throw new DaoException(cause);
         }
@@ -57,6 +65,7 @@ public class LessonDaoImpl implements LessonDao {
         } catch (PersistenceException cause) {
             throw new DaoException("Update Error: " + cause.getMessage());
         }
+        LOGGER.debug("Lesson has been updated: {}", lesson);
         return lesson;
     }
 
@@ -65,6 +74,7 @@ public class LessonDaoImpl implements LessonDao {
         Lesson lesson = findById(id)
                 .orElseThrow(() -> new DaoException("Lesson with id: " + id + " doesn't exist"));
         entityManager.remove(lesson);
+        LOGGER.debug("Lesson with id: {} has been deleted: {}",id,  lesson);
         return true;
     }
 }
