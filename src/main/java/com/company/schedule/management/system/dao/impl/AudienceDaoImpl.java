@@ -29,6 +29,7 @@ public class AudienceDaoImpl implements AudienceDao {
             entityManager.persist(audience);
             entityManager.flush();
         } catch (DataIntegrityViolationException cause) {
+            LOGGER.warn("Audience with id: " + audience.getId() + " already exist", cause);
             throw new DaoException("Audience with id: " + audience.getId() + " already exist", cause);
         }
         LOGGER.debug("Audience is created: {}", audience);
@@ -49,6 +50,7 @@ public class AudienceDaoImpl implements AudienceDao {
         try {
             return result;
         } catch (NoResultException cause) {
+            LOGGER.warn("Audience with id: " + id + " doesn't exist", cause);
             return Optional.empty();
         }
     }
@@ -60,6 +62,7 @@ public class AudienceDaoImpl implements AudienceDao {
         try {
             return resultList;
         } catch (IllegalArgumentException cause) {
+            LOGGER.warn("Audiences not found", cause);
             throw new DaoException(cause);
         }
     }
@@ -69,7 +72,8 @@ public class AudienceDaoImpl implements AudienceDao {
         try {
             entityManager.merge(audience);
         } catch (PersistenceException cause) {
-            throw new DaoException("Update Error: " + cause.getMessage());
+            LOGGER.warn("Audience update error: " + cause);
+            throw new DaoException("Audience update error: " + cause);
         }
         LOGGER.debug("Audience has been updated: {}", audience);
         return audience;
@@ -77,10 +81,13 @@ public class AudienceDaoImpl implements AudienceDao {
 
     @Override
     public boolean deleteById(Long id) {
+        if (findById(id).isEmpty()) {
+            LOGGER.warn("Lecture with id: {} hasn't been deleted", id);
+        }
         Audience audience = findById(id)
                 .orElseThrow(() -> new DaoException("Audience with id: " + id + " doesn't exist"));
         entityManager.remove(audience);
-        LOGGER.debug("Audience with id: {} has been deleted: {}",id, audience);
+        LOGGER.debug("Audience with id: {} has been deleted: {}", id, audience);
         return true;
     }
 }

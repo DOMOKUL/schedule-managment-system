@@ -28,6 +28,7 @@ public class SubjectDaoImpl implements SubjectDao {
             entityManager.persist(subject);
             entityManager.flush();
         } catch (DataIntegrityViolationException cause) {
+            LOGGER.warn("Subject with id: " + subject.getId() + " already exist", cause);
             throw new DaoException("Subject with id: " + subject.getId() + " already exist", cause);
         }
         LOGGER.debug("Subject is created: {}", subject);
@@ -42,6 +43,7 @@ public class SubjectDaoImpl implements SubjectDao {
         try {
             return result;
         } catch (NoResultException cause) {
+            LOGGER.warn("Subject with id: " + id + " doesn't exist", cause);
             return Optional.empty();
         }
     }
@@ -53,9 +55,9 @@ public class SubjectDaoImpl implements SubjectDao {
         try {
             return resultList;
         } catch (IllegalArgumentException cause) {
+            LOGGER.warn("Subjects not found", cause);
             throw new DaoException(cause);
         }
-
     }
 
     @Override
@@ -63,7 +65,8 @@ public class SubjectDaoImpl implements SubjectDao {
         try {
             entityManager.merge(subject);
         } catch (PersistenceException cause) {
-            throw new DaoException("Update Error: " + cause.getMessage());
+            LOGGER.warn("Subject update error: " + cause);
+            throw new DaoException("Subject update error: " + cause.getMessage());
         }
         LOGGER.debug("Subject has been updated: {}", subject);
         return subject;
@@ -71,6 +74,9 @@ public class SubjectDaoImpl implements SubjectDao {
 
     @Override
     public boolean deleteById(Long id) {
+        if (findById(id).isEmpty()) {
+            LOGGER.warn("Subject with id: {} hasn't been deleted", id);
+        }
         Subject subject = findById(id)
                 .orElseThrow(() -> new DaoException("Subject with id: " + id + " doesn't exist"));
         entityManager.remove(subject);

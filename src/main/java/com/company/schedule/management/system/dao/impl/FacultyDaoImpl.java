@@ -28,6 +28,7 @@ public class FacultyDaoImpl implements FacultyDao {
             entityManager.persist(faculty);
             entityManager.flush();
         } catch (DataIntegrityViolationException cause) {
+            LOGGER.warn("Faculty with id: " + faculty.getId() + " already exist", cause);
             throw new DaoException("Faculty with id: " + faculty.getId() + " already exist", cause);
         }
         LOGGER.debug("Faculty is created: {}", faculty);
@@ -42,6 +43,7 @@ public class FacultyDaoImpl implements FacultyDao {
         try {
             return result;
         } catch (NoResultException cause) {
+            LOGGER.warn("Faculty with id: " + id + " doesn't exist", cause);
             return Optional.empty();
         }
     }
@@ -53,6 +55,7 @@ public class FacultyDaoImpl implements FacultyDao {
         try {
             return resultList;
         } catch (IllegalArgumentException cause) {
+            LOGGER.warn("Faculties not found", cause);
             throw new DaoException(cause);
         }
     }
@@ -62,7 +65,8 @@ public class FacultyDaoImpl implements FacultyDao {
         try {
             entityManager.merge(faculty);
         } catch (PersistenceException cause) {
-            throw new DaoException("Update Error: " + cause.getMessage());
+            LOGGER.warn("Faculty update error: " + cause);
+            throw new DaoException("Faculty update error: " + cause.getMessage());
         }
         LOGGER.debug("Faculty has been updated: {}", faculty);
         return faculty;
@@ -70,10 +74,13 @@ public class FacultyDaoImpl implements FacultyDao {
 
     @Override
     public boolean deleteById(Long id) {
+        if (findById(id).isEmpty()) {
+            LOGGER.warn("Faculty with id: {} hasn't been deleted", id);
+        }
         Faculty faculty = findById(id)
                 .orElseThrow(() -> new DaoException("Faculty with id: " + id + " doesn't exist"));
         entityManager.remove(faculty);
-        LOGGER.debug("Faculty with id: {} has been deleted: {}",id,  faculty);
+        LOGGER.debug("Faculty with id: {} has been deleted: {}", id, faculty);
         return true;
     }
 }

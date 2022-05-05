@@ -28,6 +28,7 @@ public class TeacherDaoImpl implements TeacherDao {
             entityManager.persist(teacher);
             entityManager.flush();
         } catch (InvalidDataAccessApiUsageException cause) {
+            LOGGER.warn("Teacher with id: " + teacher.getId() + " already exist", cause);
             throw new DaoException("Teacher with id: " + teacher.getId() + " already exist", cause);
         }
         LOGGER.debug("Teacher is created: {}", teacher);
@@ -48,6 +49,7 @@ public class TeacherDaoImpl implements TeacherDao {
         try {
             return result;
         } catch (NoResultException cause) {
+            LOGGER.warn("Subject with id: " + id + " doesn't exist", cause);
             return Optional.empty();
         }
     }
@@ -59,6 +61,7 @@ public class TeacherDaoImpl implements TeacherDao {
         try {
             return resultList;
         } catch (IllegalArgumentException cause) {
+            LOGGER.warn("Teachers not found", cause);
             throw new DaoException(cause);
         }
     }
@@ -68,7 +71,8 @@ public class TeacherDaoImpl implements TeacherDao {
         try {
             entityManager.merge(teacher);
         } catch (PersistenceException cause) {
-            throw new DaoException("Update Error: " + cause.getMessage());
+            LOGGER.warn("Teacher update error: " + cause);
+            throw new DaoException("Teacher update error: " + cause.getMessage());
         }
         LOGGER.debug("Teacher has been updated: {}", teacher);
         return teacher;
@@ -76,6 +80,9 @@ public class TeacherDaoImpl implements TeacherDao {
 
     @Override
     public boolean deleteById(Long id) {
+        if (findById(id).isEmpty()) {
+            LOGGER.warn("Teacher with id: {} hasn't been deleted", id);
+        }
         Teacher teacher = findById(id)
                 .orElseThrow(() -> new DaoException("Teacher with id: " + id + " doesn't exist"));
         entityManager.remove(teacher);

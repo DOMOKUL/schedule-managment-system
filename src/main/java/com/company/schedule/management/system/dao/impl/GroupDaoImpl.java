@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +28,7 @@ public class GroupDaoImpl implements GroupDao {
             entityManager.persist(group);
             entityManager.flush();
         } catch (DataIntegrityViolationException cause) {
+            LOGGER.warn("Group with id: " + group.getId() + " already exist", cause);
             throw new DaoException("Group with id: " + group.getId() + " already exist", cause);
         }
         LOGGER.debug("Group is created: {}", group);
@@ -49,6 +49,7 @@ public class GroupDaoImpl implements GroupDao {
         try {
             return result;
         } catch (NoResultException cause) {
+            LOGGER.warn("Group with id: " + id + " doesn't exist", cause);
             return Optional.empty();
         }
     }
@@ -60,6 +61,7 @@ public class GroupDaoImpl implements GroupDao {
         try {
             return resultList;
         } catch (IllegalArgumentException cause) {
+            LOGGER.warn("Groups not found", cause);
             throw new DaoException(cause);
         }
     }
@@ -69,7 +71,8 @@ public class GroupDaoImpl implements GroupDao {
         try {
             entityManager.merge(group);
         } catch (ConstraintViolationException cause) {
-            throw new DaoException("Update Error: " + cause.getMessage());
+            LOGGER.warn("Group update error: " + cause);
+            throw new DaoException("Group update error: " + cause.getMessage());
         }
         LOGGER.debug("Group has been updated: {}", group);
         return group;
@@ -77,10 +80,13 @@ public class GroupDaoImpl implements GroupDao {
 
     @Override
     public boolean deleteById(Long id) {
+        if (findById(id).isEmpty()) {
+            LOGGER.warn("Group with id: {} hasn't been deleted", id);
+        }
         Group group = findById(id)
                 .orElseThrow(() -> new DaoException("Group with id: " + id + " doesn't exist"));
         entityManager.remove(group);
-        LOGGER.debug("Group with id: {} has been deleted: {}",id, group);
+        LOGGER.debug("Group with id: {} has been deleted: {}", id, group);
         return true;
     }
 }

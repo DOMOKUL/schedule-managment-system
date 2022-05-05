@@ -28,6 +28,7 @@ public class LessonDaoImpl implements LessonDao {
             entityManager.persist(lesson);
             entityManager.flush();
         } catch (InvalidDataAccessApiUsageException cause) {
+            LOGGER.warn("Lesson with id: " + lesson.getId() + " already exist", cause);
             throw new DaoException("Lesson with id: " + lesson.getId() + " already exist", cause);
         }
         LOGGER.debug("Lesson is created: {}", lesson);
@@ -43,6 +44,7 @@ public class LessonDaoImpl implements LessonDao {
         try {
             return result;
         } catch (NoResultException cause) {
+            LOGGER.warn("Lesson with id: " + id + " doesn't exist", cause);
             return Optional.empty();
         }
     }
@@ -54,6 +56,7 @@ public class LessonDaoImpl implements LessonDao {
         try {
             return resultList;
         } catch (IllegalArgumentException cause) {
+            LOGGER.warn("Lessons not found", cause);
             throw new DaoException(cause);
         }
     }
@@ -63,7 +66,8 @@ public class LessonDaoImpl implements LessonDao {
         try {
             entityManager.merge(lesson);
         } catch (PersistenceException cause) {
-            throw new DaoException("Update Error: " + cause.getMessage());
+            LOGGER.warn("Lesson update error: " + cause);
+            throw new DaoException("Lesson update error: " + cause.getMessage());
         }
         LOGGER.debug("Lesson has been updated: {}", lesson);
         return lesson;
@@ -71,10 +75,13 @@ public class LessonDaoImpl implements LessonDao {
 
     @Override
     public boolean deleteById(Long id) {
+        if (findById(id).isEmpty()) {
+            LOGGER.warn("Lesson with id: {} hasn't been deleted", id);
+        }
         Lesson lesson = findById(id)
                 .orElseThrow(() -> new DaoException("Lesson with id: " + id + " doesn't exist"));
         entityManager.remove(lesson);
-        LOGGER.debug("Lesson with id: {} has been deleted: {}",id,  lesson);
+        LOGGER.debug("Lesson with id: {} has been deleted: {}", id, lesson);
         return true;
     }
 }

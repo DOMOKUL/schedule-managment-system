@@ -28,6 +28,7 @@ public class StudentDaoImpl implements StudentDao {
             entityManager.persist(student);
             entityManager.flush();
         } catch (InvalidDataAccessApiUsageException cause) {
+            LOGGER.warn("Student with id: " + student.getId() + " already exist", cause);
             throw new DaoException("Student with id: " + student.getId() + " already exist", cause);
         }
         LOGGER.debug("Student is created: {}", student);
@@ -43,6 +44,7 @@ public class StudentDaoImpl implements StudentDao {
         try {
             return result;
         } catch (NoResultException cause) {
+            LOGGER.warn("Student with id: " + id + " doesn't exist", cause);
             return Optional.empty();
         }
     }
@@ -54,6 +56,7 @@ public class StudentDaoImpl implements StudentDao {
         try {
             return resultList;
         } catch (IllegalArgumentException cause) {
+            LOGGER.warn("Students not found", cause);
             throw new DaoException(cause);
         }
     }
@@ -63,6 +66,7 @@ public class StudentDaoImpl implements StudentDao {
         try {
             entityManager.merge(student);
         } catch (PersistenceException cause) {
+            LOGGER.warn("Student update error: " + cause);
             throw new DaoException("Update Error: " + cause.getMessage());
         }
         LOGGER.debug("Student has been updated: {}", student);
@@ -71,6 +75,9 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public boolean deleteById(Long id) {
+        if (findById(id).isEmpty()) {
+            LOGGER.warn("Student with id: {} hasn't been deleted", id);
+        }
         Student student = findById(id)
                 .orElseThrow(() -> new DaoException("Student with id: " + id + " doesn't exist"));
         entityManager.remove(student);

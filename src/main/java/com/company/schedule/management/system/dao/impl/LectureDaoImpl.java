@@ -28,6 +28,7 @@ public class LectureDaoImpl implements LectureDao {
             entityManager.persist(lecture);
             entityManager.flush();
         } catch (InvalidDataAccessApiUsageException cause) {
+            LOGGER.warn("Lecture with id: " + lecture.getId() + " already exist", cause);
             throw new DaoException("Lecture with id: " + lecture.getId() + " already exist", cause);
         }
         LOGGER.debug("Lecture is created: {}", lecture);
@@ -44,6 +45,7 @@ public class LectureDaoImpl implements LectureDao {
         try {
             return result;
         } catch (NoResultException cause) {
+            LOGGER.warn("Lecture with id: " + id + " doesn't exist", cause);
             return Optional.empty();
         }
     }
@@ -62,6 +64,7 @@ public class LectureDaoImpl implements LectureDao {
         try {
             return resultList;
         } catch (IllegalArgumentException cause) {
+            LOGGER.warn("Lectures not found", cause);
             throw new DaoException(cause);
         }
     }
@@ -71,7 +74,8 @@ public class LectureDaoImpl implements LectureDao {
         try {
             entityManager.merge(lecture);
         } catch (PersistenceException cause) {
-            throw new DaoException("Update Error: " + cause.getMessage());
+            LOGGER.warn("Lecture update error: " + cause);
+            throw new DaoException("Lecture update error: " + cause.getMessage());
         }
         LOGGER.debug("Lecture has been updated: {}", lecture);
         return lecture;
@@ -79,10 +83,13 @@ public class LectureDaoImpl implements LectureDao {
 
     @Override
     public boolean deleteById(Long id) {
+        if (findById(id).isEmpty()) {
+            LOGGER.warn("Lecture with id: {} hasn't been deleted", id);
+        }
         Lecture lecture = findById(id)
                 .orElseThrow(() -> new DaoException("Lecture with id: " + id + " doesn't exist"));
         entityManager.remove(lecture);
-        LOGGER.debug("Lecture with id: {} has been deleted: {}",id,  lecture);
+        LOGGER.debug("Lecture with id: {} has been deleted: {}", id, lecture);
         return true;
     }
 }
