@@ -13,4 +13,5 @@ logging:
     root: ERROR
     org.springframework.web: ERROR
     com.company.schedule.management.system: DEBUG
+    com.company.schedule.management.system.dao: INFO
     org.hibernate: ERROR

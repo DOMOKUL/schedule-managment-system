@@ -6,6 +6,8 @@ import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LessonServiceImpl.class);
     private final LessonDao lessonDao;
 
     @Override
@@ -31,16 +34,23 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public Lesson getLessonById(Long id) {
+        LOGGER.debug("Lesson at id = {} found: {}", id, lessonDao.findById(id).get());
         return lessonDao.findById(id).orElseThrow(() -> new ServiceException("Lesson with id: " + id + " doesn't exist"));
     }
 
     @Override
     public List<Lesson> getAllLessons() {
-        return lessonDao.findAll();
+        LOGGER.debug("Lessons found:{}", lessonDao.findAll());
+        try {
+            return lessonDao.findAll();
+        } catch (DaoException cause) {
+            throw new ServiceException(cause);
+        }
     }
 
     @Override
     public Lesson updateLesson(Lesson lesson) {
+        LOGGER.debug("Lesson has been updated: {}", lesson);
         try {
             return lessonDao.update(lesson);
         } catch (DaoException cause) {
@@ -50,12 +60,16 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public void deleteLessonById(Long id) {
+        if (lessonDao.findById(id).isPresent()) {
+            LOGGER.debug("Lesson with id: {} has been deleted", id);
+        }
         lessonDao.findById(id).orElseThrow(() -> new ServiceException("Lesson with id: " + id + " doesn't exist"));
         lessonDao.deleteById(id);
     }
 
     @Override
     public List<Duration> getDurationsForLesson(List<Lesson> lessons) {
+        LOGGER.debug("Getting durations for lessons {}", lessons);
         List<Duration> result = new ArrayList<>();
         for (Lesson lesson : lessons) {
             if (lesson == null) {
@@ -64,6 +78,7 @@ public class LessonServiceImpl implements LessonService {
                 result.add(lesson.getDuration());
             }
         }
+        LOGGER.info("Durations for lessons {} received successful", lessons);
         return result;
     }
 }

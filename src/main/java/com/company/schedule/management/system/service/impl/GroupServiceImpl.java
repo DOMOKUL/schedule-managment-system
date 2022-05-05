@@ -6,6 +6,8 @@ import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.GroupService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroupServiceImpl.class);
     private final GroupDao groupDao;
 
     @Override
@@ -29,11 +32,13 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group getGroupById(Long id) {
+        LOGGER.debug("Group at id = {} found: {}", id, groupDao.findById(id).get());
         return groupDao.findById(id).orElseThrow(() -> new ServiceException("Group with id: " + id + " doesn't exist"));
     }
 
     @Override
     public List<Group> getAllGroups() {
+        LOGGER.debug("Groups found:{}", groupDao.findAll());
         try {
             return groupDao.findAll();
         } catch (DaoException cause) {
@@ -43,6 +48,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group updateGroup(Group group) {
+        LOGGER.debug("Group has been updated: {}", group);
         try {
             return groupDao.update(group);
         } catch (DaoException cause) {
@@ -52,6 +58,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void deleteGroupById(Long id) {
+        if (groupDao.findById(id).isPresent()) {
+            LOGGER.debug("Group with id: {} has been deleted", id);
+        }
         groupDao.findById(id).orElseThrow(() -> new ServiceException("Group with id: " + id + " doesn't exist"));
         groupDao.deleteById(id);
     }

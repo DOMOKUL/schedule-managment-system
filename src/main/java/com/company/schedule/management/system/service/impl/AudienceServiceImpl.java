@@ -6,6 +6,8 @@ import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.service.AudienceService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AudienceServiceImpl implements AudienceService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AudienceServiceImpl.class);
     private final AudienceDao audienceDao;
 
     @Override
@@ -29,11 +32,13 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public Audience getAudienceById(Long id) {
+        LOGGER.debug("Audience at id = {} found: {}", id, audienceDao.findById(id).get());
         return audienceDao.findById(id).orElseThrow(() -> new ServiceException("Audience with id:" + id + " doesn't exist"));
     }
 
     @Override
     public List<Audience> getAllAudiences() {
+        LOGGER.debug("Audiences found:{}", audienceDao.findAll());
         try {
             return audienceDao.findAll();
         } catch (DaoException cause) {
@@ -43,6 +48,7 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public Audience updateAudience(Audience audience) {
+        LOGGER.debug("Audience has been updated: {}", audience);
         try {
             return audienceDao.update(audience);
         } catch (DaoException cause) {
@@ -52,6 +58,9 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public void deleteAudienceById(Long id) {
+        if (audienceDao.findById(id).isPresent()) {
+            LOGGER.debug("Audience with id: {} has been deleted", id);
+        }
         audienceDao.findById(id).orElseThrow(() -> new ServiceException("Audience with id: " + id + " doesn't exist"));
         audienceDao.deleteById(id);
     }
