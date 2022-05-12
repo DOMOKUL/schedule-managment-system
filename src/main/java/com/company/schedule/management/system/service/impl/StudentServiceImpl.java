@@ -1,13 +1,13 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.repository.StudentRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Student;
+import com.company.schedule.management.system.repository.StudentRepository;
 import com.company.schedule.management.system.service.StudentService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,7 +25,7 @@ public class StudentServiceImpl implements StudentService {
     public Student saveStudent(Student student) {
         try {
             return studentRepository.saveAndFlush(student);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -39,11 +39,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> getAllStudents() {
         LOGGER.debug("Students found:{}", studentRepository.findAll());
-        try {
-            return studentRepository.findAll();
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
+        return studentRepository.findAll();
     }
 
     @Override
@@ -51,7 +47,7 @@ public class StudentServiceImpl implements StudentService {
         LOGGER.debug("Student has been updated: {}", student);
         try {
             return studentRepository.saveAndFlush(student);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -59,9 +55,11 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void deleteStudentById(Long id) {
         if (studentRepository.findById(id).isPresent()) {
+            studentRepository.deleteById(id);
             LOGGER.debug("Student with id: {} has been deleted", id);
+        } else {
+            throw new ServiceException("Audience with id: " + id + " doesn't exist");
         }
-        studentRepository.findById(id).orElseThrow(() -> new ServiceException("Student with id: " + id + " doesn't exist"));
-        studentRepository.deleteById(id);
+
     }
 }

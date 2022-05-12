@@ -1,13 +1,13 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.repository.TeacherRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Teacher;
+import com.company.schedule.management.system.repository.TeacherRepository;
 import com.company.schedule.management.system.service.TeacherService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,7 +25,7 @@ public class TeacherServiceImpl implements TeacherService {
     public Teacher saveTeacher(Teacher teacher) {
         try {
             return teacherRepository.saveAndFlush(teacher);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -39,11 +39,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public List<Teacher> getAllTeachers() {
         LOGGER.debug("Teachers found:{}", teacherRepository.findAll());
-        try {
-            return teacherRepository.findAll();
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
+        return teacherRepository.findAll();
     }
 
     @Override
@@ -51,7 +47,7 @@ public class TeacherServiceImpl implements TeacherService {
         LOGGER.debug("Teacher has been updated: {}", teacher);
         try {
             return teacherRepository.saveAndFlush(teacher);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -59,9 +55,11 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public void deleteTeacherById(Long id) {
         if (teacherRepository.findById(id).isPresent()) {
+            teacherRepository.deleteById(id);
             LOGGER.debug("Teacher with id: {} has been deleted", id);
+        } else {
+            throw new ServiceException("Audience with id: " + id + " doesn't exist");
         }
-        teacherRepository.findById(id).orElseThrow(() -> new ServiceException("Teacher with id: " + id + " doesn't exist"));
-        teacherRepository.deleteById(id);
+
     }
 }

@@ -1,13 +1,13 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.repository.AudienceRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Audience;
+import com.company.schedule.management.system.repository.AudienceRepository;
 import com.company.schedule.management.system.service.AudienceService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,7 +25,7 @@ public class AudienceServiceImpl implements AudienceService {
     public Audience saveAudience(Audience audience) {
         try {
             return audienceRepository.saveAndFlush(audience);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException("Audience doesn't save", cause);
         }
     }
@@ -39,11 +39,7 @@ public class AudienceServiceImpl implements AudienceService {
     @Override
     public List<Audience> getAllAudiences() {
         LOGGER.debug("Audiences found:{}", audienceRepository.findAll());
-        try {
-            return audienceRepository.findAll();
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
+        return audienceRepository.findAll();
     }
 
     @Override
@@ -51,7 +47,7 @@ public class AudienceServiceImpl implements AudienceService {
         LOGGER.debug("Audience has been updated: {}", audience);
         try {
             return audienceRepository.saveAndFlush(audience);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -59,9 +55,11 @@ public class AudienceServiceImpl implements AudienceService {
     @Override
     public void deleteAudienceById(Long id) {
         if (audienceRepository.findById(id).isPresent()) {
+            audienceRepository.deleteById(id);
             LOGGER.debug("Audience with id: {} has been deleted", id);
+        } else {
+            throw new ServiceException("Audience with id: " + id + " doesn't exist");
         }
-        audienceRepository.findById(id).orElseThrow(() -> new ServiceException("Audience with id: " + id + " doesn't exist"));
-        audienceRepository.deleteById(id);
+
     }
 }

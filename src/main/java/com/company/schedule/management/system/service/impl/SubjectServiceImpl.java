@@ -1,13 +1,13 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.repository.SubjectRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Subject;
+import com.company.schedule.management.system.repository.SubjectRepository;
 import com.company.schedule.management.system.service.SubjectService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,7 +25,7 @@ public class SubjectServiceImpl implements SubjectService {
     public Subject saveSubject(Subject subject) {
         try {
             return subjectRepository.saveAndFlush(subject);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -39,11 +39,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public List<Subject> getAllSubjects() {
         LOGGER.debug("Subjects found:{}", subjectRepository.findAll());
-        try {
-            return subjectRepository.findAll();
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
+        return subjectRepository.findAll();
     }
 
     @Override
@@ -51,7 +47,7 @@ public class SubjectServiceImpl implements SubjectService {
         LOGGER.debug("Subject has been updated: {}", subject);
         try {
             return subjectRepository.saveAndFlush(subject);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -59,9 +55,11 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public void deleteSubjectById(Long id) {
         if (subjectRepository.findById(id).isPresent()) {
+            subjectRepository.deleteById(id);
             LOGGER.debug("Subject with id: {} has been deleted", id);
+        } else {
+            throw new ServiceException("Audience with id: " + id + " doesn't exist");
         }
-        subjectRepository.findById(id).orElseThrow(() -> new ServiceException("Subject with id: " + id + " doesn't exist"));
-        subjectRepository.deleteById(id);
+
     }
 }

@@ -1,13 +1,13 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.repository.GroupRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Group;
+import com.company.schedule.management.system.repository.GroupRepository;
 import com.company.schedule.management.system.service.GroupService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,7 +25,7 @@ public class GroupServiceImpl implements GroupService {
     public Group saveGroup(Group group) {
         try {
             return groupRepository.saveAndFlush(group);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -39,11 +39,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> getAllGroups() {
         LOGGER.debug("Groups found:{}", groupRepository.findAll());
-        try {
-            return groupRepository.findAll();
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
+        return groupRepository.findAll();
     }
 
     @Override
@@ -51,7 +47,7 @@ public class GroupServiceImpl implements GroupService {
         LOGGER.debug("Group has been updated: {}", group);
         try {
             return groupRepository.saveAndFlush(group);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -59,9 +55,11 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void deleteGroupById(Long id) {
         if (groupRepository.findById(id).isPresent()) {
+            groupRepository.deleteById(id);
             LOGGER.debug("Group with id: {} has been deleted", id);
+        } else {
+            throw new ServiceException("Audience with id: " + id + " doesn't exist");
         }
-        groupRepository.findById(id).orElseThrow(() -> new ServiceException("Group with id: " + id + " doesn't exist"));
-        groupRepository.deleteById(id);
+
     }
 }

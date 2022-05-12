@@ -1,14 +1,14 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.repository.FacultyRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Group;
+import com.company.schedule.management.system.repository.FacultyRepository;
 import com.company.schedule.management.system.service.FacultyService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,7 +27,7 @@ public class FacultyServiceImpl implements FacultyService {
     public Faculty saveFaculty(Faculty faculty) {
         try {
             return facultyRepository.saveAndFlush(faculty);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -41,11 +41,7 @@ public class FacultyServiceImpl implements FacultyService {
     @Override
     public List<Faculty> getAllFaculties() {
         LOGGER.debug("Faculties found:{}", facultyRepository.findAll());
-        try {
-            return facultyRepository.findAll();
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
+        return facultyRepository.findAll();
     }
 
     @Override
@@ -53,7 +49,7 @@ public class FacultyServiceImpl implements FacultyService {
         LOGGER.debug("Faculty has been updated: {}", faculty);
         try {
             return facultyRepository.saveAndFlush(faculty);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -61,10 +57,12 @@ public class FacultyServiceImpl implements FacultyService {
     @Override
     public void deleteFacultyById(Long id) {
         if (facultyRepository.findById(id).isPresent()) {
+            facultyRepository.deleteById(id);
             LOGGER.debug("Faculty with id: {} has been deleted", id);
+        } else {
+            throw new ServiceException("Audience with id: " + id + " doesn't exist");
         }
-        facultyRepository.findById(id).orElseThrow(() -> new ServiceException("Faculty with id: " + id + " doesn't exist"));
-        facultyRepository.deleteById(id);
+
     }
 
     @Override

@@ -1,13 +1,13 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.repository.LessonRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Lesson;
+import com.company.schedule.management.system.repository.LessonRepository;
 import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,7 +27,7 @@ public class LessonServiceImpl implements LessonService {
     public Lesson saveLesson(Lesson lesson) {
         try {
             return lessonRepository.saveAndFlush(lesson);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -41,11 +41,7 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public List<Lesson> getAllLessons() {
         LOGGER.debug("Lessons found:{}", lessonRepository.findAll());
-        try {
-            return lessonRepository.findAll();
-        } catch (DaoException cause) {
-            throw new ServiceException(cause);
-        }
+        return lessonRepository.findAll();
     }
 
     @Override
@@ -53,7 +49,7 @@ public class LessonServiceImpl implements LessonService {
         LOGGER.debug("Lesson has been updated: {}", lesson);
         try {
             return lessonRepository.saveAndFlush(lesson);
-        } catch (DaoException cause) {
+        } catch (DataIntegrityViolationException cause) {
             throw new ServiceException(cause);
         }
     }
@@ -61,10 +57,12 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void deleteLessonById(Long id) {
         if (lessonRepository.findById(id).isPresent()) {
+            lessonRepository.deleteById(id);
             LOGGER.debug("Lesson with id: {} has been deleted", id);
+        } else {
+            throw new ServiceException("Audience with id: " + id + " doesn't exist");
         }
-        lessonRepository.findById(id).orElseThrow(() -> new ServiceException("Lesson with id: " + id + " doesn't exist"));
-        lessonRepository.deleteById(id);
+
     }
 
     @Override
