@@ -1,20 +1,8 @@
-create table schedule
-(
-);
-
-create table university
-(
-);
-
 create table audiences
 (
 );
 
 create table faculties
-(
-);
-
-create table departments
 (
 );
 
@@ -106,26 +94,42 @@ alter table lectures
 
 insert into audiences(id, number, capacity)
 values (10, 10, 10);
+insert into audiences(id, number, capacity)
+values (11, 25, 400);
 
 insert into faculties (id, name)
 values (10, 'IKBSP');
+insert into faculties (id, name)
+values (11, 'INTEGU');
 
 insert into subjects (id, name)
 values (10, 'math');
+insert into subjects (id, name)
+values (11, 'art');
 
 insert into lessons (id, duration, number, start_time, subject_id)
 values (10, 5400000000000, 10, '13:00:00', 10);
+insert into lessons (id, duration, number, start_time, subject_id)
+values (11, 5400000000000, 11, '09:00:00', 11);
 
 insert into groups(id, name, faculty_id)
 values (10, 'BSBO-04-20', 10);
+insert into groups(id, name, faculty_id)
+values (11, 'BABO-07-19', 11);
 
 insert into students (id, first_name, last_name, middle_name, course_number, group_id)
-values (10, 'Ivan', 'Ivanov', 'Ivanovich', 10, 10);
+values (10, 'Ivan', 'Ivanov', 'Ivanovich', 3, 10);
+insert into students (id, first_name, last_name, middle_name, course_number, group_id)
+values (11, 'Petr', 'Petrov', 'Petrovich', 1, 11);
 
 insert into teachers (id, first_name, last_name, middle_name, faculty_id)
 values (10, 'Alex', 'Alexandrov', 'Alexandrovich', 10);
+insert into teachers (id, first_name, last_name, middle_name, faculty_id)
+values (11, 'Ivan', 'Ivanov', 'Ivanovich', 11);
 
 insert into lectures (id, date, number, audience_id, group_id, lesson_id, teacher_id)
-values (10, '1988-09-29', 10, 10, 10, 10, 10);
+values (10, '2022-01-15', 1, 10, 10, 10, 10);
+insert into lectures (id, date, number, audience_id, group_id, lesson_id, teacher_id)
+values (11, '2022-03-20', 2, 11, 11, 11, 11);
 
 
