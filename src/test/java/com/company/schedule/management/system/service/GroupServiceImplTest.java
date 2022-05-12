@@ -1,7 +1,6 @@
 package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.repository.GroupRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.exception.ServiceException;
@@ -50,8 +49,8 @@ class GroupServiceImplTest {
 
     @Test
     void saveGroup_shouldThrowException_whenInputExistGroup() {
-        when(groupRepository.saveAndFlush(groupWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> groupServiceImpl.saveGroup(groupWithId));
+        when(groupRepository.saveAndFlush(groupWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> groupServiceImpl.saveGroup(groupWithId));
     }
 
     @Test
@@ -89,8 +88,8 @@ class GroupServiceImplTest {
 
     @Test
     void updateGroup_shouldThrowException_whenInputNonExistGroup() {
-        when(groupRepository.saveAndFlush(groupWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> groupServiceImpl.updateGroup(groupWithId));
+        when(groupRepository.saveAndFlush(groupWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> groupServiceImpl.updateGroup(groupWithId));
     }
 
     @Test

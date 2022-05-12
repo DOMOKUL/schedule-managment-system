@@ -1,7 +1,6 @@
 package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.repository.StudentRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.model.Student;
@@ -52,8 +51,8 @@ class StudentServiceImplTest {
 
     @Test
     void saveStudent_shouldThrowException_whenInputExistStudent() {
-        when(studentRepository.saveAndFlush(studentWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> studentServiceImpl.saveStudent(studentWithId));
+        when(studentRepository.saveAndFlush(studentWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> studentServiceImpl.saveStudent(studentWithId));
     }
 
     @Test
@@ -90,8 +89,8 @@ class StudentServiceImplTest {
 
     @Test
     void updateStudent_shouldThrowException_whenInputNonExistStudent() {
-        when(studentRepository.saveAndFlush(studentWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> studentServiceImpl.updateStudent(studentWithId));
+        when(studentRepository.saveAndFlush(studentWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> studentServiceImpl.updateStudent(studentWithId));
     }
 
     @Test

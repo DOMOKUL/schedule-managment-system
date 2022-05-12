@@ -1,7 +1,6 @@
 package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.repository.SubjectRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import com.company.schedule.management.system.service.impl.SubjectServiceImpl;
@@ -47,8 +46,8 @@ class SubjectServiceImplTest {
 
     @Test
     void saveSubject_shouldThrowException_whenInputExistSubject() {
-        when(subjectRepository.saveAndFlush(subjectWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> subjectServiceImpl.saveSubject(subjectWithId));
+        when(subjectRepository.saveAndFlush(subjectWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> subjectServiceImpl.saveSubject(subjectWithId));
     }
 
     @Test
@@ -85,8 +84,8 @@ class SubjectServiceImplTest {
 
     @Test
     void updateSubject_shouldThrowException_whenInputNonExistSubject() {
-        when(subjectRepository.saveAndFlush(subjectWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> subjectServiceImpl.updateSubject(subjectWithId));
+        when(subjectRepository.saveAndFlush(subjectWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> subjectServiceImpl.updateSubject(subjectWithId));
     }
 
     @Test

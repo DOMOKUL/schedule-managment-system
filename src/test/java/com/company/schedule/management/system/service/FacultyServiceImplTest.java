@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.repository.FacultyRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
+
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import com.company.schedule.management.system.service.impl.FacultyServiceImpl;
@@ -47,8 +47,8 @@ class FacultyServiceImplTest {
 
     @Test
     void saveFaculty_shouldThrowException_whenInputExistFaculty() {
-        when(facultyRepository.saveAndFlush(facultyWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> facultyServiceImpl.saveFaculty(facultyWithId));
+        when(facultyRepository.saveAndFlush(facultyWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> facultyServiceImpl.saveFaculty(facultyWithId));
     }
 
     @Test
@@ -85,8 +85,8 @@ class FacultyServiceImplTest {
 
     @Test
     void updateFaculty_shouldThrowException_whenInputNonExistFaculty() {
-        when(facultyRepository.saveAndFlush(facultyWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> facultyServiceImpl.updateFaculty(facultyWithId));
+        when(facultyRepository.saveAndFlush(facultyWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> facultyServiceImpl.updateFaculty(facultyWithId));
     }
 
     @Test

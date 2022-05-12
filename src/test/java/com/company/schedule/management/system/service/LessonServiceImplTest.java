@@ -1,7 +1,6 @@
 package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.repository.LessonRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.service.exception.ServiceException;
@@ -56,8 +55,8 @@ class LessonServiceImplTest {
 
     @Test
     void saveLesson_shouldThrowException_whenInputExistLesson() {
-        when(lessonRepository.saveAndFlush(lessonWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> lessonServiceImpl.saveLesson(lessonWithId));
+        when(lessonRepository.saveAndFlush(lessonWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> lessonServiceImpl.saveLesson(lessonWithId));
     }
 
     @Test
@@ -96,8 +95,8 @@ class LessonServiceImplTest {
 
     @Test
     void updateLesson_shouldThrowException_whenInputNonExistLesson() {
-        when(lessonRepository.saveAndFlush(lessonWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> lessonServiceImpl.updateLesson(lessonWithId));
+        when(lessonRepository.saveAndFlush(lessonWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> lessonServiceImpl.updateLesson(lessonWithId));
     }
 
     @Test

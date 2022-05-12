@@ -1,7 +1,6 @@
 package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.repository.LectureRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.*;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import com.company.schedule.management.system.service.impl.LectureServiceImpl;
@@ -64,8 +63,8 @@ class LectureServiceImplTest {
 
     @Test
     void saveLecture_shouldThrowException_whenInputExistLecture() {
-        when(lectureRepository.saveAndFlush(lectureWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> lectureServiceImpl.saveLecture(lectureWithId));
+        when(lectureRepository.saveAndFlush(lectureWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> lectureServiceImpl.saveLecture(lectureWithId));
     }
 
     @Test
@@ -106,8 +105,8 @@ class LectureServiceImplTest {
 
     @Test
     void updateLecture_shouldThrowException_whenInputNonExistLecture() {
-        when(lectureRepository.saveAndFlush(lectureWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> lectureServiceImpl.updateLecture(lectureWithId));
+        when(lectureRepository.saveAndFlush(lectureWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> lectureServiceImpl.updateLecture(lectureWithId));
     }
 
     @Test

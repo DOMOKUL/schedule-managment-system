@@ -1,7 +1,6 @@
 package com.company.schedule.management.system.service;
 
 import com.company.schedule.management.system.repository.AudienceRepository;
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import com.company.schedule.management.system.service.impl.AudienceServiceImpl;
@@ -46,8 +45,8 @@ class AudienceServiceImplTest {
 
     @Test
     void saveAudience_shouldThrowException_whenInputExistAudience() {
-        when(audienceRepository.saveAndFlush(audienceWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> audienceServiceImpl.saveAudience(audienceWithId));
+        when(audienceRepository.saveAndFlush(audienceWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> audienceServiceImpl.saveAudience(audienceWithId));
     }
 
     @Test
@@ -89,8 +88,8 @@ class AudienceServiceImplTest {
 
     @Test
     void updateAudience_shouldThrowException_whenInputNonExistAudience() {
-        when(audienceRepository.saveAndFlush(audienceWithId)).thenThrow(DaoException.class);
-        assertThrows(ServiceException.class, () -> audienceServiceImpl.updateAudience(audienceWithId));
+        when(audienceRepository.saveAndFlush(audienceWithId)).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> audienceServiceImpl.updateAudience(audienceWithId));
     }
 
     @Test
