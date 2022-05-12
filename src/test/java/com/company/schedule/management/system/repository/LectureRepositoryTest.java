@@ -1,12 +1,10 @@
-package com.company.schedule.management.system.dao;
+package com.company.schedule.management.system.repository;
 
-import com.company.schedule.management.system.dao.exception.DaoException;
-import com.company.schedule.management.system.dao.impl.LectureDaoImpl;
 import com.company.schedule.management.system.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @SpringBootTest
 @ActiveProfiles("test")
-class LectureDaoImplTest extends BaseIntegrationTest {
+class LectureRepositoryTest extends BaseIntegrationTest {
 
     private static final Audience TEST_AUDIENCE = new Audience(10L, 10, 10, null);
     private static final Subject TEST_SUBJECT = new Subject(10L, "math", null);
@@ -41,11 +39,11 @@ class LectureDaoImplTest extends BaseIntegrationTest {
     private static final Teacher TEST_TEACHER = new Teacher(10L, TEST_FACULTY, null);
 
     @Autowired
-    private LectureDaoImpl lectureDao;
+    private LectureRepository lectureRepository;
 
     @Test
     void create_shouldReturnCorrectLecture_whenInputCorrectData() {
-        Lecture actual = lectureDao.create(new Lecture(10, Date.valueOf("2019-01-26"),
+        Lecture actual = lectureRepository.saveAndFlush(new Lecture(10, Date.valueOf("2019-01-26"),
                 TEST_AUDIENCE, TEST_GROUP,
                 new Lesson(10L, 1, Time.valueOf(LocalTime.of(13, 0, 0)),
                         Duration.ofMinutes(90L), TEST_SUBJECT, null),
@@ -56,36 +54,30 @@ class LectureDaoImplTest extends BaseIntegrationTest {
     }
 
     @Test
-    void create_shouldThrowException_whenInputExistId() {
-        assertThrows(InvalidDataAccessApiUsageException.class, () ->
-                lectureDao.create(TEST_LECTURE));
-    }
-
-    @Test
     void findById_shouldReturnCorrectLecture_whenInputExistId() {
-        assertEquals(TEST_LECTURE, lectureDao.findById(10L).get());
+        assertEquals(TEST_LECTURE, lectureRepository.findById(10L).get());
     }
 
     @Test
     void findById_shouldThrowDaoException_whenInputNonExistentLectureId() {
-        assertEquals(Optional.empty(), lectureDao.findById(10000L));
+        assertEquals(Optional.empty(), lectureRepository.findById(10000L));
     }
 
     @Test
     void findAll_shouldReturnLecturesList() {
-        List<Lecture> lectures = lectureDao.findAll();
+        List<Lecture> lectures = lectureRepository.findAll();
         assertFalse(lectures.isEmpty());
     }
 
     @Test
     void update_shouldUpdateLecture_whenInputExistId() {
-        Lecture actual = lectureDao.update(TEST_LECTURE);
+        Lecture actual = lectureRepository.saveAndFlush(TEST_LECTURE);
         assertEquals(TEST_LECTURE, actual);
     }
 
     @Test
     void delete_shouldThrowDaoException_whenInputNotExistLectureId() {
-        assertThrows(DaoException.class, () ->
-                lectureDao.deleteById(100L));
+        assertThrows(EmptyResultDataAccessException.class, () ->
+                lectureRepository.deleteById(100L));
     }
 }

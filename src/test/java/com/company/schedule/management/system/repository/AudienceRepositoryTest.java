@@ -1,11 +1,10 @@
-package com.company.schedule.management.system.dao;
+package com.company.schedule.management.system.repository;
 
-import com.company.schedule.management.system.dao.exception.DaoException;
 import com.company.schedule.management.system.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @SpringBootTest
 @ActiveProfiles("test")
-class AudienceDaoImplTest extends BaseIntegrationTest {
+class AudienceRepositoryTest extends BaseIntegrationTest {
 
     private static final Audience TEST_AUDIENCE = new Audience(10L, null, null, null);
     private static final Subject TEST_SUBJECT = new Subject(10L, "math", null);
@@ -35,53 +34,50 @@ class AudienceDaoImplTest extends BaseIntegrationTest {
             new Teacher(10L, TEST_FACULTY, null));
 
     @Autowired
-    private AudienceDao audienceDao;
+    private AudienceRepository audienceRepository;
 
     @Test
     void create_shouldReturnCorrectAudience_whenInputCorrectData() {
-        Audience actual = audienceDao.create(new Audience(null, null, null));
+        Audience actual = audienceRepository.saveAndFlush(new Audience(null, null, null));
         Audience expected = new Audience(1L, null, null, null);
         assertEquals(expected, actual);
     }
 
     @Test
-    void create_shouldThrowException_whenInputExistId() {
-        assertThrows(InvalidDataAccessApiUsageException.class, () ->
-                audienceDao.create(TEST_AUDIENCE));
-    }
-
-    @Test
     void findById_shouldReturnCorrectAudience_whenInputExistId() {
         Audience testAudience = new Audience(10L, 10, 10, List.of(TEST_LECTURE));
-        assertEquals(testAudience, audienceDao.findById(10L).get());
+        assertEquals(testAudience, audienceRepository.findById(10L).get());
     }
 
     @Test
     void findById_shouldThrowDaoException_whenInputNonExistentAudienceId() {
-        assertEquals(Optional.empty(), audienceDao.findById(10000L));
+        assertEquals(Optional.empty(), audienceRepository.findById(10000L));
     }
 
     @Test
     void findAll_shouldReturnAudiencesList() {
-        List<Audience> audiences = audienceDao.findAll();
+        List<Audience> audiences = audienceRepository.findAll();
         assertFalse(audiences.isEmpty());
     }
 
     @Test
     void update_shouldUpdateAudience_whenInputExistId() {
-        Audience actual = audienceDao.update(TEST_AUDIENCE);
+        Audience actual = audienceRepository.saveAndFlush(TEST_AUDIENCE);
         assertEquals(TEST_AUDIENCE, actual);
     }
 
     @Test
     void delete_shouldDeleteFaculty_whenInputExistId() {
-        boolean actual = audienceDao.deleteById(TEST_AUDIENCE.getId());
-        assertTrue(actual);
+        if(audienceRepository.findById(TEST_AUDIENCE.getId()).isPresent()){
+            audienceRepository.deleteById(TEST_AUDIENCE.getId());
+        }
+
+        assertTrue(audienceRepository.findById(TEST_AUDIENCE.getId()).isEmpty());
     }
 
     @Test
     void delete_shouldThrowDaoException_whenInputNotExistAudienceId() {
-        assertThrows(DaoException.class, () ->
-                audienceDao.deleteById(100L));
+        assertThrows(EmptyResultDataAccessException.class, () ->
+                audienceRepository.deleteById(100L));
     }
 }

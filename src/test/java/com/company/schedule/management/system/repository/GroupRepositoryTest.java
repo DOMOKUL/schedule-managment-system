@@ -1,14 +1,11 @@
-package com.company.schedule.management.system.dao;
+package com.company.schedule.management.system.repository;
 
-import com.company.schedule.management.system.dao.exception.DaoException;
-import com.company.schedule.management.system.dao.impl.GroupDaoImpl;
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Group;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,59 +17,56 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @SpringBootTest
 @ActiveProfiles("test")
-class GroupDaoImplTest extends BaseIntegrationTest {
+class GroupRepositoryTest extends BaseIntegrationTest {
 
     private static final Faculty TEST_FACULTY = new Faculty(10L, "IKBSP", null, null);
     private static final Group TEST_GROUP = new Group(10L, "BSBO-04-20", TEST_FACULTY, null, null);
 
     @Autowired
-    private GroupDaoImpl groupDao;
+    private GroupRepository groupRepository;
 
     @Test
     void create_shouldReturnCorrectGroup_whenInputCorrectData() {
-        Group actual = groupDao.create(new Group(null, TEST_FACULTY, null, null));
+        Group actual = groupRepository.saveAndFlush(new Group(null, TEST_FACULTY, null, null));
         Group expected = new Group(1L, null, TEST_FACULTY, null, null);
         assertEquals(expected, actual);
     }
 
     @Test
-    void create_shouldThrowException_whenInputExistId() {
-        assertThrows(InvalidDataAccessApiUsageException.class, () ->
-                groupDao.create(TEST_GROUP));
-    }
-
-    @Test
     void findById_shouldReturnCorrectGroup_whenInputExistId() {
         Group testGroup = new Group(10L, "BSBO-04-20", TEST_FACULTY, null, null);
-        assertEquals(testGroup, groupDao.findById(10L).get());
+        assertEquals(testGroup, groupRepository.findById(10L).get());
     }
 
     @Test
     void findById_shouldThrowDaoException_whenInputNonExistentGroupId() {
-        assertEquals(Optional.empty(), groupDao.findById(10000L));
+        assertEquals(Optional.empty(), groupRepository.findById(10000L));
     }
 
     @Test
     void findAll_shouldReturnGroupsList() {
-        List<Group> groups = groupDao.findAll();
+        List<Group> groups = groupRepository.findAll();
         assertFalse(groups.isEmpty());
     }
 
     @Test
     void update_shouldUpdateGroup_whenInputExistId() {
-        Group actual = groupDao.update(TEST_GROUP);
+        Group actual = groupRepository.saveAndFlush(TEST_GROUP);
         assertEquals(TEST_GROUP, actual);
     }
 
     @Test
     void delete_shouldDeleteGroup_whenInputExistId() {
-        boolean actual = groupDao.deleteById(TEST_GROUP.getId());
-        assertTrue(actual);
+        if(groupRepository.findById(TEST_GROUP.getId()).isPresent()){
+            groupRepository.deleteById(TEST_GROUP.getId());
+        }
+
+        assertTrue(groupRepository.findById(TEST_GROUP.getId()).isEmpty());
     }
 
     @Test
     void delete_shouldThrowDaoException_whenInputNotExistGroupId() {
-        assertThrows(DaoException.class, () ->
-                groupDao.deleteById(100L));
+        assertThrows(EmptyResultDataAccessException.class, () ->
+                groupRepository.deleteById(100L));
     }
 }

@@ -1,4 +1,4 @@
-package com.company.schedule.management.system.dao;
+package com.company.schedule.management.system.repository;
 
 
 import org.junit.jupiter.api.BeforeEach;
