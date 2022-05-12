@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service;
 
-import com.company.schedule.management.system.dao.LectureDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.repository.LectureRepository;
+import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.*;
 import com.company.schedule.management.system.service.exception.ServiceException;
 import com.company.schedule.management.system.service.impl.LectureServiceImpl;
@@ -16,6 +16,7 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +34,7 @@ class LectureServiceImplTest {
     @Autowired
     LectureServiceImpl lectureServiceImpl;
     @MockBean
-    LectureDao lectureDao;
+    LectureRepository lectureRepository;
 
     private Lecture lectureWithId;
     private Lecture lectureWithoutId;
@@ -56,36 +57,36 @@ class LectureServiceImplTest {
 
     @Test
     void saveLecture_shouldReturnLecture_whenInputCorrectData() {
-        when(lectureDao.create(lectureWithoutId)).thenReturn(lectureWithId);
+        when(lectureRepository.saveAndFlush(lectureWithoutId)).thenReturn(lectureWithId);
         lectureServiceImpl.saveLecture(lectureWithoutId);
-        verify(lectureDao, times(1)).create(lectureWithoutId);
+        verify(lectureRepository, times(1)).saveAndFlush(lectureWithoutId);
     }
 
     @Test
     void saveLecture_shouldThrowException_whenInputExistLecture() {
-        when(lectureDao.create(lectureWithId)).thenThrow(DaoException.class);
+        when(lectureRepository.saveAndFlush(lectureWithId)).thenThrow(DaoException.class);
         assertThrows(ServiceException.class, () -> lectureServiceImpl.saveLecture(lectureWithId));
     }
 
     @Test
     void getLectureById_shouldReturnLecture_whenInputExistLectureId() {
-        when(lectureDao.findById(1L)).thenReturn(Optional.ofNullable(lectureWithId));
+        when(lectureRepository.findById(1L)).thenReturn(Optional.ofNullable(lectureWithId));
         assertThat(lectureServiceImpl.getLectureById(lectureWithId.getId())).isEqualTo(lectureWithId);
     }
 
     @Test
     void getLectureById_shouldThrowException_whenInputNonExistLectureId() {
-        when(lectureDao.findById(lectureWithId.getId())).thenReturn(Optional.empty());
-        assertThrows(DaoException.class, () -> lectureServiceImpl.getLectureById(lectureWithId.getId()));
+        when(lectureRepository.findById(lectureWithId.getId())).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class, () -> lectureServiceImpl.getLectureById(lectureWithId.getId()));
     }
 
     @Test
     void getAllLectures_shouldReturnListLectures() {
-        when(lectureDao.findAll()).thenReturn(lectureList);
+        when(lectureRepository.findAll()).thenReturn(lectureList);
         List<Lecture> lectures = lectureServiceImpl.getAllLectures();
 
         assertEquals(lectureList, lectures);
-        verify(lectureDao, times(1)).findAll();
+        verify(lectureRepository, times(2)).findAll();
     }
 
     @Test
@@ -96,32 +97,25 @@ class LectureServiceImplTest {
                         Duration.ofMinutes(90L), TEST_SUBJECT, null),
                 new Teacher(10L, TEST_FACULTY, null));
 
-        when(lectureDao.update(expected)).thenReturn(expected);
+        when(lectureRepository.saveAndFlush(expected)).thenReturn(expected);
         Lecture actual = lectureServiceImpl.updateLecture(expected);
 
         assertEquals(expected, actual);
-        verify(lectureDao, times(1)).update(expected);
+        verify(lectureRepository, times(1)).saveAndFlush(expected);
     }
 
     @Test
     void updateLecture_shouldThrowException_whenInputNonExistLecture() {
-        when(lectureDao.update(lectureWithId)).thenThrow(DaoException.class);
+        when(lectureRepository.saveAndFlush(lectureWithId)).thenThrow(DaoException.class);
         assertThrows(ServiceException.class, () -> lectureServiceImpl.updateLecture(lectureWithId));
     }
 
     @Test
     void deleteLectureById_shouldReturnTrue_whenInputExistLectureId() {
-        when(lectureDao.deleteById(lectureWithId.getId())).thenReturn(true);
+        when(lectureRepository.findById(lectureWithId.getId())).thenReturn(Optional.of(lectureWithId));
 
         lectureServiceImpl.deleteLectureById(lectureWithId.getId());
 
-        verify(lectureDao, times(1)).deleteById(lectureWithId.getId());
-    }
-
-    @Test
-    void deleteLectureById_shouldThrowException_whenInputNonExistLectureId() {
-        when(lectureDao.deleteById(lectureWithId.getId())).thenThrow(DaoException.class);
-
-        assertThrows(ServiceException.class, () -> lectureServiceImpl.deleteLectureById(lectureWithId.getId()));
+        verify(lectureRepository, times(1)).deleteById(lectureWithId.getId());
     }
 }

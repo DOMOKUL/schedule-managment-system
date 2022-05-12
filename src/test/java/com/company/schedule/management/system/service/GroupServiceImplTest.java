@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service;
 
-import com.company.schedule.management.system.dao.GroupDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.repository.GroupRepository;
+import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.exception.ServiceException;
@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +26,7 @@ class GroupServiceImplTest {
     @Autowired
     private GroupServiceImpl groupServiceImpl;
     @MockBean
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
 
     private Group groupWithId;
     private Group groupWithoutId;
@@ -42,36 +43,36 @@ class GroupServiceImplTest {
 
     @Test
     void saveGroup_shouldReturnGroup_whenInputCorrectData() {
-        when(groupDao.create(groupWithoutId)).thenReturn(groupWithId);
+        when(groupRepository.saveAndFlush(groupWithoutId)).thenReturn(groupWithId);
         groupServiceImpl.saveGroup(groupWithoutId);
-        verify(groupDao, times(1)).create(groupWithoutId);
+        verify(groupRepository, times(1)).saveAndFlush(groupWithoutId);
     }
 
     @Test
     void saveGroup_shouldThrowException_whenInputExistGroup() {
-        when(groupDao.create(groupWithId)).thenThrow(DaoException.class);
+        when(groupRepository.saveAndFlush(groupWithId)).thenThrow(DaoException.class);
         assertThrows(ServiceException.class, () -> groupServiceImpl.saveGroup(groupWithId));
     }
 
     @Test
     void getGroupById_shouldReturnGroup_whenInputExistId() {
-        when(groupDao.findById(1L)).thenReturn(Optional.ofNullable(groupWithId));
+        when(groupRepository.findById(1L)).thenReturn(Optional.ofNullable(groupWithId));
         assertThat(groupServiceImpl.getGroupById(groupWithId.getId())).isEqualTo(groupWithId);
     }
 
     @Test
     void getGroupById_shouldThrowException_whenInputNonExistGroupId() {
-        when(groupDao.findById(groupWithId.getId())).thenReturn(Optional.empty());
-        assertThrows(DaoException.class, () -> groupServiceImpl.getGroupById(groupWithId.getId()));
+        when(groupRepository.findById(groupWithId.getId())).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class, () -> groupServiceImpl.getGroupById(groupWithId.getId()));
     }
 
     @Test
     void getAllGroups_shouldReturnListGroups() {
-        when(groupDao.findAll()).thenReturn(groupList);
+        when(groupRepository.findAll()).thenReturn(groupList);
         List<Group> groups = groupServiceImpl.getAllGroups();
 
         assertEquals(groupList, groups);
-        verify(groupDao, times(1)).findAll();
+        verify(groupRepository, times(2)).findAll();
     }
 
     @Test
@@ -79,32 +80,25 @@ class GroupServiceImplTest {
         Group expected = new Group(1L, "BASO-04-19", new Faculty(1L, "IT", null, null),
                 null, null);
 
-        when(groupDao.update(expected)).thenReturn(expected);
+        when(groupRepository.saveAndFlush(expected)).thenReturn(expected);
         Group actual = groupServiceImpl.updateGroup(expected);
 
         assertEquals(expected, actual);
-        verify(groupDao, times(1)).update(expected);
+        verify(groupRepository, times(1)).saveAndFlush(expected);
     }
 
     @Test
     void updateGroup_shouldThrowException_whenInputNonExistGroup() {
-        when(groupDao.update(groupWithId)).thenThrow(DaoException.class);
+        when(groupRepository.saveAndFlush(groupWithId)).thenThrow(DaoException.class);
         assertThrows(ServiceException.class, () -> groupServiceImpl.updateGroup(groupWithId));
     }
 
     @Test
     void deleteGroupById_shouldReturnTrue_whenInputExistGroupId() {
-        when(groupDao.deleteById(groupWithId.getId())).thenReturn(true);
+        when(groupRepository.findById(groupWithId.getId())).thenReturn(Optional.of(groupWithId));
 
         groupServiceImpl.deleteGroupById(groupWithId.getId());
 
-        verify(groupDao, times(1)).deleteById(groupWithId.getId());
-    }
-
-    @Test
-    void deleteGroupById_shouldThrowException_whenInputNonExistGroupId() {
-        when(groupDao.deleteById(groupWithId.getId())).thenThrow(DaoException.class);
-
-        assertThrows(ServiceException.class, () -> groupServiceImpl.deleteGroupById(groupWithId.getId()));
+        verify(groupRepository, times(1)).deleteById(groupWithId.getId());
     }
 }

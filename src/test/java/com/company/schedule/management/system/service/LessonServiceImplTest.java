@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service;
 
-import com.company.schedule.management.system.dao.LessonDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.repository.LessonRepository;
+import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.service.exception.ServiceException;
@@ -16,6 +16,7 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +31,7 @@ class LessonServiceImplTest {
     @Autowired
     LessonServiceImpl lessonServiceImpl;
     @MockBean
-    LessonDao lessonDao;
+    LessonRepository lessonRepository;
 
     private Lesson lessonWithId;
     private Lesson lessonWithoutId;
@@ -48,37 +49,37 @@ class LessonServiceImplTest {
 
     @Test
     void saveLesson_shouldReturnLesson_whenInputCorrectValue() {
-        when(lessonDao.create(lessonWithoutId)).thenReturn(lessonWithId);
+        when(lessonRepository.saveAndFlush(lessonWithoutId)).thenReturn(lessonWithId);
         lessonServiceImpl.saveLesson(lessonWithoutId);
-        verify(lessonDao, times(1)).create(lessonWithoutId);
+        verify(lessonRepository, times(1)).saveAndFlush(lessonWithoutId);
     }
 
     @Test
     void saveLesson_shouldThrowException_whenInputExistLesson() {
-        when(lessonDao.create(lessonWithId)).thenThrow(DaoException.class);
+        when(lessonRepository.saveAndFlush(lessonWithId)).thenThrow(DaoException.class);
         assertThrows(ServiceException.class, () -> lessonServiceImpl.saveLesson(lessonWithId));
     }
 
     @Test
     void getLessonById_shouldReturnLesson_whenInputExistId() {
-        when(lessonDao.findById(1L)).thenReturn(Optional.ofNullable(lessonWithId));
+        when(lessonRepository.findById(1L)).thenReturn(Optional.ofNullable(lessonWithId));
         assertThat(lessonServiceImpl.getLessonById(lessonWithId.getId())).isEqualTo(lessonWithId);
     }
 
     @Test
     void getLessonById_shouldThrowException_whenInputNonExistLesson() {
-        when(lessonDao.findById(lessonWithId.getId())).thenReturn(Optional.empty());
-        assertThrows(ServiceException.class, () -> lessonServiceImpl.getLessonById(lessonWithId.getId()));
+        when(lessonRepository.findById(lessonWithId.getId())).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class, () -> lessonServiceImpl.getLessonById(lessonWithId.getId()));
 
     }
 
     @Test
     void getAllLessons_shouldReturnListLessons() {
-        when(lessonDao.findAll()).thenReturn(lessonList);
+        when(lessonRepository.findAll()).thenReturn(lessonList);
         List<Lesson> lessons = lessonServiceImpl.getAllLessons();
 
         assertEquals(lessonList, lessons);
-        verify(lessonDao, times(1)).findAll();
+        verify(lessonRepository, times(2)).findAll();
     }
 
     @Test
@@ -86,32 +87,25 @@ class LessonServiceImplTest {
         Lesson expected = new Lesson(1L, 2, Time.valueOf(LocalTime.of(13, 0, 0)),
                 Duration.ofMinutes(90), TEST_SUBJECT, null);
 
-        when(lessonDao.update(expected)).thenReturn(expected);
+        when(lessonRepository.saveAndFlush(expected)).thenReturn(expected);
         Lesson actual = lessonServiceImpl.updateLesson(expected);
 
         assertEquals(expected, actual);
-        verify(lessonDao, times(1)).update(expected);
+        verify(lessonRepository, times(1)).saveAndFlush(expected);
     }
 
     @Test
     void updateLesson_shouldThrowException_whenInputNonExistLesson() {
-        when(lessonDao.update(lessonWithId)).thenThrow(DaoException.class);
+        when(lessonRepository.saveAndFlush(lessonWithId)).thenThrow(DaoException.class);
         assertThrows(ServiceException.class, () -> lessonServiceImpl.updateLesson(lessonWithId));
     }
 
     @Test
     void deleteLessonById_shouldReturnTrue_whenInputExistLessonId() {
-        when(lessonDao.deleteById(lessonWithId.getId())).thenReturn(true);
+        when(lessonRepository.findById(lessonWithId.getId())).thenReturn(Optional.of(lessonWithId));
 
         lessonServiceImpl.deleteLessonById(lessonWithId.getId());
 
-        verify(lessonDao, times(1)).deleteById(lessonWithId.getId());
-    }
-
-    @Test
-    void deleteLessonById_shouldThrowException_whenInputNonExistLessonId() {
-        when(lessonDao.deleteById(lessonWithId.getId())).thenThrow(DaoException.class);
-
-        assertThrows(ServiceException.class, () -> lessonServiceImpl.deleteLessonById(lessonWithId.getId()));
+        verify(lessonRepository, times(1)).deleteById(lessonWithId.getId());
     }
 }
