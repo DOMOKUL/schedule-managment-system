@@ -1,4 +1,4 @@
-package com.company.schedule.management.system.dao.exception;
+package com.company.schedule.management.system.repository.exception;
 
 public class DaoException extends RuntimeException {
 
