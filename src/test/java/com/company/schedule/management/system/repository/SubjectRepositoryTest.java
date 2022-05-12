@@ -1,6 +1,5 @@
 package com.company.schedule.management.system.repository;
 
-import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Subject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
