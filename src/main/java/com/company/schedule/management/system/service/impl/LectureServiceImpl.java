@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.dao.LectureDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.repository.LectureRepository;
+import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Lecture;
 import com.company.schedule.management.system.service.LectureService;
 import com.company.schedule.management.system.service.exception.ServiceException;
@@ -19,12 +19,12 @@ import java.util.List;
 public class LectureServiceImpl implements LectureService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LectureServiceImpl.class);
-    private final LectureDao lectureDao;
+    private final LectureRepository lectureRepository;
 
     @Override
     public Lecture saveLecture(Lecture lecture) {
         try {
-            return lectureDao.create(lecture);
+            return lectureRepository.saveAndFlush(lecture);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -32,15 +32,15 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public Lecture getLectureById(Long id) {
-        LOGGER.debug("Lecture at id = {} found: {}", id, lectureDao.findById(id).get());
-        return lectureDao.findById(id).orElseThrow(() -> new ServiceException("Lecture with id: " + id + " doesn't exist"));
+        LOGGER.debug("Lecture at id = {} found: {}", id, lectureRepository.findById(id).get());
+        return lectureRepository.findById(id).orElseThrow(() -> new ServiceException("Lecture with id: " + id + " doesn't exist"));
     }
 
     @Override
     public List<Lecture> getAllLectures() {
-        LOGGER.debug("Lectures found:{}", lectureDao.findAll());
+        LOGGER.debug("Lectures found:{}", lectureRepository.findAll());
         try {
-            return lectureDao.findAll();
+            return lectureRepository.findAll();
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -50,7 +50,7 @@ public class LectureServiceImpl implements LectureService {
     public Lecture updateLecture(Lecture lecture) {
         LOGGER.debug("Lecture has been updated: {}", lecture);
         try {
-            return lectureDao.update(lecture);
+            return lectureRepository.saveAndFlush(lecture);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -58,10 +58,10 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public void deleteLectureById(Long id) {
-        if (lectureDao.findById(id).isPresent()) {
+        if (lectureRepository.findById(id).isPresent()) {
             LOGGER.debug("Lecture with id: {} has been deleted", id);
         }
-        lectureDao.findById(id).orElseThrow(() -> new ServiceException("Lecture with id: " + id + " doesn't exist"));
-        lectureDao.deleteById(id);
+        lectureRepository.findById(id).orElseThrow(() -> new ServiceException("Lecture with id: " + id + " doesn't exist"));
+        lectureRepository.deleteById(id);
     }
 }

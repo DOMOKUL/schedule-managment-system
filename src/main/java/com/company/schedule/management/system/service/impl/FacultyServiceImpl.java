@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.dao.FacultyDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.repository.FacultyRepository;
+import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.FacultyService;
@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 public class FacultyServiceImpl implements FacultyService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FacultyServiceImpl.class);
-    private final FacultyDao facultyDao;
+    private final FacultyRepository facultyRepository;
 
     @Override
     public Faculty saveFaculty(Faculty faculty) {
         try {
-            return facultyDao.create(faculty);
+            return facultyRepository.saveAndFlush(faculty);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -34,15 +34,15 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty getFacultyById(Long id) {
-        LOGGER.debug("Faculty at id = {} found: {}", id, facultyDao.findById(id).get());
-        return facultyDao.findById(id).orElseThrow(() -> new ServiceException("Faculty with id: " + id + " doesn't exist"));
+        LOGGER.debug("Faculty at id = {} found: {}", id, facultyRepository.findById(id).get());
+        return facultyRepository.findById(id).orElseThrow(() -> new ServiceException("Faculty with id: " + id + " doesn't exist"));
     }
 
     @Override
     public List<Faculty> getAllFaculties() {
-        LOGGER.debug("Faculties found:{}", facultyDao.findAll());
+        LOGGER.debug("Faculties found:{}", facultyRepository.findAll());
         try {
-            return facultyDao.findAll();
+            return facultyRepository.findAll();
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -52,7 +52,7 @@ public class FacultyServiceImpl implements FacultyService {
     public Faculty updateFaculty(Faculty faculty) {
         LOGGER.debug("Faculty has been updated: {}", faculty);
         try {
-            return facultyDao.update(faculty);
+            return facultyRepository.saveAndFlush(faculty);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -60,11 +60,11 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public void deleteFacultyById(Long id) {
-        if (facultyDao.findById(id).isPresent()) {
+        if (facultyRepository.findById(id).isPresent()) {
             LOGGER.debug("Faculty with id: {} has been deleted", id);
         }
-        facultyDao.findById(id).orElseThrow(() -> new ServiceException("Faculty with id: " + id + " doesn't exist"));
-        facultyDao.deleteById(id);
+        facultyRepository.findById(id).orElseThrow(() -> new ServiceException("Faculty with id: " + id + " doesn't exist"));
+        facultyRepository.deleteById(id);
     }
 
     @Override

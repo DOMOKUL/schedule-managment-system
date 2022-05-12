@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.dao.LessonDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.repository.LessonRepository;
+import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.exception.ServiceException;
@@ -21,12 +21,12 @@ import java.util.List;
 public class LessonServiceImpl implements LessonService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LessonServiceImpl.class);
-    private final LessonDao lessonDao;
+    private final LessonRepository lessonRepository;
 
     @Override
     public Lesson saveLesson(Lesson lesson) {
         try {
-            return lessonDao.create(lesson);
+            return lessonRepository.saveAndFlush(lesson);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -34,15 +34,15 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public Lesson getLessonById(Long id) {
-        LOGGER.debug("Lesson at id = {} found: {}", id, lessonDao.findById(id).get());
-        return lessonDao.findById(id).orElseThrow(() -> new ServiceException("Lesson with id: " + id + " doesn't exist"));
+        LOGGER.debug("Lesson at id = {} found: {}", id, lessonRepository.findById(id).get());
+        return lessonRepository.findById(id).orElseThrow(() -> new ServiceException("Lesson with id: " + id + " doesn't exist"));
     }
 
     @Override
     public List<Lesson> getAllLessons() {
-        LOGGER.debug("Lessons found:{}", lessonDao.findAll());
+        LOGGER.debug("Lessons found:{}", lessonRepository.findAll());
         try {
-            return lessonDao.findAll();
+            return lessonRepository.findAll();
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -52,7 +52,7 @@ public class LessonServiceImpl implements LessonService {
     public Lesson updateLesson(Lesson lesson) {
         LOGGER.debug("Lesson has been updated: {}", lesson);
         try {
-            return lessonDao.update(lesson);
+            return lessonRepository.saveAndFlush(lesson);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -60,11 +60,11 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public void deleteLessonById(Long id) {
-        if (lessonDao.findById(id).isPresent()) {
+        if (lessonRepository.findById(id).isPresent()) {
             LOGGER.debug("Lesson with id: {} has been deleted", id);
         }
-        lessonDao.findById(id).orElseThrow(() -> new ServiceException("Lesson with id: " + id + " doesn't exist"));
-        lessonDao.deleteById(id);
+        lessonRepository.findById(id).orElseThrow(() -> new ServiceException("Lesson with id: " + id + " doesn't exist"));
+        lessonRepository.deleteById(id);
     }
 
     @Override

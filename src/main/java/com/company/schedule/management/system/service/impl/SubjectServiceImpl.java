@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.dao.SubjectDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.repository.SubjectRepository;
+import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.service.SubjectService;
 import com.company.schedule.management.system.service.exception.ServiceException;
@@ -19,12 +19,12 @@ import java.util.List;
 public class SubjectServiceImpl implements SubjectService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SubjectServiceImpl.class);
-    private final SubjectDao subjectDao;
+    private final SubjectRepository subjectRepository;
 
     @Override
     public Subject saveSubject(Subject subject) {
         try {
-            return subjectDao.create(subject);
+            return subjectRepository.saveAndFlush(subject);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -32,15 +32,15 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject getSubjectById(Long id) {
-        LOGGER.debug("Subject at id = {} found: {}", id, subjectDao.findById(id).get());
-        return subjectDao.findById(id).orElseThrow(() -> new ServiceException("Subject with id: " + id + " doesn't exist"));
+        LOGGER.debug("Subject at id = {} found: {}", id, subjectRepository.findById(id).get());
+        return subjectRepository.findById(id).orElseThrow(() -> new ServiceException("Subject with id: " + id + " doesn't exist"));
     }
 
     @Override
     public List<Subject> getAllSubjects() {
-        LOGGER.debug("Subjects found:{}", subjectDao.findAll());
+        LOGGER.debug("Subjects found:{}", subjectRepository.findAll());
         try {
-            return subjectDao.findAll();
+            return subjectRepository.findAll();
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -50,7 +50,7 @@ public class SubjectServiceImpl implements SubjectService {
     public Subject updateSubject(Subject subject) {
         LOGGER.debug("Subject has been updated: {}", subject);
         try {
-            return subjectDao.update(subject);
+            return subjectRepository.saveAndFlush(subject);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -58,10 +58,10 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public void deleteSubjectById(Long id) {
-        if (subjectDao.findById(id).isPresent()) {
+        if (subjectRepository.findById(id).isPresent()) {
             LOGGER.debug("Subject with id: {} has been deleted", id);
         }
-        subjectDao.findById(id).orElseThrow(() -> new ServiceException("Subject with id: " + id + " doesn't exist"));
-        subjectDao.deleteById(id);
+        subjectRepository.findById(id).orElseThrow(() -> new ServiceException("Subject with id: " + id + " doesn't exist"));
+        subjectRepository.deleteById(id);
     }
 }

@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.dao.GroupDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.repository.GroupRepository;
+import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.GroupService;
 import com.company.schedule.management.system.service.exception.ServiceException;
@@ -19,12 +19,12 @@ import java.util.List;
 public class GroupServiceImpl implements GroupService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupServiceImpl.class);
-    private final GroupDao groupDao;
+    private final GroupRepository groupRepository;
 
     @Override
     public Group saveGroup(Group group) {
         try {
-            return groupDao.create(group);
+            return groupRepository.saveAndFlush(group);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -32,15 +32,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group getGroupById(Long id) {
-        LOGGER.debug("Group at id = {} found: {}", id, groupDao.findById(id).get());
-        return groupDao.findById(id).orElseThrow(() -> new ServiceException("Group with id: " + id + " doesn't exist"));
+        LOGGER.debug("Group at id = {} found: {}", id, groupRepository.findById(id).get());
+        return groupRepository.findById(id).orElseThrow(() -> new ServiceException("Group with id: " + id + " doesn't exist"));
     }
 
     @Override
     public List<Group> getAllGroups() {
-        LOGGER.debug("Groups found:{}", groupDao.findAll());
+        LOGGER.debug("Groups found:{}", groupRepository.findAll());
         try {
-            return groupDao.findAll();
+            return groupRepository.findAll();
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -50,7 +50,7 @@ public class GroupServiceImpl implements GroupService {
     public Group updateGroup(Group group) {
         LOGGER.debug("Group has been updated: {}", group);
         try {
-            return groupDao.update(group);
+            return groupRepository.saveAndFlush(group);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -58,10 +58,10 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void deleteGroupById(Long id) {
-        if (groupDao.findById(id).isPresent()) {
+        if (groupRepository.findById(id).isPresent()) {
             LOGGER.debug("Group with id: {} has been deleted", id);
         }
-        groupDao.findById(id).orElseThrow(() -> new ServiceException("Group with id: " + id + " doesn't exist"));
-        groupDao.deleteById(id);
+        groupRepository.findById(id).orElseThrow(() -> new ServiceException("Group with id: " + id + " doesn't exist"));
+        groupRepository.deleteById(id);
     }
 }

@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.dao.TeacherDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.repository.TeacherRepository;
+import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Teacher;
 import com.company.schedule.management.system.service.TeacherService;
 import com.company.schedule.management.system.service.exception.ServiceException;
@@ -19,12 +19,12 @@ import java.util.List;
 public class TeacherServiceImpl implements TeacherService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeacherServiceImpl.class);
-    private final TeacherDao teacherDao;
+    private final TeacherRepository teacherRepository;
 
     @Override
     public Teacher saveTeacher(Teacher teacher) {
         try {
-            return teacherDao.create(teacher);
+            return teacherRepository.saveAndFlush(teacher);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -32,15 +32,15 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Teacher getTeacherById(Long id) {
-        LOGGER.debug("Teacher at id = {} found: {}", id, teacherDao.findById(id).get());
-        return teacherDao.findById(id).orElseThrow(() -> new ServiceException("Teacher with id: " + id + " doesn't exist"));
+        LOGGER.debug("Teacher at id = {} found: {}", id, teacherRepository.findById(id).get());
+        return teacherRepository.findById(id).orElseThrow(() -> new ServiceException("Teacher with id: " + id + " doesn't exist"));
     }
 
     @Override
     public List<Teacher> getAllTeachers() {
-        LOGGER.debug("Teachers found:{}", teacherDao.findAll());
+        LOGGER.debug("Teachers found:{}", teacherRepository.findAll());
         try {
-            return teacherDao.findAll();
+            return teacherRepository.findAll();
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -50,7 +50,7 @@ public class TeacherServiceImpl implements TeacherService {
     public Teacher updateTeacher(Teacher teacher) {
         LOGGER.debug("Teacher has been updated: {}", teacher);
         try {
-            return teacherDao.update(teacher);
+            return teacherRepository.saveAndFlush(teacher);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -58,10 +58,10 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public void deleteTeacherById(Long id) {
-        if (teacherDao.findById(id).isPresent()) {
+        if (teacherRepository.findById(id).isPresent()) {
             LOGGER.debug("Teacher with id: {} has been deleted", id);
         }
-        teacherDao.findById(id).orElseThrow(() -> new ServiceException("Teacher with id: " + id + " doesn't exist"));
-        teacherDao.deleteById(id);
+        teacherRepository.findById(id).orElseThrow(() -> new ServiceException("Teacher with id: " + id + " doesn't exist"));
+        teacherRepository.deleteById(id);
     }
 }

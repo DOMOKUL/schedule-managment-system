@@ -1,7 +1,7 @@
 package com.company.schedule.management.system.service.impl;
 
-import com.company.schedule.management.system.dao.AudienceDao;
-import com.company.schedule.management.system.dao.exception.DaoException;
+import com.company.schedule.management.system.repository.AudienceRepository;
+import com.company.schedule.management.system.repository.exception.DaoException;
 import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.service.AudienceService;
 import com.company.schedule.management.system.service.exception.ServiceException;
@@ -19,12 +19,12 @@ import java.util.List;
 public class AudienceServiceImpl implements AudienceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AudienceServiceImpl.class);
-    private final AudienceDao audienceDao;
+    private final AudienceRepository audienceRepository;
 
     @Override
     public Audience saveAudience(Audience audience) {
         try {
-            return audienceDao.create(audience);
+            return audienceRepository.saveAndFlush(audience);
         } catch (DaoException cause) {
             throw new ServiceException("Audience doesn't save", cause);
         }
@@ -32,15 +32,15 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public Audience getAudienceById(Long id) {
-        LOGGER.debug("Audience at id = {} found: {}", id, audienceDao.findById(id).get());
-        return audienceDao.findById(id).orElseThrow(() -> new ServiceException("Audience with id:" + id + " doesn't exist"));
+        LOGGER.debug("Audience at id = {} found: {}", id, audienceRepository.findById(id).get());
+        return audienceRepository.findById(id).orElseThrow(() -> new ServiceException("Audience with id:" + id + " doesn't exist"));
     }
 
     @Override
     public List<Audience> getAllAudiences() {
-        LOGGER.debug("Audiences found:{}", audienceDao.findAll());
+        LOGGER.debug("Audiences found:{}", audienceRepository.findAll());
         try {
-            return audienceDao.findAll();
+            return audienceRepository.findAll();
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -50,7 +50,7 @@ public class AudienceServiceImpl implements AudienceService {
     public Audience updateAudience(Audience audience) {
         LOGGER.debug("Audience has been updated: {}", audience);
         try {
-            return audienceDao.update(audience);
+            return audienceRepository.saveAndFlush(audience);
         } catch (DaoException cause) {
             throw new ServiceException(cause);
         }
@@ -58,10 +58,10 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public void deleteAudienceById(Long id) {
-        if (audienceDao.findById(id).isPresent()) {
+        if (audienceRepository.findById(id).isPresent()) {
             LOGGER.debug("Audience with id: {} has been deleted", id);
         }
-        audienceDao.findById(id).orElseThrow(() -> new ServiceException("Audience with id: " + id + " doesn't exist"));
-        audienceDao.deleteById(id);
+        audienceRepository.findById(id).orElseThrow(() -> new ServiceException("Audience with id: " + id + " doesn't exist"));
+        audienceRepository.deleteById(id);
     }
 }
