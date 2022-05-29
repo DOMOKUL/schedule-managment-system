@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,8 +33,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group getGroupById(Long id) {
-        LOGGER.debug("Group at id = {} found: {}", id, groupRepository.findById(id).get());
-        return groupRepository.findById(id).orElseThrow(() -> new ServiceException("Group with id: " + id + " doesn't exist"));
+        Optional<Group> group = groupRepository.findById(id);
+        LOGGER.debug("Group at id = {} found: {}", id, group.get());
+        return group.orElseThrow(() -> new ServiceException("Group with id: " + id + " doesn't exist"));
     }
 
     @Override

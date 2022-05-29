@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,8 +33,9 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public Lecture getLectureById(Long id) {
-        LOGGER.debug("Lecture at id = {} found: {}", id, lectureRepository.findById(id).get());
-        return lectureRepository.findById(id).orElseThrow(() -> new ServiceException("Lecture with id: " + id + " doesn't exist"));
+        Optional<Lecture> lecture = lectureRepository.findById(id);
+        LOGGER.debug("Lecture at id = {} found: {}", id, lecture.get());
+        return lecture.orElseThrow(() -> new ServiceException("Lecture with id: " + id + " doesn't exist"));
     }
 
     @Override

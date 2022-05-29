@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,8 +33,9 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Teacher getTeacherById(Long id) {
-        LOGGER.debug("Teacher at id = {} found: {}", id, teacherRepository.findById(id).get());
-        return teacherRepository.findById(id).orElseThrow(() -> new ServiceException("Teacher with id: " + id + " doesn't exist"));
+        Optional<Teacher> teacher = teacherRepository.findById(id);
+        LOGGER.debug("Teacher at id = {} found: {}", id, teacher.get());
+        return teacher.orElseThrow(() -> new ServiceException("Teacher with id: " + id + " doesn't exist"));
     }
 
     @Override

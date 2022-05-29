@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,8 +33,9 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public Audience getAudienceById(Long id) {
-        LOGGER.debug("Audience at id = {} found: {}", id, audienceRepository.findById(id).get());
-        return audienceRepository.findById(id).orElseThrow(() -> new ServiceException("Audience with id:" + id + " doesn't exist"));
+        Optional<Audience> audience = audienceRepository.findById(id);
+        LOGGER.debug("Audience at id = {} found: {}", id, audience.get());
+        return audience.orElseThrow(() -> new ServiceException("Audience with id:" + id + " doesn't exist"));
     }
 
     @Override

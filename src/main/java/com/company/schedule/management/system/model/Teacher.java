@@ -17,6 +17,7 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Teacher extends Person {
+    //TODO need validation for models
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

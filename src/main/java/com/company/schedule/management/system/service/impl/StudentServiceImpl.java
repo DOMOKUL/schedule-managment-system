@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,8 +33,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student getStudentById(Long id) {
-        LOGGER.debug("Student at id = {} found: {}", id, studentRepository.findById(id).get());
-        return studentRepository.findById(id).orElseThrow(() -> new ServiceException("Student with id: " + id + " doesn't exist"));
+        Optional<Student> student = studentRepository.findById(id);
+        LOGGER.debug("Student at id = {} found: {}", id, student.get());
+        return student.orElseThrow(() -> new ServiceException("Student with id: " + id + " doesn't exist"));
     }
 
     @Override

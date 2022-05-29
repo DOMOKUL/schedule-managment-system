@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,8 +33,9 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject getSubjectById(Long id) {
-        LOGGER.debug("Subject at id = {} found: {}", id, subjectRepository.findById(id).get());
-        return subjectRepository.findById(id).orElseThrow(() -> new ServiceException("Subject with id: " + id + " doesn't exist"));
+        Optional<Subject> subject = subjectRepository.findById(id);
+        LOGGER.debug("Subject at id = {} found: {}", id, subject.get());
+        return subject.orElseThrow(() -> new ServiceException("Subject with id: " + id + " doesn't exist"));
     }
 
     @Override

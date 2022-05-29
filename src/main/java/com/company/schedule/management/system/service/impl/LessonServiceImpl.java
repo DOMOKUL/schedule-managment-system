@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -34,7 +35,8 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public Lesson getLessonById(Long id) {
-        LOGGER.debug("Lesson at id = {} found: {}", id, lessonRepository.findById(id).get());
+        Optional<Lesson> lesson = lessonRepository.findById(id);
+        LOGGER.debug("Lesson at id = {} found: {}", id, lesson.get());
         return lessonRepository.findById(id).orElseThrow(() -> new ServiceException("Lesson with id: " + id + " doesn't exist"));
     }
 

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,8 +35,9 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty getFacultyById(Long id) {
-        LOGGER.debug("Faculty at id = {} found: {}", id, facultyRepository.findById(id).get());
-        return facultyRepository.findById(id).orElseThrow(() -> new ServiceException("Faculty with id: " + id + " doesn't exist"));
+        Optional<Faculty> faculty = facultyRepository.findById(id);
+        LOGGER.debug("Faculty at id = {} found: {}", id, faculty.get());
+        return faculty.orElseThrow(() -> new ServiceException("Faculty with id: " + id + " doesn't exist"));
     }
 
     @Override
