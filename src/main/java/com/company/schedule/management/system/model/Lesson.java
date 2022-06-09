@@ -1,11 +1,15 @@
 package com.company.schedule.management.system.model;
 
+import com.company.schedule.management.system.model.validator.DurationConstraint;
+import com.company.schedule.management.system.model.validator.StartTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.sql.Time;
 import java.time.Duration;
 import java.util.List;
@@ -22,8 +26,12 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Min(value = 1, message = "Lesson number must be greater than 1")
+    @Max(value = 6, message = "Lesson number must be less than 6")
     private Integer number;
+    @StartTime
     private Time startTime;
+    @DurationConstraint
     private Duration duration;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")

@@ -1,5 +1,6 @@
 package com.company.schedule.management.system.model;
 
+import com.company.schedule.management.system.model.validator.FacultyName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class Faculty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @FacultyName
     private String name;
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Group> groups;

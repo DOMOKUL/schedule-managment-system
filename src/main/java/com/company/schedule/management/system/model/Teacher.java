@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
-
 @Entity
 @Table(name = "teachers")
 @NoArgsConstructor
@@ -17,7 +16,6 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Teacher extends Person {
-    //TODO need validation for models
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

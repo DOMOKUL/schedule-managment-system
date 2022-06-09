@@ -4,14 +4,18 @@ import com.company.schedule.management.system.controller.util.StringUtils;
 import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.SubjectService;
+import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -22,8 +26,18 @@ public class LessonController {
     private final SubjectService subjectService;
 
     @PostMapping("/lessons/add")
-    public String addLesson(@ModelAttribute Lesson lesson) {
-        lessonService.saveLesson(lesson);
+    public String addLesson(@Valid @ModelAttribute Lesson lesson, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/lessons";
+        }
+        try {
+            lessonService.saveLesson(lesson);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("lesson", new Lesson());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/lessons";
+        }
         return "redirect:/lessons";
     }
 
@@ -58,8 +72,18 @@ public class LessonController {
     }
 
     @PostMapping("/lessons/update/{id}")
-    public String updateLesson(@ModelAttribute Lesson lesson) {
-        lessonService.updateLesson(lesson);
+    public String updateLesson(@Valid @ModelAttribute Lesson lesson, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/lessons/edit/{id}";
+        }
+        try {
+            lessonService.updateLesson(lesson);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("lesson", new Lesson());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/lessons/edit/{id}";
+        }
         return "redirect:/lessons";
     }
 

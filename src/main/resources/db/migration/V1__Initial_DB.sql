@@ -1,6 +1,6 @@
 create table audiences
 (
-    id       bigserial not null ,
+    id       bigserial not null,
     capacity integer,
     number   integer unique,
     primary key (id)
@@ -17,7 +17,7 @@ create table groups
 (
     id         bigserial not null,
     name       varchar(128) unique,
-    faculty_id bigint not null,
+    faculty_id bigint    not null,
     primary key (id)
 );
 
@@ -26,10 +26,10 @@ create table lectures
     id          bigserial not null,
     date        timestamp,
     number      integer,
-    audience_id bigint not null,
-    group_id    bigint not null,
-    lesson_id   bigint not null,
-    teacher_id  bigint not null,
+    audience_id bigint    not null,
+    group_id    bigint    not null,
+    lesson_id   bigint    not null,
+    teacher_id  bigint    not null,
     primary key (id)
 );
 
@@ -39,7 +39,7 @@ create table lessons
     duration   bigint,
     number     integer,
     start_time time,
-    subject_id bigint not null,
+    subject_id bigint    not null,
     primary key (id)
 );
 
@@ -50,7 +50,7 @@ create table students
     last_name     varchar(128),
     middle_name   varchar(128),
     course_number integer,
-    group_id      bigint not null,
+    group_id      bigint    not null,
     primary key (id)
 );
 
@@ -67,7 +67,7 @@ create table teachers
     first_name  varchar(128),
     last_name   varchar(128),
     middle_name varchar(128),
-    faculty_id  bigint not null,
+    faculty_id  bigint    not null,
     primary key (id)
 );
 

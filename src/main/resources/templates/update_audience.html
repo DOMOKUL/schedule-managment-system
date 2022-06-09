@@ -21,19 +21,44 @@
                   th:action="@{/audiences/update/{id}(id=${updatedAudience.id})}" th:object="${updatedAudience}">
                 <div class="row">
                     <div class="form-group col-md-6">
-                        <label class="col-form-label" for="email">Number</label>
-                        <input class="form-control" id="email" placeholder="Number" th:field="*{number}" type="number">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="col-form-label" for="name">Capacity</label>
-                        <input class="form-control" id="name" placeholder="Capacity" th:field="*{capacity}"
+                        <label class="col-form-label" for="number">Number</label>
+                        <input class="form-control" id="number" placeholder="Number" required th:field="*{number}"
                                type="number">
                     </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="capacity">Capacity</label>
+                        <input class="form-control" id="capacity" placeholder="Capacity" required
+                               th:field="*{capacity}" type="number">
+                    </div>
+                </div>
+
+                <div class="row" th:if="${fieldErrors != null}">
+                    <div class="form-row">
+                        <div class="col">
+                            <div th:each="fieldError, iter: ${fieldErrors}">
+                                <div class="alert alert-danger mt-2" style="color: red"
+                                     th:if="${fieldError.getField() == 'number'}"
+                                     th:text="${fieldError.getDefaultMessage()}"></div>
+                            </div>
+                        </div>
+                        <div class="row" class="col">
+                            <div th:each="fieldError, iter: ${fieldErrors}">
+                                <div class="alert alert-danger mt-2" style="color: red"
+                                     th:if="${fieldError.getField() == 'capacity'}"
+                                     th:text="${fieldError.getDefaultMessage()}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" class="modal-body">
+                    <h5 style="color: red" th:if="${serviceExceptionOnUpdate !=null}"
+                        th:text="${serviceExceptionOnUpdate.getMessage()}"></h5>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mt-5">
-                        <input class="btn btn-primary" type="submit" value="Update Audience">
+                        <input class="btn btn-primary" required type="submit" value="Update Audience">
                     </div>
                 </div>
             </form>

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.Objects;
 
 @Entity
@@ -19,12 +21,15 @@ public class Student extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Min(value = 1, message = "Student's course must be more than 1")
+    @Max(value = 4, message = "Student's course must be less than 4")
     private Integer courseNumber;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    public Student(Integer courseNumber, Group group) {
+    public Student(String firstName, String lastName, String middleName, Integer courseNumber, Group group) {
+        super(firstName, lastName, middleName);
         this.courseNumber = courseNumber;
         this.group = group;
     }

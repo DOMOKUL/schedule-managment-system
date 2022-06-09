@@ -3,14 +3,18 @@ package com.company.schedule.management.system.controller;
 import com.company.schedule.management.system.model.Student;
 import com.company.schedule.management.system.service.GroupService;
 import com.company.schedule.management.system.service.StudentService;
+import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -21,10 +25,21 @@ public class StudentController {
     private final GroupService groupService;
 
     @PostMapping("/students/add")
-    public String addStudent(@ModelAttribute Student student) {
-        studentService.saveStudent(student);
+    public String addStudent(@Valid @ModelAttribute Student student, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/students";
+        }
+        try {
+            studentService.saveStudent(student);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("student", new Student());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/students";
+        }
         return "redirect:/students";
     }
+
 
     @GetMapping("/students")
     public String getAllStudents(Model model) {
@@ -44,8 +59,18 @@ public class StudentController {
     }
 
     @PostMapping("/students/update/{id}")
-    public String updateStudent(@ModelAttribute Student student) {
-        studentService.updateStudent(student);
+    public String updateStudent(@Valid @ModelAttribute Student student, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/students/edit/{id}";
+        }
+        try {
+            studentService.updateStudent(student);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("student", new Student());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/students/edit/{id}";
+        }
         return "redirect:/students";
     }
 

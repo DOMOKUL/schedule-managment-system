@@ -22,24 +22,68 @@
                 <div class="row">
                     <div class="form-group col-md-6">
                         <label class="col-form-label" for="first-name">First name</label>
-                        <input class="form-control" id="first-name" placeholder="First Name" th:field="*{firstName}"
-                               type="text">
+                        <input class="form-control" id="first-name" placeholder="First Name" required
+                               th:field="*{firstName}" type="text">
+                    </div>
+                    <div class="row" th:if="${fieldErrors != null}">
+                        <div class="form-row">
+                            <div class="col">
+                                <div th:each="fieldError, iter: ${fieldErrors}">
+                                    <div class="alert alert-danger" style="color: red"
+                                         th:if="${fieldError.getField() == 'firstName'}"
+                                         th:text="${fieldError.getDefaultMessage()}"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group col-md-6">
                         <label class="col-form-label" for="last-name">Last name</label>
-                        <input class="form-control" id="last-name" placeholder="Last Name" th:field="*{lastName}"
-                               type="text">
+                        <input class="form-control" id="last-name" placeholder="Last Name" required
+                               th:field="*{lastName}" type="text">
+                    </div>
+                    <div class="row" th:if="${fieldErrors != null}">
+                        <div class="form-row">
+                            <div class="col">
+                                <div th:each="fieldError, iter: ${fieldErrors}">
+                                    <div class="alert alert-danger" style="color: red"
+                                         th:if="${fieldError.getField() == 'lastName'}"
+                                         th:text="${fieldError.getDefaultMessage()}"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group col-md-6">
                         <label class="col-form-label" for="middle-name">Middle name</label>
-                        <input class="form-control" id="middle-name" placeholder="Middle Name" th:field="*{middleName}"
-                               type="text">
+                        <input class="form-control" id="middle-name" placeholder="Middle Name" required
+                               th:field="*{middleName}" type="text">
+                    </div>
+                    <div class="row" th:if="${fieldErrors != null}">
+                        <div class="form-row">
+                            <div class="col">
+                                <div th:each="fieldError, iter: ${fieldErrors}">
+                                    <div class="alert alert-danger" style="color: red"
+                                         th:if="${fieldError.getField() == 'middleName'}"
+                                         th:text="${fieldError.getDefaultMessage()}"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group col-md-6">
                         <label class="col-form-label" for="course-number">Course number</label>
                         <input class="form-control" id="course-number" placeholder="Course number"
-                               th:field="*{courseNumber}"
-                               type="number">
+                               required
+                               th:field="*{courseNumber}" type="number">
+                    </div>
+                    <div class="row" th:if="${fieldErrors != null}">
+                        <div class="form-row">
+                            <div class="col">
+                                <div th:each="fieldError, iter: ${fieldErrors}">
+                                    <div class="alert alert-danger" style="color: red"
+                                         th:if="${fieldError.getField() == 'courseNumber'}"
+                                         th:text="${fieldError.getDefaultMessage()}"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="div-inline-block div-centr">
                         <label>Select a Group:
@@ -50,6 +94,10 @@
                             </select>
                         </label>
                     </div>
+                </div>
+
+                <div class="row" th:if="${serviceExceptionOnAdd !=null}">
+                    <h5 style="color: red" th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
                 </div>
 
                 <div class="row">

@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
     @Override
-    @Query("select l from Lecture l left join fetch l.group g left join fetch g.faculty left join fetch"+
+    @Query("select l from Lecture l left join fetch l.group g left join fetch g.faculty left join fetch" +
             " l.audience left join fetch l.lesson le left join fetch le.subject left join fetch" +
             " l.teacher t left join t.faculty where l.id =:id")
     Optional<Lecture> findById(@Param("id") Long id);

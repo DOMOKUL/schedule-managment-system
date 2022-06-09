@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,7 +23,13 @@ public class Audience {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
+    @Min(value = 1, message = "Number must be more than 1")
+    @Max(value = 1000, message = "Number must be less than 1000")
     private Integer number;
+    @NotNull
+    @Min(value = 15, message = "Capacity must be more than 15")
+    @Max(value = 100, message = "Capacity must be less than 100")
     private Integer capacity;
     @OneToMany(mappedBy = "audience", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Lecture> lectures;

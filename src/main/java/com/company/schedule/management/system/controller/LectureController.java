@@ -2,14 +2,18 @@ package com.company.schedule.management.system.controller;
 
 import com.company.schedule.management.system.model.Lecture;
 import com.company.schedule.management.system.service.*;
+import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -23,8 +27,18 @@ public class LectureController {
     private final GroupService groupService;
 
     @PostMapping("/lectures/add")
-    public String addLecture(@ModelAttribute Lecture lecture) {
-        lectureService.saveLecture(lecture);
+    public String addLecture(@Valid @ModelAttribute Lecture lecture, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/lectures";
+        }
+        try {
+            lectureService.saveLecture(lecture);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("lecture", new Lecture());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/lectures";
+        }
         return "redirect:/lectures";
     }
 
@@ -52,8 +66,18 @@ public class LectureController {
     }
 
     @PostMapping("/lectures/update/{id}")
-    public String updateLecture(@ModelAttribute Lecture lecture) {
-        lectureService.updateLecture(lecture);
+    public String updateLecture(@Valid @ModelAttribute Lecture lecture, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/lectures/edit/{id}";
+        }
+        try {
+            lectureService.updateLecture(lecture);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("lecture", new Lecture());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/lectures/edit/{id}";
+        }
         return "redirect:/lectures";
     }
 

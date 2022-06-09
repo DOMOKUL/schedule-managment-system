@@ -67,12 +67,34 @@
         <form method="post" th:action="@{/lectures/add}" th:object="${lecture}">
             <label>
                 Select a Date:
-                <input class="input_" placeholder="Lecture Date" th:field="*{date}" type="date">
+                <input class="input_" placeholder="Lecture Date" required th:field="*{date}" type="date">
             </label>
+            <div th:if="${fieldErrors != null}">
+                <div class="form-row">
+                    <div class="col">
+                        <div th:each="fieldError, iter: ${fieldErrors}">
+                            <div class="alert alert-danger" style="color: red"
+                                 th:if="${fieldError.getField() == 'date'}"
+                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <label>
                 Select a Number:
-                <input class="input_" placeholder="Lecture Number" th:field="*{number}" type="number">
+                <input class="input_" placeholder="Lecture Number" required th:field="*{number}" type="number">
             </label>
+            <div class="row" th:if="${fieldErrors != null}">
+                <div class="form-row">
+                    <div class="col">
+                        <div th:each="fieldError, iter: ${fieldErrors}">
+                            <div class="alert alert-danger" style="color: red"
+                                 th:if="${fieldError.getField() == 'number'}"
+                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="div-inline-block">
                 <label>Select a Audience:</label>
                 <label>
@@ -110,6 +132,9 @@
                         </th:block>
                     </select>
                 </label>
+            </div>
+            <div th:if="${serviceExceptionOnAdd !=null}">
+                <h5 style="color: red" th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
             </div>
             <button class="btn btn-info" type="submit">Save Lecture</button>
         </form>

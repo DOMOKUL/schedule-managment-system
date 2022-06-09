@@ -38,7 +38,7 @@ class StudentServiceImplTest {
     @BeforeEach
     void setUp() {
         studentWithId = new Student(1L, 1, TEST_GROUP);
-        studentWithoutId = new Student(1, TEST_GROUP);
+        studentWithoutId = new Student("Ivan", "Ivanov", "Ivanovich", 1, TEST_GROUP);
         studentList = List.of(studentWithId);
     }
 
@@ -46,7 +46,7 @@ class StudentServiceImplTest {
     void saveStudent_shouldReturnStudent_whenInputCorrectValue() {
         when(studentRepository.saveAndFlush(studentWithoutId)).thenReturn(studentWithId);
         studentServiceImpl.saveStudent(studentWithoutId);
-        verify(studentRepository, times(1)).saveAndFlush(new Student(1, TEST_GROUP));
+        verify(studentRepository, times(1)).saveAndFlush(new Student("Ivan", "Ivanov", "Ivanovich", 1, TEST_GROUP));
     }
 
     @Test

@@ -3,14 +3,18 @@ package com.company.schedule.management.system.controller;
 import com.company.schedule.management.system.model.Teacher;
 import com.company.schedule.management.system.service.FacultyService;
 import com.company.schedule.management.system.service.TeacherService;
+import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -21,8 +25,18 @@ public class TeacherController {
     private final FacultyService facultyService;
 
     @PostMapping("/teachers/add")
-    public String addTeacher(@ModelAttribute Teacher teacher) {
-        teacherService.saveTeacher(teacher);
+    public String addTeacher(@Valid @ModelAttribute Teacher teacher, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/teachers";
+        }
+        try {
+            teacherService.saveTeacher(teacher);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("teacher", new Teacher());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/teachers";
+        }
         return "redirect:/teachers";
     }
 
@@ -55,8 +69,18 @@ public class TeacherController {
     }
 
     @PostMapping("/teachers/update/{id}")
-    public String updateTeacher(@ModelAttribute Teacher teacher) {
-        teacherService.updateTeacher(teacher);
+    public String updateTeacher(@Valid @ModelAttribute Teacher teacher, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/teachers/edit/{id}";
+        }
+        try {
+            teacherService.updateTeacher(teacher);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("teacher", new Teacher());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/teachers/edit/{id}";
+        }
         return "redirect:/teachers";
     }
 

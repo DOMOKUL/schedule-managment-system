@@ -3,14 +3,18 @@ package com.company.schedule.management.system.controller;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.FacultyService;
 import com.company.schedule.management.system.service.GroupService;
+import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -21,8 +25,18 @@ public class GroupController {
     private final FacultyService facultyService;
 
     @PostMapping("/groups/add")
-    public String addGroup(@ModelAttribute Group group) {
-        groupService.saveGroup(group);
+    public String addGroup(@Valid @ModelAttribute Group group, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/groups";
+        }
+        try {
+            groupService.saveGroup(group);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("group", new Group());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/groups";
+        }
         return "redirect:/groups";
     }
 
@@ -56,8 +70,18 @@ public class GroupController {
     }
 
     @PostMapping(path = "/groups/update/{id}")
-    public String updateGroup(@ModelAttribute Group group) {
-        groupService.updateGroup(group);
+    public String updateGroup(@Valid @ModelAttribute Group group, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/groups/edit/{id}";
+        }
+        try {
+            groupService.saveGroup(group);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("group", new Group());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/groups/edit/{id}";
+        }
         return "redirect:/groups";
     }
 

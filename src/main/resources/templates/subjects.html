@@ -49,11 +49,23 @@
         <form action="#" method="POST" th:action="@{/subjects/add}"
               th:object="${subject}">
             <label>
-                <input class="input_" placeholder="Subject name"
-                       th:field="*{name}" type="text">
+                <input class="input_" placeholder="Subject name" required th:field="*{name}" type="text">
             </label>
-
+            <div th:if="${fieldErrors != null}">
+                <div class="form-row">
+                    <div class="col">
+                        <div th:each="fieldError, iter: ${fieldErrors}">
+                            <div class="alert alert-danger" style="color: red"
+                                 th:if="${fieldError.getField() == 'name'}"
+                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <button class="btn btn-info" type="submit">Save Subject</button>
+            <div th:if="${serviceExceptionOnAdd !=null}">
+                <h5 style="color: red" th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
+            </div>
         </form>
     </div>
 </div>

@@ -30,7 +30,7 @@ class StudentControllerTest {
     @Test
     void addStudent_shouldAddStudent_whenInputCorrectData() throws Exception {
         Student studentWithId = new Student(1L, 1, null);
-        Student studentWithoutId = new Student(1, null);
+        Student studentWithoutId = new Student("Ivan","Ivanov", "Ivanovich",1,null);
 
         when(studentService.saveStudent(studentWithoutId)).thenReturn(studentWithId);
         mockMvc.perform(

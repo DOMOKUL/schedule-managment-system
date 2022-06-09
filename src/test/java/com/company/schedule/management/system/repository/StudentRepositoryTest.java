@@ -30,7 +30,7 @@ class StudentRepositoryTest extends BaseIntegrationTest {
     @Test
     void create_shouldReturnCorrectStudent_whenInputCorrectData() {
         Student expected = new Student(1L, 1, TEST_GROUP);
-        Student actual = studentRepository.saveAndFlush(new Student(1, TEST_GROUP));
+        Student actual = studentRepository.saveAndFlush(new Student("Ivan", "Ivanov", "Ivanovich", 1, TEST_GROUP));
         assertEquals(expected, actual);
     }
 
@@ -58,7 +58,7 @@ class StudentRepositoryTest extends BaseIntegrationTest {
 
     @Test
     void delete_shouldDeleteStudent_whenInputExistId() {
-        if(studentRepository.findById(TEST_STUDENT.getId()).isPresent()){
+        if (studentRepository.findById(TEST_STUDENT.getId()).isPresent()) {
             studentRepository.deleteById(TEST_STUDENT.getId());
         }
 

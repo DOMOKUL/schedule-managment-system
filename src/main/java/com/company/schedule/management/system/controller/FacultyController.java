@@ -2,13 +2,18 @@ package com.company.schedule.management.system.controller;
 
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.service.FacultyService;
+import com.company.schedule.management.system.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
@@ -17,12 +22,18 @@ public class FacultyController {
     private final FacultyService facultyService;
 
     @PostMapping("/faculties/add")
-    public String addFaculty(Model model, @ModelAttribute("faculty") Faculty faculty) {
-        if (faculty.getName() != null) {
-            facultyService.saveFaculty(faculty);
+    public String addFaculty(@Valid @ModelAttribute Faculty faculty, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
             return "redirect:/faculties";
         }
-        model.addAttribute("errorMessage", "Faculty not created");
+        try {
+            facultyService.saveFaculty(faculty);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("faculty", new Faculty());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", cause);
+            return "redirect:/faculties";
+        }
         return "redirect:/faculties";
     }
 
@@ -54,8 +65,18 @@ public class FacultyController {
     }
 
     @PostMapping(path = "/faculties/update/{id}")
-    public String updateFaculty(@ModelAttribute Faculty faculty) {
-        facultyService.updateFaculty(faculty);
+    public String updateFaculty(@Valid @ModelAttribute Faculty faculty, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            return "redirect:/faculties/edit/{id}";
+        }
+        try {
+            facultyService.saveFaculty(faculty);
+        } catch (ServiceException cause) {
+            redirectAttributes.addFlashAttribute("faculty", new Faculty());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnUpdate", cause);
+            return "redirect:/faculties/edit/{id}";
+        }
         return "redirect:/faculties";
     }
 
