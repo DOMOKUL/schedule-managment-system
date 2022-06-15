@@ -68,13 +68,6 @@
             <label>
                 <input class="input_" placeholder="First name" required th:field="*{firstName}" type="text">
             </label>
-            <label>
-                <input class="input_" placeholder="Last name" required th:field="*{lastName}" type="text">
-            </label>
-            <label>
-                <input class="input_" placeholder="Middle name" required th:field="*{middleName}" type="text">
-            </label>
-
             <div th:if="${fieldErrors != null}">
                 <div class="form-row">
                     <div class="col">
@@ -86,6 +79,9 @@
                     </div>
                 </div>
             </div>
+            <label>
+                <input class="input_" placeholder="Last name" required th:field="*{lastName}" type="text">
+            </label>
             <div th:if="${fieldErrors != null}">
                 <div class="form-row">
                     <div class="col">
@@ -97,6 +93,9 @@
                     </div>
                 </div>
             </div>
+            <label>
+                <input class="input_" placeholder="Middle name" required th:field="*{middleName}" type="text">
+            </label>
             <div th:if="${fieldErrors != null}">
                 <div class="form-row">
                     <div class="col">

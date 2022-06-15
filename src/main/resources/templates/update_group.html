@@ -25,17 +25,7 @@
                         <input class="form-control" id="name" placeholder="Name" required th:field="*{name}"
                                type="text">
                     </div>
-                    <div class="row" th:if="${fieldErrors != null}">
-                        <div class="form-row">
-                            <div class="col">
-                                <div th:each="fieldError, iter: ${fieldErrors}">
-                                    <div class="alert alert-danger" style="color: red"
-                                         th:if="${fieldError.getField() == 'name'}"
-                                         th:text="${fieldError.getDefaultMessage()}"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="div-inline-block div-centr">
                         <label>Select a Faculty:
                             <select class="input_" required th:field="*{faculty}">
@@ -47,13 +37,26 @@
                     </div>
                 </div>
 
-                <div class="row" th:if="${serviceExceptionOnAdd !=null}">
-                    <h5 style="color: red" th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
-                </div>
                 <div class="row">
                     <div class="col-md-6 mt-5">
                         <input class="btn btn-primary" type="submit" value="Update Group">
                     </div>
+                </div>
+
+                <div class="row" th:if="${fieldErrors != null}">
+                    <div class="form-row">
+                        <div class="col">
+                            <div th:each="fieldError, iter: ${fieldErrors}">
+                                <div class="alert alert-danger" style="color: red"
+                                     th:if="${fieldError.getField() == 'name'}"
+                                     th:text="${fieldError.getDefaultMessage()}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" th:if="${serviceExceptionOnAdd !=null}">
+                    <h5 style="color: red" th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
                 </div>
             </form>
         </div>
