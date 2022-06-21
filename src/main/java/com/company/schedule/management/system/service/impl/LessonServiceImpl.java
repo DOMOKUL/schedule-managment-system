@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,12 +60,12 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void deleteLessonById(Long id) {
         if (lessonRepository.findById(id).isPresent()) {
-            lessonRepository.deleteById(id);
+            LOGGER.debug("Find lesson with id: " + id);
+            lessonRepository.deleteAllByIdInBatch(Collections.singleton(id));
             LOGGER.debug("Lesson with id: {} has been deleted", id);
         } else {
             throw new ServiceException("Audience with id: " + id + " doesn't exist");
         }
-
     }
 
     @Override

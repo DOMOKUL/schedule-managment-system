@@ -1,6 +1,7 @@
 package com.company.schedule.management.system.model;
 
 import com.company.schedule.management.system.model.validator.CurrentDate;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,15 +31,19 @@ public class Lecture {
     private Date date;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audience_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Audience audience;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Group group;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lesson_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Lesson lesson;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Teacher teacher;
 
     public Lecture(Integer number, Date date, Audience audience, Group group, Lesson lesson, Teacher teacher) {

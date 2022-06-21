@@ -1,5 +1,6 @@
 package com.company.schedule.management.system.controller;
 
+import com.company.schedule.management.system.controller.web.StudentController;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.model.Student;
 import com.company.schedule.management.system.service.GroupService;
@@ -30,7 +31,7 @@ class StudentControllerTest {
     @Test
     void addStudent_shouldAddStudent_whenInputCorrectData() throws Exception {
         Student studentWithId = new Student(1L, 1, null);
-        Student studentWithoutId = new Student("Ivan","Ivanov", "Ivanovich",1,null);
+        Student studentWithoutId = new Student("Ivan", "Ivanov", "Ivanovich", 1, null);
 
         when(studentService.saveStudent(studentWithoutId)).thenReturn(studentWithId);
         mockMvc.perform(

@@ -1,6 +1,7 @@
 package com.company.schedule.management.system.model;
 
 import com.company.schedule.management.system.model.validator.SubjectName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class Subject {
     @SubjectName
     private String name;
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Lesson> lessons;
 
     public Subject(String name, List<Lesson> lessons) {

@@ -1,4 +1,4 @@
-package com.company.schedule.management.system.controller.util;
+package com.company.schedule.management.system.controller.web.util;
 
 import java.time.Duration;
 import java.util.List;

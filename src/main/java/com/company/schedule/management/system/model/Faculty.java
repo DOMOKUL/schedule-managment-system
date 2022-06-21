@@ -1,6 +1,7 @@
 package com.company.schedule.management.system.model;
 
 import com.company.schedule.management.system.model.validator.FacultyName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +25,10 @@ public class Faculty {
     @FacultyName
     private String name;
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Group> groups;
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Teacher> teachers;
 
     public Faculty(String name, List<Group> groups, List<Teacher> teachers) {

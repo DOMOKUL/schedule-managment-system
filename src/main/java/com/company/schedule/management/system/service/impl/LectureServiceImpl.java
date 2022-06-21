@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,11 +58,11 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public void deleteLectureById(Long id) {
         if (lectureRepository.findById(id).isPresent()) {
-            lectureRepository.deleteById(id);
+            lectureRepository.deleteAllByIdInBatch(Collections.singleton(id));
             LOGGER.debug("Lecture with id: {} has been deleted", id);
         } else {
+            LOGGER.debug("Lecture with id: " + id + "not deleted");
             throw new ServiceException("Audience with id: " + id + " doesn't exist");
         }
-
     }
 }

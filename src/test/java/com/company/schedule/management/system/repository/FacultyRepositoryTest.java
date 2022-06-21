@@ -55,7 +55,7 @@ class FacultyRepositoryTest extends BaseIntegrationTest {
 
     @Test
     void delete_shouldDeleteFaculty_whenInputExistId() {
-        if(facultyRepository.findById(TEST_FACULTY.getId()).isPresent()){
+        if (facultyRepository.findById(TEST_FACULTY.getId()).isPresent()) {
             facultyRepository.deleteById(TEST_FACULTY.getId());
         }
 

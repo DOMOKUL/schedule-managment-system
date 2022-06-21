@@ -2,6 +2,8 @@ package com.company.schedule.management.system.model;
 
 import com.company.schedule.management.system.model.validator.DurationConstraint;
 import com.company.schedule.management.system.model.validator.StartTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,8 +37,10 @@ public class Lesson {
     private Duration duration;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Subject subject;
     @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Lecture> lectures;
 
     public Lesson(Integer number, Time startTime, Duration duration, Subject subject, List<Lecture> lectures) {

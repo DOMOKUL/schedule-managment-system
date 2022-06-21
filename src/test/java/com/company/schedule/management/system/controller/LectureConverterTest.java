@@ -1,6 +1,7 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.controller.util.DurationFormatter;
+import com.company.schedule.management.system.controller.web.LectureController;
+import com.company.schedule.management.system.controller.web.util.DurationFormatter;
 import com.company.schedule.management.system.model.*;
 import com.company.schedule.management.system.service.*;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LectureController.class)
-class LectureControllerTest {
+class LectureConverterTest {
 
     @Autowired
     MockMvc mockMvc;

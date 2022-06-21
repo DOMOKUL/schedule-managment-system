@@ -1,5 +1,6 @@
 package com.company.schedule.management.system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class Audience {
     @Max(value = 100, message = "Capacity must be less than 100")
     private Integer capacity;
     @OneToMany(mappedBy = "audience", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Lecture> lectures;
 
     public Audience(Integer number, Integer capacity, List<Lecture> lectures) {

@@ -1,9 +1,8 @@
 package com.company.schedule.management.system.service;
 
-import com.company.schedule.management.system.repository.TeacherRepository;
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Teacher;
-import com.company.schedule.management.system.service.exception.ServiceException;
+import com.company.schedule.management.system.repository.TeacherRepository;
 import com.company.schedule.management.system.service.impl.TeacherServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -79,7 +78,7 @@ class TeacherServiceImplTest {
     void updateSubject_shouldReturnUpdatedSubject_whenInputCorrectSubject() {
         Teacher expected = new Teacher(1L, TEST_FACULTY, null);
 
-        when(teacherRepository.saveAndFlush(expected)).thenReturn(new Teacher(1L,TEST_FACULTY,null));
+        when(teacherRepository.saveAndFlush(expected)).thenReturn(new Teacher(1L, TEST_FACULTY, null));
         Teacher actual = teacherServiceImpl.updateTeacher(expected);
 
         assertEquals(expected, actual);

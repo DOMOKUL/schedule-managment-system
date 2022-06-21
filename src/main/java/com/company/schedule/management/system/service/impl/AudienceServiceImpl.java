@@ -40,8 +40,9 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public List<Audience> getAllAudiences() {
-        LOGGER.debug("Audiences found:{}", audienceRepository.findAll());
-        return audienceRepository.findAll();
+        List<Audience> audiences = audienceRepository.findAll();
+        LOGGER.debug("Audiences found:{}", audiences);
+        return audiences;
     }
 
     @Override

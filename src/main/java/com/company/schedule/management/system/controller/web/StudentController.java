@@ -1,4 +1,4 @@
-package com.company.schedule.management.system.controller;
+package com.company.schedule.management.system.controller.web;
 
 import com.company.schedule.management.system.model.Student;
 import com.company.schedule.management.system.service.GroupService;

@@ -1,6 +1,6 @@
-package com.company.schedule.management.system.controller;
+package com.company.schedule.management.system.controller.web;
 
-import com.company.schedule.management.system.controller.util.StringUtils;
+import com.company.schedule.management.system.controller.web.util.StringUtils;
 import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.service.LessonService;
 import com.company.schedule.management.system.service.SubjectService;

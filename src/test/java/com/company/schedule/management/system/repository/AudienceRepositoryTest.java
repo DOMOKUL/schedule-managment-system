@@ -68,7 +68,7 @@ class AudienceRepositoryTest extends BaseIntegrationTest {
 
     @Test
     void delete_shouldDeleteFaculty_whenInputExistId() {
-        if(audienceRepository.findById(TEST_AUDIENCE.getId()).isPresent()){
+        if (audienceRepository.findById(TEST_AUDIENCE.getId()).isPresent()) {
             audienceRepository.deleteById(TEST_AUDIENCE.getId());
         }
 

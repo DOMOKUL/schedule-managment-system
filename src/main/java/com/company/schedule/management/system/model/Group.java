@@ -1,6 +1,8 @@
 package com.company.schedule.management.system.model;
 
 import com.company.schedule.management.system.model.validator.GroupName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,10 +27,13 @@ public class Group {
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Faculty faculty;
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Student> students;
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Lecture> lectures;
 
     public Group(String name, Faculty faculty, List<Student> students, List<Lecture> lectures) {

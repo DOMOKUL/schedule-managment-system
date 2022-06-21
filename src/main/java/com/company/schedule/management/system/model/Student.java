@@ -1,5 +1,6 @@
 package com.company.schedule.management.system.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class Student extends Person {
     private Integer courseNumber;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Group group;
 
     public Student(String firstName, String lastName, String middleName, Integer courseNumber, Group group) {

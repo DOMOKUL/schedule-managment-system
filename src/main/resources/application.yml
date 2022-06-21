@@ -7,11 +7,16 @@ spring:
     password: "postgres"
     url: "jdbc:postgresql://0.0.0.0:5832/postgres"
     driver-class-name: "org.postgresql.Driver"
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
 
 logging:
   level:
     root: ERROR
     org.springframework.web: ERROR
     com.company.schedule.management.system: DEBUG
-    com.company.schedule.management.system.dao: INFO
+    com.company.schedule.management.system.repository: DEBUG
+    com.company.schedule.management.system.service: DEBUG
     org.hibernate: ERROR
+

@@ -1,6 +1,7 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.controller.util.DurationFormatter;
+import com.company.schedule.management.system.controller.web.FacultyController;
+import com.company.schedule.management.system.controller.web.util.DurationFormatter;
 import com.company.schedule.management.system.model.Faculty;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.model.Teacher;

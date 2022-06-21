@@ -1,8 +1,7 @@
 package com.company.schedule.management.system.service;
 
-import com.company.schedule.management.system.repository.AudienceRepository;
 import com.company.schedule.management.system.model.Audience;
-import com.company.schedule.management.system.service.exception.ServiceException;
+import com.company.schedule.management.system.repository.AudienceRepository;
 import com.company.schedule.management.system.service.impl.AudienceServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,7 +95,7 @@ class AudienceServiceImplTest {
     void deleteAudienceById_shouldReturnTrue_whenInputExistAudienceId() {
         when(audienceRepository.findById(audienceWithId.getId())).thenReturn(Optional.of(audienceWithId));
 
-       audienceServiceImpl.deleteAudienceById(audienceWithId.getId());
+        audienceServiceImpl.deleteAudienceById(audienceWithId.getId());
 
         verify(audienceRepository, times(1)).deleteById(audienceWithId.getId());
     }

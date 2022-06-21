@@ -1,4 +1,4 @@
-package com.company.schedule.management.system.controller;
+package com.company.schedule.management.system.controller.web;
 
 import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.service.AudienceService;

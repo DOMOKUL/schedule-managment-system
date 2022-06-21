@@ -57,7 +57,7 @@ class GroupRepositoryTest extends BaseIntegrationTest {
 
     @Test
     void delete_shouldDeleteGroup_whenInputExistId() {
-        if(groupRepository.findById(TEST_GROUP.getId()).isPresent()){
+        if (groupRepository.findById(TEST_GROUP.getId()).isPresent()) {
             groupRepository.deleteById(TEST_GROUP.getId());
         }
 

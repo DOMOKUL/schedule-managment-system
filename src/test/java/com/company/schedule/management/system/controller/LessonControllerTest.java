@@ -1,7 +1,8 @@
 package com.company.schedule.management.system.controller;
 
-import com.company.schedule.management.system.controller.util.DurationFormatter;
-import com.company.schedule.management.system.controller.util.StringUtils;
+import com.company.schedule.management.system.controller.web.LessonController;
+import com.company.schedule.management.system.controller.web.util.DurationFormatter;
+import com.company.schedule.management.system.controller.web.util.StringUtils;
 import com.company.schedule.management.system.model.*;
 import com.company.schedule.management.system.service.LessonService;
 import org.junit.jupiter.api.Test;

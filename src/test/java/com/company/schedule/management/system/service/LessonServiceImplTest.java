@@ -1,9 +1,8 @@
 package com.company.schedule.management.system.service;
 
-import com.company.schedule.management.system.repository.LessonRepository;
 import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.model.Subject;
-import com.company.schedule.management.system.service.exception.ServiceException;
+import com.company.schedule.management.system.repository.LessonRepository;
 import com.company.schedule.management.system.service.impl.LessonServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {LessonServiceImpl.class})

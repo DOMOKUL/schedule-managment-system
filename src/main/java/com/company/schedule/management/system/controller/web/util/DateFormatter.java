@@ -1,4 +1,4 @@
-package com.company.schedule.management.system.controller.util;
+package com.company.schedule.management.system.controller.web.util;
 
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;

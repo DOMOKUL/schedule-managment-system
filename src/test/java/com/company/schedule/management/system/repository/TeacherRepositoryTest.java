@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +56,7 @@ class TeacherRepositoryTest extends BaseIntegrationTest {
 
     @Test
     void delete_shouldDeleteTeacher_whenInputExistId() {
-        if(teacherRepository.findById(TEST_TEACHER.getId()).isPresent()){
+        if (teacherRepository.findById(TEST_TEACHER.getId()).isPresent()) {
             teacherRepository.deleteById(TEST_TEACHER.getId());
         }
 

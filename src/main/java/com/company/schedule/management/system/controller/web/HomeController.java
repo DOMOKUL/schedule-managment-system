@@ -1,4 +1,4 @@
-package com.company.schedule.management.system.controller;
+package com.company.schedule.management.system.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
