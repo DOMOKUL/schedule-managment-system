@@ -60,7 +60,7 @@ public class GroupServiceImpl implements GroupService {
             groupRepository.deleteById(id);
             LOGGER.debug("Group with id: {} has been deleted", id);
         } else {
-            throw new ServiceException("Audience with id: " + id + " doesn't exist");
+            throw new ServiceException("Group with id: " + id + " doesn't exist");
         }
 
     }

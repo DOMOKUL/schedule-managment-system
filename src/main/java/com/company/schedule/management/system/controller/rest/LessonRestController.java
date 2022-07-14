@@ -1,69 +1,57 @@
 package com.company.schedule.management.system.controller.rest;
 
-import com.company.schedule.management.system.controller.rest.converter.LessonConverter;
-import com.company.schedule.management.system.dto.LessonDto;
+import com.company.schedule.management.system.controller.rest.converter.EntityConverter;
+import com.company.schedule.management.system.dto.LessonDTO;
 import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.service.LessonService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/lessons")
+@RequiredArgsConstructor
 public class LessonRestController {
 
     private final LessonService lessonService;
-    private final LessonConverter lessonConverter;
+    private final EntityConverter entityConverter;
 
-    public LessonRestController(LessonService lessonService, LessonConverter lessonConverter) {
-        this.lessonService = lessonService;
-        this.lessonConverter = lessonConverter;
-    }
-
-    @PostMapping(consumes = {"application/json"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public LessonDto addLesson(@Valid @RequestBody LessonDto lessonDto) {
-        Lesson lesson = lessonConverter.convertToEntity(lessonDto);
-        Lesson lessonCreated = lessonService.saveLesson(lesson);
-        return lessonConverter.convertToDto(lessonCreated);
+    @PostMapping()
+    public ResponseEntity<LessonDTO> addLesson(@Valid @RequestBody LessonDTO lessonDto) {
+        Lesson lesson = entityConverter.convertDtoToEntity(lessonDto, Lesson.class);
+        return new ResponseEntity<>(entityConverter.convertEntityToDto(lessonService.saveLesson(lesson), LessonDTO.class), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public LessonDto getLessonById(@PathVariable Long id) throws HttpClientErrorException {
-        return lessonConverter.convertToDto(lessonService.getLessonById(id));
+    public ResponseEntity<LessonDTO> getLessonById(@PathVariable Long id) {
+        return ResponseEntity.ok(entityConverter.convertEntityToDto(lessonService.getLessonById(id), LessonDTO.class));
     }
 
     @GetMapping()
-    public List<LessonDto> getListOfLessons() {
+    public ResponseEntity<List<LessonDTO>> getListOfLessons() {
         List<Lesson> lessons = lessonService.getAllLessons();
-        return lessons.stream()
-                .map(lessonConverter::convertToDto)
-                .collect(Collectors.toList());
+        return ResponseEntity.ok(lessons.stream()
+                .map(lesson -> entityConverter.convertEntityToDto(lesson, LessonDTO.class))
+                .collect(Collectors.toList()));
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Lesson> updateLesson(@PathVariable("id") Long id, @Valid @RequestBody LessonDto lessonDto) {
+    public ResponseEntity<Lesson> updateLesson(@PathVariable("id") Long id, @Valid @RequestBody LessonDTO lessonDto) {
         if (!id.equals(lessonDto.getId())) {
             throw new IllegalArgumentException("IDs don't match");
         }
-        if (lessonService.getLessonById(id) == null) {
-            throw new EntityNotFoundException("Lesson with id: " + id + " is not found");
-        }
-
-        lessonService.saveLesson(lessonConverter.convertToEntity(lessonDto));
-        return ResponseEntity.ok(lessonConverter.convertToEntity(lessonDto));
+        lessonService.saveLesson(entityConverter.convertDtoToEntity(lessonDto, Lesson.class));
+        return ResponseEntity.ok(entityConverter.convertDtoToEntity(lessonDto, Lesson.class));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLesson(@PathVariable Long id) {
         lessonService.deleteLessonById(id);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

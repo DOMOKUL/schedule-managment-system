@@ -4,18 +4,12 @@ import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.model.Lesson;
 import com.company.schedule.management.system.model.Teacher;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Date;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class LectureDto {
+@Data
+public class LectureDTO {
 
     private Long id;
     private Integer number;

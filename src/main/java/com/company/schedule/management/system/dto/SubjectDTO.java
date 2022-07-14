@@ -1,18 +1,12 @@
 package com.company.schedule.management.system.dto;
 
 import com.company.schedule.management.system.model.Lesson;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class SubjectDto {
+@Data
+public class SubjectDTO {
 
     private Long id;
     private String name;

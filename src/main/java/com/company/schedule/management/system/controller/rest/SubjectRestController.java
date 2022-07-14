@@ -1,63 +1,51 @@
 package com.company.schedule.management.system.controller.rest;
 
-import com.company.schedule.management.system.controller.rest.converter.SubjectConverter;
-import com.company.schedule.management.system.dto.SubjectDto;
+import com.company.schedule.management.system.controller.rest.converter.EntityConverter;
+import com.company.schedule.management.system.dto.SubjectDTO;
 import com.company.schedule.management.system.model.Subject;
 import com.company.schedule.management.system.service.SubjectService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/subjects")
+@RequiredArgsConstructor
 public class SubjectRestController {
 
     private final SubjectService subjectService;
-    private final SubjectConverter subjectConverter;
+    private final EntityConverter entityConverter;
 
-    public SubjectRestController(SubjectService subjectService, SubjectConverter subjectConverter) {
-        this.subjectService = subjectService;
-        this.subjectConverter = subjectConverter;
-    }
-
-    @PostMapping(consumes = {"application/json"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public SubjectDto addSubject(@Valid @RequestBody SubjectDto subjectDto) {
-        Subject subject = subjectConverter.convertToEntity(subjectDto);
-        Subject subjectCreated = subjectService.saveSubject(subject);
-        return subjectConverter.convertToDto(subjectCreated);
+    @PostMapping()
+    public ResponseEntity<SubjectDTO> addSubject(@Valid @RequestBody SubjectDTO subjectDto) {
+        Subject subject = entityConverter.convertDtoToEntity(subjectDto, Subject.class);
+        return new ResponseEntity<>(entityConverter.convertEntityToDto(subjectService.saveSubject(subject), SubjectDTO.class), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public SubjectDto getSubjectById(@PathVariable Long id) throws HttpClientErrorException {
-        return subjectConverter.convertToDto(subjectService.getSubjectById(id));
+    public ResponseEntity<SubjectDTO> getSubjectById(@PathVariable Long id) {
+        return ResponseEntity.ok(entityConverter.convertEntityToDto(subjectService.getSubjectById(id), SubjectDTO.class));
     }
 
     @GetMapping()
-    public List<SubjectDto> getListOfSubjects() {
+    public ResponseEntity<List<SubjectDTO>> getListOfSubjects() {
         List<Subject> subjects = subjectService.getAllSubjects();
-        return subjects.stream()
-                .map(subjectConverter::convertToDto)
-                .collect(Collectors.toList());
+        return ResponseEntity.ok(subjects.stream()
+                .map(subject -> entityConverter.convertEntityToDto(subject, SubjectDTO.class))
+                .collect(Collectors.toList()));
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Subject> updateSubject(@PathVariable("id") Long id, @Valid @RequestBody SubjectDto subjectDto) {
+    public ResponseEntity<Subject> updateSubject(@PathVariable("id") Long id, @Valid @RequestBody SubjectDTO subjectDto) {
         if (!id.equals(subjectDto.getId())) {
             throw new IllegalArgumentException("IDs don't match");
         }
-        if (subjectService.getSubjectById(id) == null) {
-            throw new EntityNotFoundException("Subject with id: " + id + " is not found");
-        }
-
-        Subject subject = subjectConverter.convertToEntity(subjectDto);
+        Subject subject = entityConverter.convertDtoToEntity(subjectDto, Subject.class);
         subjectService.saveSubject(subject);
         return ResponseEntity.ok(subject);
     }
@@ -65,6 +53,6 @@ public class SubjectRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSubject(@PathVariable Long id) {
         subjectService.deleteSubjectById(id);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

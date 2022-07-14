@@ -1,69 +1,57 @@
 package com.company.schedule.management.system.controller.rest;
 
-import com.company.schedule.management.system.controller.rest.converter.AudienceConverter;
-import com.company.schedule.management.system.dto.AudienceDto;
+import com.company.schedule.management.system.controller.rest.converter.EntityConverter;
+import com.company.schedule.management.system.dto.AudienceDTO;
 import com.company.schedule.management.system.model.Audience;
 import com.company.schedule.management.system.service.AudienceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/audiences")
+@RequiredArgsConstructor
 public class AudienceRestController {
 
     private final AudienceService audienceService;
-    private final AudienceConverter audienceConverter;
+    private final EntityConverter entityConverter;
 
-    public AudienceRestController(AudienceService audienceService, AudienceConverter audienceConverter) {
-        this.audienceService = audienceService;
-        this.audienceConverter = audienceConverter;
-    }
-
-    @PostMapping(consumes = {"application/json"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public AudienceDto addAudience(@Valid @RequestBody AudienceDto audienceDto) {
-        Audience audience = audienceConverter.convertToEntity(audienceDto);
-        Audience audienceCreated = audienceService.saveAudience(audience);
-        return audienceConverter.convertToDto(audienceCreated);
+    @PostMapping()
+    public ResponseEntity<AudienceDTO> addAudience(@Valid @RequestBody AudienceDTO audienceDto) {
+        Audience audience = entityConverter.convertDtoToEntity(audienceDto, Audience.class);
+        return new ResponseEntity<>(entityConverter.convertEntityToDto(audienceService.saveAudience(audience), AudienceDTO.class), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public AudienceDto getAudienceById(@PathVariable Long id) throws HttpClientErrorException {
-        return audienceConverter.convertToDto(audienceService.getAudienceById(id));
+    public ResponseEntity<AudienceDTO> getAudienceById(@PathVariable Long id) {
+        return ResponseEntity.ok(entityConverter.convertEntityToDto(audienceService.getAudienceById(id), AudienceDTO.class));
     }
 
     @GetMapping()
-    public List<AudienceDto> getListOfAudiences() {
+    public ResponseEntity<List<AudienceDTO>> getListOfAudiences() {
         List<Audience> audiences = audienceService.getAllAudiences();
-        return audiences.stream()
-                .map(audienceConverter::convertToDto)
-                .collect(Collectors.toList());
+        return ResponseEntity.ok(audiences.stream()
+                .map(audience -> entityConverter.convertEntityToDto(audience, AudienceDTO.class))
+                .collect(Collectors.toList()));
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Audience> updateAudience(@PathVariable("id") Long id, @Valid @RequestBody AudienceDto audienceDto) {
+    public ResponseEntity<Audience> updateAudience(@PathVariable("id") Long id, @Valid @RequestBody AudienceDTO audienceDto) {
         if (!id.equals(audienceDto.getId())) {
             throw new IllegalArgumentException("IDs don't match");
         }
-        if (audienceService.getAudienceById(id) == null) {
-            throw new EntityNotFoundException("Audience with id: " + id + " is not found");
-        }
-
-        audienceService.saveAudience(audienceConverter.convertToEntity(audienceDto));
-        return ResponseEntity.ok(audienceConverter.convertToEntity(audienceDto));
+        audienceService.saveAudience(entityConverter.convertDtoToEntity(audienceDto, Audience.class));
+        return ResponseEntity.ok(entityConverter.convertDtoToEntity(audienceDto, Audience.class));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAudience(@PathVariable Long id) {
         audienceService.deleteAudienceById(id);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

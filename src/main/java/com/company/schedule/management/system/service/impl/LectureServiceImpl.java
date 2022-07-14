@@ -62,7 +62,7 @@ public class LectureServiceImpl implements LectureService {
             LOGGER.debug("Lecture with id: {} has been deleted", id);
         } else {
             LOGGER.debug("Lecture with id: " + id + "not deleted");
-            throw new ServiceException("Audience with id: " + id + " doesn't exist");
+            throw new ServiceException("Lecture with id: " + id + " doesn't exist");
         }
     }
 }

@@ -71,6 +71,15 @@ create table teachers
     primary key (id)
 );
 
+create table users
+(
+    id       bigserial not null,
+    email    varchar(255) unique,
+    password varchar(255),
+    role     varchar(255),
+    primary key (id)
+);
+
 alter table if exists groups
     add constraint group_faculty_fk
         foreign key (faculty_id) references faculties;

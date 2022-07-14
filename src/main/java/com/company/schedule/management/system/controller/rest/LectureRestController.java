@@ -1,69 +1,57 @@
 package com.company.schedule.management.system.controller.rest;
 
-import com.company.schedule.management.system.controller.rest.converter.LectureConverter;
-import com.company.schedule.management.system.dto.LectureDto;
+import com.company.schedule.management.system.controller.rest.converter.EntityConverter;
+import com.company.schedule.management.system.dto.LectureDTO;
 import com.company.schedule.management.system.model.Lecture;
 import com.company.schedule.management.system.service.LectureService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/lectures")
+@RequiredArgsConstructor
 public class LectureRestController {
 
     private final LectureService lectureService;
-    private final LectureConverter lectureConverter;
+    private final EntityConverter entityConverter;
 
-    public LectureRestController(LectureService lectureService, LectureConverter lectureConverter) {
-        this.lectureService = lectureService;
-        this.lectureConverter = lectureConverter;
-    }
-
-    @PostMapping(consumes = {"application/json"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public LectureDto addLecture(@Valid @RequestBody LectureDto lectureDto) {
-        Lecture lecture = lectureConverter.convertToEntity(lectureDto);
-        Lecture lectureCreated = lectureService.saveLecture(lecture);
-        return lectureConverter.convertToDto(lectureCreated);
+    @PostMapping()
+    public ResponseEntity<LectureDTO> addLecture(@Valid @RequestBody LectureDTO lectureDto) {
+        Lecture lecture = entityConverter.convertDtoToEntity(lectureDto, Lecture.class);
+        return new ResponseEntity<>(entityConverter.convertEntityToDto(lectureService.saveLecture(lecture), LectureDTO.class), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public LectureDto getLectureById(@PathVariable Long id) throws HttpClientErrorException {
-        return lectureConverter.convertToDto(lectureService.getLectureById(id));
+    public ResponseEntity<LectureDTO> getLectureById(@PathVariable Long id) {
+        return ResponseEntity.ok(entityConverter.convertEntityToDto(lectureService.getLectureById(id), LectureDTO.class));
     }
 
     @GetMapping()
-    public List<LectureDto> getListOfLectures() {
+    public ResponseEntity<List<LectureDTO>> getListOfLectures() {
         List<Lecture> lectures = lectureService.getAllLectures();
-        return lectures.stream()
-                .map(lectureConverter::convertToDto)
-                .collect(Collectors.toList());
+        return ResponseEntity.ok(lectures.stream()
+                .map(lecture -> entityConverter.convertEntityToDto(lecture, LectureDTO.class))
+                .collect(Collectors.toList()));
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Lecture> updateLecture(@PathVariable("id") Long id, @Valid @RequestBody LectureDto lectureDto) {
+    public ResponseEntity<Lecture> updateLecture(@PathVariable("id") Long id, @Valid @RequestBody LectureDTO lectureDto) {
         if (!id.equals(lectureDto.getId())) {
             throw new IllegalArgumentException("IDs don't match");
         }
-        if (lectureService.getLectureById(id) == null) {
-            throw new EntityNotFoundException("Lecture with id: " + id + " is not found");
-        }
-
-        lectureService.saveLecture(lectureConverter.convertToEntity(lectureDto));
-        return ResponseEntity.ok(lectureConverter.convertToEntity(lectureDto));
+        lectureService.saveLecture(entityConverter.convertDtoToEntity(lectureDto, Lecture.class));
+        return ResponseEntity.ok(entityConverter.convertDtoToEntity(lectureDto, Lecture.class));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLecture(@PathVariable Long id) {
         lectureService.deleteLectureById(id);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,69 +1,57 @@
 package com.company.schedule.management.system.controller.rest;
 
-import com.company.schedule.management.system.controller.rest.converter.GroupConverter;
-import com.company.schedule.management.system.dto.GroupDto;
+import com.company.schedule.management.system.controller.rest.converter.EntityConverter;
+import com.company.schedule.management.system.dto.GroupDTO;
 import com.company.schedule.management.system.model.Group;
 import com.company.schedule.management.system.service.GroupService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/groups")
+@RequiredArgsConstructor
 public class GroupRestController {
 
     private final GroupService groupService;
-    private final GroupConverter groupConverter;
+    private final EntityConverter entityConverter;
 
-    public GroupRestController(GroupService groupService, GroupConverter groupConverter) {
-        this.groupService = groupService;
-        this.groupConverter = groupConverter;
-    }
-
-    @PostMapping(consumes = {"application/json"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public GroupDto addGroup(@Valid @RequestBody GroupDto groupDto) {
-        Group group = groupConverter.convertToEntity(groupDto);
-        Group groupCreated = groupService.saveGroup(group);
-        return groupConverter.convertToDto(groupCreated);
+    @PostMapping()
+    public ResponseEntity<GroupDTO> addGroup(@Valid @RequestBody GroupDTO groupDto) {
+        Group group = entityConverter.convertDtoToEntity(groupDto, Group.class);
+        return new ResponseEntity<>(entityConverter.convertEntityToDto(groupService.saveGroup(group), GroupDTO.class), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public GroupDto getGroupById(@PathVariable Long id) throws HttpClientErrorException {
-        return groupConverter.convertToDto(groupService.getGroupById(id));
+    public ResponseEntity<GroupDTO> getGroupById(@PathVariable Long id) {
+        return ResponseEntity.ok(entityConverter.convertEntityToDto(groupService.getGroupById(id), GroupDTO.class));
     }
 
     @GetMapping()
-    public List<GroupDto> getListOfGroups() {
+    public ResponseEntity<List<GroupDTO>> getListOfGroups() {
         List<Group> groups = groupService.getAllGroups();
-        return groups.stream()
-                .map(groupConverter::convertToDto)
-                .collect(Collectors.toList());
+        return ResponseEntity.ok(groups.stream()
+                .map(group -> entityConverter.convertEntityToDto(group, GroupDTO.class))
+                .collect(Collectors.toList()));
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Group> updateGroup(@PathVariable("id") Long id, @Valid @RequestBody GroupDto groupDto) {
+    public ResponseEntity<Group> updateGroup(@PathVariable("id") Long id, @Valid @RequestBody GroupDTO groupDto) {
         if (!id.equals(groupDto.getId())) {
             throw new IllegalArgumentException("IDs don't match");
         }
-        if (groupService.getGroupById(id) == null) {
-            throw new EntityNotFoundException("Group with id: " + id + " is not found");
-        }
-
-        groupService.saveGroup(groupConverter.convertToEntity(groupDto));
-        return ResponseEntity.ok(groupConverter.convertToEntity(groupDto));
+        groupService.saveGroup(entityConverter.convertDtoToEntity(groupDto, Group.class));
+        return ResponseEntity.ok(entityConverter.convertDtoToEntity(groupDto, Group.class));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGroup(@PathVariable Long id) {
         groupService.deleteGroupById(id);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

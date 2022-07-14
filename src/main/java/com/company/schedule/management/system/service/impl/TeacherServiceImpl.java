@@ -40,8 +40,9 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public List<Teacher> getAllTeachers() {
-        LOGGER.debug("Teachers found:{}", teacherRepository.findAll());
-        return teacherRepository.findAll();
+        List<Teacher> allTeachers = teacherRepository.findAll();
+        LOGGER.debug("Teachers found:{}", allTeachers);
+        return allTeachers;
     }
 
     @Override
@@ -60,8 +61,7 @@ public class TeacherServiceImpl implements TeacherService {
             teacherRepository.deleteById(id);
             LOGGER.debug("Teacher with id: {} has been deleted", id);
         } else {
-            throw new ServiceException("Audience with id: " + id + " doesn't exist");
+            throw new ServiceException("Teacher with id: " + id + " doesn't exist");
         }
-
     }
 }

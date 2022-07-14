@@ -60,7 +60,7 @@ public class StudentServiceImpl implements StudentService {
             studentRepository.deleteById(id);
             LOGGER.debug("Student with id: {} has been deleted", id);
         } else {
-            throw new ServiceException("Audience with id: " + id + " doesn't exist");
+            throw new ServiceException("Student with id: " + id + " doesn't exist");
         }
 
     }

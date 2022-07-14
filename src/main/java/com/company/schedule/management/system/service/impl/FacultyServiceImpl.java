@@ -62,7 +62,7 @@ public class FacultyServiceImpl implements FacultyService {
             facultyRepository.deleteById(id);
             LOGGER.debug("Faculty with id: {} has been deleted", id);
         } else {
-            throw new ServiceException("Audience with id: " + id + " doesn't exist");
+            throw new ServiceException("Faculty with id: " + id + " doesn't exist");
         }
 
     }

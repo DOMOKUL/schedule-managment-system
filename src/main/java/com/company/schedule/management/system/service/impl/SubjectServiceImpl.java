@@ -60,7 +60,7 @@ public class SubjectServiceImpl implements SubjectService {
             subjectRepository.deleteById(id);
             LOGGER.debug("Subject with id: {} has been deleted", id);
         } else {
-            throw new ServiceException("Audience with id: " + id + " doesn't exist");
+            throw new ServiceException("Subject with id: " + id + " doesn't exist");
         }
 
     }

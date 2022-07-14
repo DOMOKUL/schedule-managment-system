@@ -64,7 +64,7 @@ public class LessonServiceImpl implements LessonService {
             lessonRepository.deleteAllByIdInBatch(Collections.singleton(id));
             LOGGER.debug("Lesson with id: {} has been deleted", id);
         } else {
-            throw new ServiceException("Audience with id: " + id + " doesn't exist");
+            throw new ServiceException("Lesson with id: " + id + " doesn't exist");
         }
     }
 
