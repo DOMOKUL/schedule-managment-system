@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <link href="../static/css/bootstrap.min.css"
+          rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta charset="UTF-8">
+    <title>Schedule university</title>
+</head>
+<body>
+<header>
+    <div th:replace="fragments/navbar :: navbar"></div>
+</header>
+
+<div class="flex-container-table" th:switch="${audiences}">
+    <table class="table table-bordered text-center">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Number</th>
+            <th scope="col">Capacity</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="each_audience, iter : ${audiences}">
+            <td th:text="${each_audience.id}">
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/audiences/'} + ${audiences.get(iter.index).getId()}"
+                   th:text="${each_audience.number}"></a>
+            </td>
+            <td th:text="${each_audience.capacity}"></td>
+            <td>
+                <a class="btn btn-sm" th:href="@{/audiences/edit/{id}(id=${each_audience.id})}">
+                    <span>Edit</span>
+                </a>
+                <a class="btn btn-danger" th:href="@{/audiences/delete/{id}(id=${each_audience.id})}">
+                    <span>Delete</span>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="wrapper">
+    <div class="container">
+        <h5>Save Audience</h5>
+        <form action="#" method="POST" th:action="@{/audiences/add}" th:object="${audience}">
+            <div>
+                <label>
+                    <input class="input_" id="number" placeholder="Audience number" required th:field="*{number}"
+                           type="number">
+                    <div th:errors="*{number}" th:if="${#fields.hasErrors('number')}"></div>
+                </label>
+
+                <label>
+                    <input class="input_" id="capacity" placeholder="Audience capacity" required
+                           th:field="*{capacity}" type="number">
+                    <div th:errors="*{capacity}" th:if="${#fields.hasErrors('capacity')}"></div>
+                </label>
+
+                <button class="btn btn-info" type="submit">Save Audience</button>
+            </div>
+
+            <div th:if="${fieldErrors != null}">
+                <div class="form-row">
+                    <div class="col">
+                        <div th:each="fieldError, iter: ${fieldErrors}">
+                            <div class="alert alert-danger mt-2" style="color: red"
+                                 th:if="${fieldError.getField() == 'number'}"
+                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div th:each="fieldError, iter: ${fieldErrors}">
+                            <div class="alert alert-danger mt-2" style="color: red"
+                                 th:if="${fieldError.getField() == 'capacity'}"
+                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${serviceExceptionOnAdd !=null}">
+                <h5 style="color: red" th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
+            </div>
+
+        </form>
+    </div>
+</div>
+</body>
+</html>

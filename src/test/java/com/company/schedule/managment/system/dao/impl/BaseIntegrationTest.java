@@ -9,11 +9,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 public class BaseIntegrationTest {
 
+    public static final DriverManagerDataSource DATA_SOURCE = new DriverManagerDataSource();
     @Container
     private final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:13.3")
             .withInitScript("sql/fill-table.sql");
-
-    public static final DriverManagerDataSource DATA_SOURCE = new DriverManagerDataSource();
 
     @BeforeEach
     void setUp() {

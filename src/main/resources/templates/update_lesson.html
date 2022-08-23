@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Update User</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" rel="stylesheet">
+    <link href="../css/shards.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-5">
+    <h2 class="mb-5">Update Lesson</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" method="POST"
+                  th:action="@{/lessons/update/{id}(id=${updatedLesson.id})}" th:object="${updatedLesson}">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="number">Number</label>
+                        <input class="form-control" id="number" placeholder="Number" required th:field="*{number}"
+                               type="number">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="duration">Duration
+                            <input class="form-control" id="duration" placeholder="Duration" required
+                                   th:field="*{duration}" type="number">
+                        </label>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="number">Start Time
+                            <input class="form-control" id="startTime" placeholder="StartTime" required
+                                   th:field="*{startTime}" type="time">
+                        </label>
+                    </div>
+                    <div class="div-inline-block div-centr">
+                        <label>Select a Subject:
+                            <select class="input_" required th:field="*{subject}">
+                                <th:block th:each="subject:${allSubjects}">
+                                    <option th:text="${subject.name}" th:value="${subject.id}"></option>
+                                </th:block>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row" th:if="${serviceExceptionOnAdd !=null}">
+                    <h5 style="color: red" th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <input class="btn btn-primary" type="submit" value="Update Lesson">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

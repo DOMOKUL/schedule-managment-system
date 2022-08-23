@@ -1,9 +1,24 @@
 spring:
+  datasource:
+    username: "postgres"
+    password: "postgres"
+    url: "jdbc:postgresql://0.0.0.0:5832/postgres"
+    driver-class-name: "org.postgresql.Driver"
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
   flyway:
-    baseline-on-migrate: true
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
-datasource:
-  username: postgres
-  password: postgres
-  url: jdbc:postgresql://localhost:5532/postgres
-  driver-class-name: org.postgresql.Driver
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    com.company.schedule.management.system: DEBUG
+    com.company.schedule.management.system.repository: DEBUG
+    com.company.schedule.management.system.service: DEBUG
+    org.hibernate: ERROR

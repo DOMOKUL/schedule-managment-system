@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <link href="../static/css/bootstrap.min.css"
+          rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta charset="UTF-8">
+    <title>Schedule university</title>
+</head>
+<body>
+<header>
+    <div th:replace="fragments/navbar :: navbar"></div>
+</header>
+
+<div class="flex-container-table" th:switch="${teachers}">
+    <table class="table table-bordered text-center">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">First name</th>
+            <th scope="col">Last name</th>
+            <th scope="col">Middle name</th>
+            <th scope="col">Faculty name</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="each_teacher, iter : ${teachers}">
+            <td th:text="${each_teacher.id}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
+                   th:text="${each_teacher.firstName}"></a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
+                   th:text="${each_teacher.lastName}"></a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
+                   th:text="${each_teacher.middleName}"></a>
+            </td>
+            <td>
+				<span th:each="each_faculty : ${each_teacher.faculty}">
+					<span th:text="${each_faculty.name}"></span>
+				</span>
+            </td>
+            <td>
+                <a class="btn btn-sm" th:href="@{/teachers/edit/{id}(id=${each_teacher.id})}">
+                    <span>Edit</span>
+                </a>
+                <a class="btn btn-danger" th:href="@{/teachers/delete/{id}(id=${each_teacher.id})}">
+                    <span>Delete</span>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="wrapper">
+    <div class="container">
+        <h5>Save Teacher</h5>
+        <form method="post" th:action="@{/teachers/add}" th:object="${teacher}">
+            <label>
+                <input class="input_" placeholder="First name" required th:field="*{firstName}" type="text">
+            </label>
+            <div th:if="${fieldErrors != null}">
+                <div class="form-row">
+                    <div class="col">
+                        <div th:each="fieldError, iter: ${fieldErrors}">
+                            <div class="alert alert-danger" style="color: red"
+                                 th:if="${fieldError.getField() == 'firstName'}"
+                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <label>
+                <input class="input_" placeholder="Last name" required th:field="*{lastName}" type="text">
+            </label>
+            <div th:if="${fieldErrors != null}">
+                <div class="form-row">
+                    <div class="col">
+                        <div th:each="fieldError, iter: ${fieldErrors}">
+                            <div class="alert alert-danger" style="color: red"
+                                 th:if="${fieldError.getField() == 'lastName'}"
+                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <label>
+                <input class="input_" placeholder="Middle name" required th:field="*{middleName}" type="text">
+            </label>
+            <div th:if="${fieldErrors != null}">
+                <div class="form-row">
+                    <div class="col">
+                        <div th:each="fieldError, iter: ${fieldErrors}">
+                            <div class="alert alert-danger" style="color: red"
+                                 th:if="${fieldError.getField() == 'middleName'}"
+                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="div-inline-block">
+                <label>Select a Faculty:</label>
+                <label>
+                    <select class="input_" required th:field="*{faculty}">
+                        <th:block th:each="faculty:${allFaculties}">
+                            <option th:text="${faculty.name}" th:value="${faculty.id}"></option>
+                        </th:block>
+                    </select>
+                </label>
+            </div>
+            <button class="btn btn-info" type="submit">Save Teacher</button>
+
+            <div th:if="${serviceExceptionOnAdd !=null}">
+                <h5 style="color: red" th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

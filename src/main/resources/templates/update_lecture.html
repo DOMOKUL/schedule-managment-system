@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Update User</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" rel="stylesheet">
+    <link href="../css/shards.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-5">
+    <h2 class="mb-5">Update Lecture</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" method="POST"
+                  th:action="@{/lectures/update/{id}(id=${updatedLecture.id})}" th:object="${updatedLecture}">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="number">Number</label>
+                        <input class="form-control" id="number" placeholder="Number" required th:field="*{number}"
+                               type="number">
+                    </div>
+                    <div class="row" th:if="${fieldErrors != null}">
+                        <div class="form-row">
+                            <div class="col">
+                                <div th:each="fieldError, iter: ${fieldErrors}">
+                                    <div class="alert alert-danger" style="color: red"
+                                         th:if="${fieldError.getField() == 'number'}"
+                                         th:text="${fieldError.getDefaultMessage()}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="date">Date</label>
+                        <input class="form-control" id="date" placeholder="Date" required th:field="*{date}"
+                               type="date">
+                    </div>
+                    <div class="row" th:if="${fieldErrors != null}">
+                        <div class="form-row">
+                            <div class="col">
+                                <div th:each="fieldError, iter: ${fieldErrors}">
+                                    <div class="alert alert-danger" style="color: red"
+                                         th:if="${fieldError.getField() == 'date'}"
+                                         th:text="${fieldError.getDefaultMessage()}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="div-inline-block div-centr">
+                        <label>Select an Audience:
+                            <select class="input_" required th:field="*{audience}">
+                                <th:block th:each="audience:${allAudiences}">
+                                    <option th:text="${audience.number}" th:value="${audience.id}"></option>
+                                </th:block>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="div-inline-block div-centr">
+                        <label>Select a Group:</label>
+                        <select class="input_" required th:field="*{group}">
+                            <th:block th:each="group:${allGroups}">
+                                <option th:text="${group.name}" th:value="${group.id}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="div-inline-block div-centr">
+                        <label>Select a Lesson:</label>
+                        <select class="input_" required th:field="*{lesson}">
+                            <th:block th:each="lesson:${allLessons}">
+                                <option th:text="${lesson.startTime}" th:value="${lesson.id}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="div-inline-block div-centr">
+                        <label>Select a Teacher:</label>
+                        <select class="input_" required th:field="*{teacher}">
+                            <th:block th:each="teacher:${allTeachers}">
+                                <option th:text="${teacher.firstName}" th:value="${teacher.id}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row" th:if="${serviceExceptionOnAdd !=null}">
+                    <h5 style="color: red" th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <input class="btn btn-primary" type="submit" value="Update Lecture">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

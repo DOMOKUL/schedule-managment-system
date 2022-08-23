@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <link href="../static/css/bootstrap.min.css"
+          rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta charset="UTF-8">
+    <title>Schedule university</title>
+</head>
+<body>
+<header>
+    <div th:replace="fragments/navbar :: navbar"></div>
+</header>
+
+<div class="flex-container-table" th:switch="${faculties}">
+    <table class="table table-bordered text-center">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="each_faculty, iter : ${faculties}">
+            <td th:text="${each_faculty.id}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/faculties/'} + ${faculties.get(iter.index).getId()}"
+                   th:text="${each_faculty.name}"></a>
+            </td>
+            <td>
+                <a class="btn btn-sm" th:href="@{/faculties/edit/{id}(id=${each_faculty.id})}">
+                    <span>Edit</span>
+                </a>
+                <a class="btn btn-danger" th:href="@{/faculties/delete/{id}(id=${each_faculty.id})}">
+                    <span>Delete</span>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="wrapper">
+    <div class="container">
+        <h5>Save Faculty</h5>
+        <form action="#" method="POST" th:action="@{/faculties/add}"
+              th:object="${faculty}">
+            <label>
+                <input class="input_" placeholder="Faculty name" required th:field="*{name}" type="text">
+            </label>
+            <button class="btn btn-info" type="submit"> Save Faculty</button>
+
+            <div th:if="${fieldErrors != null}">
+                <div class="form-row">
+                    <div class="col">
+                        <div th:each="fieldError, iter: ${fieldErrors}">
+                            <div class="alert alert-danger" style="color: red"
+                                 th:if="${fieldError.getField() == 'name'}"
+                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${serviceExceptionOnAdd !=null}">
+                <h5 style="color: red" th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

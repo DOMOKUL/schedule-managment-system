@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Update User</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" rel="stylesheet">
+    <link href="../css/shards.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-5">
+    <h2 class="mb-5">Update Audience</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" method="POST"
+                  th:action="@{/audiences/update/{id}(id=${updatedAudience.id})}" th:object="${updatedAudience}">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="number">Number</label>
+                        <input class="form-control" id="number" placeholder="Number" required th:field="*{number}"
+                               type="number">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="capacity">Capacity</label>
+                        <input class="form-control" id="capacity" placeholder="Capacity" required
+                               th:field="*{capacity}" type="number">
+                    </div>
+                </div>
+
+                <div class="row" th:if="${fieldErrors != null}">
+                    <div class="form-row">
+                        <div class="col">
+                            <div th:each="fieldError, iter: ${fieldErrors}">
+                                <div class="alert alert-danger mt-2" style="color: red"
+                                     th:if="${fieldError.getField() == 'number'}"
+                                     th:text="${fieldError.getDefaultMessage()}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div th:each="fieldError, iter: ${fieldErrors}">
+                                <div class="alert alert-danger mt-2" style="color: red"
+                                     th:if="${fieldError.getField() == 'capacity'}"
+                                     th:text="${fieldError.getDefaultMessage()}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-body row">
+                    <h5 style="color: red" th:if="${serviceExceptionOnUpdate !=null}"
+                        th:text="${serviceExceptionOnUpdate.getMessage()}"></h5>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <input class="btn btn-primary" required type="submit" value="Update Audience">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
